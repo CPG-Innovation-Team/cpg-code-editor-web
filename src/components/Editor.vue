@@ -30,9 +30,12 @@ export default {
   data() {
     return {
       editor: null,
+      socket: null,
       consoleVisible: true,
       logStyle: '',
       logList: [],
+      codeUpdateEnable: true, // Debounce for real-time sync
+      debounceTimeout: null,
     };
   },
   methods: {
@@ -41,9 +44,27 @@ export default {
         value: ['function x() {', '\tconsole.log("Hello world!");', '}', 'x();'].join('\n'),
         language: 'javascript',
       });
-
+    },
+    initSocketIO() {
+      this.socket = io('ws://localhost:3000', { transports: ['websocket'] });
+      this.socket.on('code', (code) => {
+        if (code !== this.getCode()) {
+          this.setCode(code);
+        }
+      });
+    },
+    editorEventHandler() {
       this.editor.onDidChangeModelContent((e) => {
-        console.log(e);
+        if (!this.codeUpdateEnable) {
+          clearTimeout(this.debounceTimeout);
+        }
+        this.codeUpdateEnable = false;
+        this.debounceTimeout = setTimeout(() => {
+          console.original.log(e);
+          const code = this.getCode();
+          this.socket.emit('code', code);
+          this.codeUpdateEnable = true;
+        }, 1000);
       });
     },
     consoleHandler() {
@@ -70,6 +91,9 @@ export default {
         console.original.error(msg);
       };
     },
+    setCode(code) {
+      this.editor.setValue(code);
+    },
     getCode() {
       return this.editor.getValue();
     },
@@ -90,11 +114,9 @@ export default {
   },
   mounted() {
     this.initEditor();
+    this.initSocketIO();
     this.consoleHandler();
-
-    // test for socket.io
-    const socket = io('ws://localhost:3000', { transports: ['websocket'] });
-    socket.emit('msg', 'test message');
+    this.editorEventHandler();
   },
   beforeDestroy() {
     this.editor.dispose();
