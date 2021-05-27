@@ -1,10 +1,18 @@
 <template>
-  <div>
+  <div class="editor-container">
+    <div class="title-block">
+      <div class="title-text">Editor</div>
+    </div>
     <div ref="editor" class="editor"></div>
-    <button @click="runCode">RUN</button>
-    <button @click="clearConsole">CLEAR</button>
+    <div class="title-block">
+      <div class="title-text">Console</div>
+      <div class="button-block">
+        <button class="console-button" @click="runCode">RUN</button>
+        <button class="console-button" @click="clearConsole">CLEAR</button>
+      </div>
+    </div>
     <div v-show="consoleVisible" class="console">
-      <p v-for="item in logList" :key="item.index" :class="item.style">
+      <p v-for="item in logList" class="log-item" :key="item.index" :class="item.style">
         {{ item.style === 'warn' ? '&#9888;' : '' }}
         {{ item.style === 'error' ? '&#215;' : '' }}
         {{ item.msg }}
@@ -95,21 +103,56 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.title-block {
+  display: flex;
+  justify-content: space-between;
+  height: 30px;
+  line-height: 30px;
+  background-color: #ddd;
+
+  .title-text {
+    margin-left: 8px;
+  }
+
+  .button-block {
+    text-align: right;
+    margin-right: 8px;
+
+    .console-button {
+      margin-left: 8px;
+    }
+  }
+}
+
 .editor {
-  width: 600px;
-  height: 300px;
+  flex: 2;
+  width: 100%;
+  border-bottom: 1px solid #999;
   text-align: left;
 }
 
 .console {
-  width: 600px;
-  height: 300px;
+  flex: 1;
+  width: 100%;
+  overflow-y: auto;
 
-  .warn {
-    color: #990;
-  }
-  .error {
-    color: #c00;
+  .log-item {
+    margin: 0;
+    padding: 5px 8px;
+    border-bottom: 1px solid #eee;
+
+    &.warn {
+      color: #990;
+    }
+    &.error {
+      color: #c00;
+    }
   }
 }
 </style>
