@@ -15,6 +15,7 @@
 
 <script>
 import * as monaco from 'monaco-editor';
+import { io } from 'socket.io-client';
 
 export default {
   name: 'Editor',
@@ -82,6 +83,10 @@ export default {
   mounted() {
     this.initEditor();
     this.consoleHandler();
+
+    // test for socket.io
+    const socket = io('ws://localhost:3000', { transports: ['websocket'] });
+    socket.emit('msg', 'test message');
   },
   beforeDestroy() {
     this.editor.dispose();
