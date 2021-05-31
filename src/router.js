@@ -6,13 +6,14 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
+    path: '/:roomId',
     name: 'Editor',
     component: Editor,
   },
 ];
 
 const router = new VueRouter({
+  mode: 'history',
   routes,
 });
 

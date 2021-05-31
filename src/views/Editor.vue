@@ -36,6 +36,7 @@ export default {
       logList: [],
       codeUpdateEnable: true, // Debounce for real-time sync
       debounceTimeout: null,
+      roomId: null,
     };
   },
   methods: {
@@ -46,10 +47,20 @@ export default {
       });
     },
     initSocketIO() {
+      this.roomId = this.$route.params.roomId;
+
       this.socket = io('ws://localhost:3000', { transports: ['websocket'] });
-      this.socket.on('code', (code) => {
-        if (code !== this.getCode()) {
-          this.setCode(code);
+      if (this.roomId) {
+        this.socket.emit('clientEnterRoom', this.roomId);
+      }
+
+      this.socket.on('serverCodeSync', (res) => {
+        if (this.roomId !== res.roomId) {
+          this.$router.push(`/${res.roomId}`);
+          this.roomId = res.roomId;
+          this.socket.emit('clientEnterRoom', res.roomId);
+        } else if (res.code !== this.getCode()) {
+          this.setCode(res.code);
         }
       });
     },
@@ -62,7 +73,7 @@ export default {
         this.debounceTimeout = setTimeout(() => {
           console.original.log(e);
           const code = this.getCode();
-          this.socket.emit('code', code);
+          this.socket.emit('clientUploadCode', { code, roomId: this.roomId });
           this.codeUpdateEnable = true;
         }, 1000);
       });
