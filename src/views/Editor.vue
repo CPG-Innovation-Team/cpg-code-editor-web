@@ -42,7 +42,6 @@ export default {
   methods: {
     initEditor() {
       this.editor = monaco.editor.create(this.$refs.editor, {
-        value: ['function x() {', '\tconsole.log("Hello world!");', '}', 'x();'].join('\n'),
         language: 'javascript',
       });
     },
