@@ -58,7 +58,8 @@ export default {
           this.$router.push(`/${res.roomId}`);
           this.roomId = res.roomId;
           this.socket.emit('clientEnterRoom', res.roomId);
-        } else if (res.code !== this.getCode()) {
+
+        } else if (res.code !== this.getCode() && this.codeUpdateEnable) {
           this.setCode(res.code);
         }
       });
