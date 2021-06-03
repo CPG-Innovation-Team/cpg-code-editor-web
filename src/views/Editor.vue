@@ -53,13 +53,14 @@ export default {
         this.socket.emit('clientEnterRoom', this.roomId);
       }
 
+      // Receive code from server
       this.socket.on('serverCodeSync', (res) => {
         if (this.roomId !== res.roomId) {
           this.$router.push(`/${res.roomId}`);
           this.roomId = res.roomId;
           this.socket.emit('clientEnterRoom', res.roomId);
-
         } else if (res.code !== this.getCode() && this.codeUpdateEnable) {
+          // Prevent remote code override local
           this.setCode(res.code);
         }
       });
@@ -70,6 +71,8 @@ export default {
           clearTimeout(this.debounceTimeout);
         }
         this.codeUpdateEnable = false;
+
+        // Send code to server after no operation for 1 seconds
         this.debounceTimeout = setTimeout(() => {
           console.original.log(e);
           const code = this.getCode();
