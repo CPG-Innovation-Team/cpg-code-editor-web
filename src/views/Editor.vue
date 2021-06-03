@@ -24,7 +24,7 @@
 <script>
 import * as monaco from 'monaco-editor';
 import { io } from 'socket.io-client';
-import { getCode, updateCode } from '../indexedDb';
+import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
 
 export default {
   name: 'Editor',
@@ -53,7 +53,7 @@ export default {
       if (this.roomId) {
         this.socket.emit('clientEnterRoom', this.roomId);
       } else {
-        this.setCode(await getCode());
+        this.setCode(await getCodeInLocalDb());
       }
 
       // Receive code from server
@@ -80,7 +80,7 @@ export default {
           console.original.log(e);
           const code = this.getCode();
           this.socket.emit('clientUploadCode', { code, roomId: this.roomId });
-          updateCode(code);
+          updateCodeInLocalDb(code);
           this.codeUpdateEnable = true;
         }, 1000);
       });

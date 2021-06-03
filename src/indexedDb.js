@@ -13,7 +13,7 @@ const dbHandler = (callback) => {
   };
 };
 
-export const updateCode = (code) => {
+export const updateCodeInLocalDb = (code) => {
   dbHandler((db) => {
     db.transaction(['codeRecord'], 'readwrite')
       .objectStore('codeRecord')
@@ -21,7 +21,7 @@ export const updateCode = (code) => {
   });
 };
 
-export const getCode = () => new Promise((resolve) => {
+export const getCodeInLocalDb = () => new Promise((resolve) => {
   dbHandler((db) => {
     const transaction = db.transaction(['codeRecord']);
     const objectStore = transaction.objectStore('codeRecord');
