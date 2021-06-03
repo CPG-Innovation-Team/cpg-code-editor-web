@@ -24,6 +24,7 @@
 <script>
 import * as monaco from 'monaco-editor';
 import { io } from 'socket.io-client';
+import { getCode, updateCode } from '../indexedDb';
 
 export default {
   name: 'Editor',
@@ -45,12 +46,14 @@ export default {
         language: 'javascript',
       });
     },
-    initSocketIO() {
+    async initSocketIO() {
       this.roomId = this.$route.params.roomId;
 
       this.socket = io('ws://localhost:3000', { transports: ['websocket'] });
       if (this.roomId) {
         this.socket.emit('clientEnterRoom', this.roomId);
+      } else {
+        this.setCode(await getCode());
       }
 
       // Receive code from server
@@ -77,6 +80,7 @@ export default {
           console.original.log(e);
           const code = this.getCode();
           this.socket.emit('clientUploadCode', { code, roomId: this.roomId });
+          updateCode(code);
           this.codeUpdateEnable = true;
         }, 1000);
       });
