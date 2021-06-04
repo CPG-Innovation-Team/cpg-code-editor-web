@@ -38,6 +38,7 @@ export default {
       codeUpdateEnable: true, // Debounce for real-time sync
       debounceTimeout: null,
       roomId: null,
+      initStatus: true,
     };
   },
   methods: {
@@ -50,11 +51,20 @@ export default {
       this.roomId = this.$route.params.roomId;
 
       this.socket = io('ws://localhost:3000', { transports: ['websocket'] });
-      if (this.roomId) {
-        this.socket.emit('clientEnterRoom', this.roomId);
-      } else {
-        this.setCode(await getCodeInLocalDb());
-      }
+
+      this.socket.on('connect', () => {
+        if (this.roomId) {
+          this.socket.emit('clientEnterRoom', this.roomId);
+        }
+      });
+
+      this.socket.on('connect_error', async () => {
+        console.log('connect_error');
+        if (this.initStatus) {
+          this.setCode(await getCodeInLocalDb(this.roomId || 'localDefault'));
+          this.initStatus = false;
+        }
+      });
 
       // Receive code from server
       this.socket.on('serverCodeSync', (res) => {
@@ -70,6 +80,7 @@ export default {
     },
     editorEventHandler() {
       this.editor.onDidChangeModelContent((e) => {
+        this.initStatus = false;
         if (!this.codeUpdateEnable) {
           clearTimeout(this.debounceTimeout);
         }
@@ -80,7 +91,7 @@ export default {
           console.original.log(e);
           const code = this.getCode();
           this.socket.emit('clientUploadCode', { code, roomId: this.roomId });
-          updateCodeInLocalDb(code);
+          updateCodeInLocalDb(code, this.roomId || 'localDefault');
           this.codeUpdateEnable = true;
         }, 1000);
       });
