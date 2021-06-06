@@ -47,11 +47,10 @@ export default {
         language: 'javascript',
       });
     },
-    async initSocketIO() {
+    initSocketIO() {
       this.roomId = this.$route.params.roomId;
 
       this.socket = io('ws://localhost:3000', { transports: ['websocket'] });
-
       this.socket.on('connect', () => {
         if (this.roomId) {
           this.socket.emit('clientEnterRoom', this.roomId);
@@ -59,7 +58,6 @@ export default {
       });
 
       this.socket.on('connect_error', async () => {
-        console.log('connect_error');
         if (this.initStatus) {
           this.setCode(await getCodeInLocalDb(this.roomId || 'localDefault'));
           this.initStatus = false;
