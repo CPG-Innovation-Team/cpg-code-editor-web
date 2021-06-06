@@ -19,8 +19,14 @@ describe('Editor.vue', () => {
   });
 
   it('Render page with editor and console', () => {
-    const wrapper = shallowMount(Editor);
-
+    const wrapper = shallowMount(Editor, {
+      mocks: {
+        $route: {
+          params: { roomId: undefined },
+        },
+      },
+    });
+    expect.assertions(2);
     expect(wrapper.find('.monaco-editor').isVisible()).toBeTruthy();
     expect(wrapper.find('.console').isVisible()).toBeTruthy();
   });
