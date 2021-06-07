@@ -7,8 +7,8 @@
     <div class="title-block">
       <div class="title-text">Console</div>
       <div class="button-block">
-        <button class="console-button" @click="runCode">RUN</button>
-        <button class="console-button" @click="clearConsole">CLEAR</button>
+        <button class="console-button" @click="runCode">Run</button>
+        <button class="console-button" @click="clearConsole">Clear</button>
       </div>
     </div>
     <div v-show="consoleVisible" class="console">
