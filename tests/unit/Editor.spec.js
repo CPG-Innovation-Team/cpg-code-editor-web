@@ -52,4 +52,14 @@ describe('Editor.vue', () => {
     wrapper.vm.runCode();
     expect(wrapper.vm.$data.logList[0]).toEqual({ msg: 'ReferenceError: TEST_ERROR is not defined', style: 'error' });
   });
+
+  it('Clear console then no record in log list', () => {
+    const wrapper = getWrapper();
+    wrapper.vm.setCode('console.log("TEST_LOG")');
+    wrapper.vm.runCode();
+    wrapper.vm.setCode('TEST_ERROR');
+    wrapper.vm.runCode();
+    wrapper.vm.clearConsole();
+    expect(wrapper.vm.$data.logList).toEqual([]);
+  });
 });
