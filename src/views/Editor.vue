@@ -119,8 +119,8 @@ export default {
       try {
         // eslint-disable-next-line no-new-func
         Function(this.getCode())();
-      } catch (e) {
-        console.error(e);
+      } catch (err) {
+        console.error(err.toString());
       }
     },
     addLog(msg, style) {
