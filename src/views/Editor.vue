@@ -95,27 +95,18 @@ export default {
       });
     },
     consoleHandler() {
-      console.original = {
-        log: console.log,
-        info: console.info,
-        warn: console.warn,
-        error: console.error,
-      };
+      console.original = { ...console };
       console.log = (msg) => {
         this.addLog(msg);
-        console.original.log(msg);
       };
       console.info = (msg) => {
         this.addLog(msg);
-        console.original.info(msg);
       };
       console.warn = (msg) => {
         this.addLog(msg, 'warn');
-        console.original.warn(msg);
       };
       console.error = (msg) => {
         this.addLog(msg, 'error');
-        console.original.error(msg);
       };
     },
     setCode(code) {
