@@ -96,4 +96,14 @@ describe('Editor.vue', () => {
     });
     socket.socketClient.emit('serverCodeSync', { code: 'TEST_CODE_FROM_MOCK_SERVER', roomId: 'TEST_ROOM' });
   });
+
+  it('Receive server code then show code in editor', (done) => {
+    const wrapper = getWrapper('TEST_ROOM_2');
+    socket.on('serverCodeSync', async () => {
+      const code = await wrapper.vm.getCode();
+      expect(code).toBe('TEST_CODE_FROM_MOCK_SERVER_2');
+      done();
+    });
+    socket.socketClient.emit('serverCodeSync', { code: 'TEST_CODE_FROM_MOCK_SERVER_2', roomId: 'TEST_ROOM_2' });
+  });
 });
