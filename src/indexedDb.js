@@ -1,8 +1,8 @@
-const dbHandler = (callback) => {
+const dbHandler = () => new Promise((resolve) => {
   const dbRequest = window.indexedDB.open('cpgCodeEditor');
 
   dbRequest.onsuccess = () => {
-    callback(dbRequest.result);
+    resolve(dbRequest.result);
   };
 
   dbRequest.onupgradeneeded = (event) => {
@@ -11,10 +11,10 @@ const dbHandler = (callback) => {
       db.createObjectStore('codeRecord', { keyPath: 'roomId' });
     }
   };
-};
+});
 
 export const updateCodeInLocalDb = (code, roomId) => {
-  dbHandler((db) => {
+  dbHandler().then((db) => {
     db.transaction(['codeRecord'], 'readwrite')
       .objectStore('codeRecord')
       .put({ roomId, code, updateTime: Date.now() });
@@ -22,7 +22,7 @@ export const updateCodeInLocalDb = (code, roomId) => {
 };
 
 export const getCodeInLocalDb = (roomId) => new Promise((resolve) => {
-  dbHandler((db) => {
+  dbHandler().then((db) => {
     const transaction = db.transaction(['codeRecord']);
     const objectStore = transaction.objectStore('codeRecord');
     const request = objectStore.get(roomId);
