@@ -1,6 +1,11 @@
 import 'jest-canvas-mock';
+import io from 'socket.io-client';
+import MockedSocket from 'socket.io-mock';
 import { shallowMount } from '@vue/test-utils';
 import Editor from '@/views/Editor.vue';
+
+jest.mock('socket.io-client');
+let socket = null;
 
 describe('Editor.vue', () => {
   beforeAll(() => {
@@ -18,10 +23,22 @@ describe('Editor.vue', () => {
     });
   });
 
+  beforeEach(() => {
+    socket = new MockedSocket();
+    io.mockReturnValue(socket);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   const getWrapper = (roomId = undefined) => shallowMount(Editor, {
     mocks: {
       $route: {
         params: { roomId },
+      },
+      $router: {
+        push: jest.fn(),
       },
     },
   });
@@ -69,5 +86,14 @@ describe('Editor.vue', () => {
     wrapper.vm.runCode();
     wrapper.vm.clearConsole();
     expect(wrapper.vm.$data.logList).toEqual([]);
+  });
+
+  it('Receive server code then emit enter room with roomId', (done) => {
+    getWrapper();
+    socket.socketClient.on('clientEnterRoom', (res) => {
+      expect(res).toBe('TEST_ROOM');
+      done();
+    });
+    socket.socketClient.emit('serverCodeSync', { code: 'TEST_CODE_FROM_MOCK_SERVER', roomId: 'TEST_ROOM' });
   });
 });

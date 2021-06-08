@@ -50,7 +50,8 @@ export default {
     initSocketIO() {
       this.roomId = this.$route.params.roomId;
 
-      this.socket = io('ws://localhost:3000', { transports: ['websocket'] });
+      const socketUrl = process.env.NODE_ENV === 'test' ? '' : 'ws://localhost:3000';
+      this.socket = io(socketUrl, { transports: ['websocket'] });
       this.socket.on('connect', () => {
         if (this.roomId) {
           this.socket.emit('clientEnterRoom', this.roomId);
