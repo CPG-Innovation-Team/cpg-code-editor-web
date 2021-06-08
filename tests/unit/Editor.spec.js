@@ -39,11 +39,19 @@ describe('Editor.vue', () => {
     expect(wrapper.vm.getCode()).toBe('TEST_CODE');
   });
 
-  it('Run javascript code console.log then add log item in log list', () => {
+  it('Run javascript code console.log/info/warn then add log item in log list', () => {
     const wrapper = getWrapper();
     wrapper.vm.setCode('console.log("TEST_LOG")');
     wrapper.vm.runCode();
-    expect(wrapper.vm.$data.logList[0]).toEqual({ msg: 'TEST_LOG', style: undefined });
+    wrapper.vm.setCode('console.info("TEST_INFO_LOG")');
+    wrapper.vm.runCode();
+    wrapper.vm.setCode('console.warn("TEST_WARN_LOG")');
+    wrapper.vm.runCode();
+    expect(wrapper.vm.$data.logList).toMatchObject([
+      { msg: 'TEST_LOG', style: undefined },
+      { msg: 'TEST_INFO_LOG', style: undefined },
+      { msg: 'TEST_WARN_LOG', style: 'warn' },
+    ]);
   });
 
   it('Run javascript error code then add error log item in log list', () => {
