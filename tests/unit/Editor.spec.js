@@ -106,4 +106,13 @@ describe('Editor.vue', () => {
     });
     socket.socketClient.emit('serverCodeSync', { code: 'TEST_CODE_FROM_MOCK_SERVER_2', roomId: 'TEST_ROOM_2' });
   });
+
+  it('Connect socket server then enter room with roomId in url after', (done) => {
+    getWrapper('TEST_ROOM_3');
+    socket.socketClient.on('clientEnterRoom', (res) => {
+      expect(res).toBe('TEST_ROOM_3');
+      done();
+    });
+    socket.socketClient.emit('connect');
+  });
 });
