@@ -9,7 +9,7 @@ deploy:
   region: cn-north-1
   app: cpg-code-editor-web
   env: Cpgcodeeditorweb-env
-  bucket_name: ''
+  bucket_name: elasticbeanstalk-cn-north-1-551320746512
   on:
     repo: casualbill/cpg-code-editor-web
   skip_cleanup: 'true'
