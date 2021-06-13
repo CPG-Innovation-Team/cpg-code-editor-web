@@ -9,7 +9,7 @@ deploy:
     secure: Jg2hurj5dqhffPleDXUZDKAyZZPc+cs+upY8grUhpRPhAt1WCMhS8BljXi18uW20GjvGsbU1dzYBysZ3PRwO19oEjqhEp8XzbBu9uqCGTCgnk3hRru2RwfMf9/mzIeRQqgoG21JrU7Ar5uZ65bfiSxFmf/qvyJTg7Q2vnFwSqLNytBB/A3RM2w/XkwrysHDFD1PThecfCbzjCR5ZbfbgfwjW3TwSNEkYX/ilHPMefWHzG0Yhiw87yFy2mG55mFl1jJwamPJx6hQ4vhwVhE8e5DOXyFKRdSo4cl4AnTaXNqbQa4WX62EMSiGhZ//CisfMProxuZXCYr3fd12Fnm0AgYe/m1S4o0FOXKUxmST13RxgTOvi5dI9KWZ8CSvqT+f1N1YtOycNIq1jhjS7Vt5Ddigzv1zasVhmzta6QYK3H7z8TJxY7I1lp0em98kigpjFyEieficAoWqC9p+P6M7Idb2jrQxFybIslo2wk75sRGE7Er2b5W60z4IgZVfZ0zkGChJHo8w+66COZGLkmF+5UxwgrBzdzgzPowjvwpuvEw0zb+VYWh87U5HPYDJcoaWyNcdYRpPBQpw1UeNi1qedLhb0qP257icG+Y8OGklq6TPkwiFE7I/NrDdoNmuvACUMzACBMHcUlFPtefxbeLzFYc8fNrHpEAtEZN7tMsNkh0Y=
   region: cn-north-1
   app: cpg-code-editor-web
-  env: Cpgcodeeditorweb-env
+  env: cpg-code-editor-web-env
   bucket_name: elasticbeanstalk-cn-north-1-551320746512
   on:
     repo: casualbill/cpg-code-editor-web
