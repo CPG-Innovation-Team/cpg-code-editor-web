@@ -12,7 +12,7 @@ deploy:
   bucket: cpg-code-editor-web
   local_dir: dist
   region: cn-north-1
-  acl: bucket_owner_full_control
+  acl: public_read
   on:
     repo: casualbill/cpg-code-editor-web
   skip_cleanup: 'true'
