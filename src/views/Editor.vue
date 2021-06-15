@@ -9,6 +9,7 @@
       <div class="button-block">
         <button class="console-button" @click="runCode">Run</button>
         <button class="console-button" @click="clearConsole">Clear</button>
+        <button class="console-button" @click="downloadCode">Download</button>
       </div>
     </div>
     <div v-show="consoleVisible" class="console">
@@ -129,6 +130,19 @@ export default {
     },
     clearConsole() {
       this.logList = [];
+    },
+    downloadCode() {
+      const blob = new Blob([this.getCode()], { type: 'text' });
+      const downloadElement = document.createElement('a');
+      downloadElement.style.display = 'none';
+      downloadElement.target = '_blank';
+      document.body.appendChild(downloadElement);
+
+      const URL = window.URL || window.webkitURL;
+      downloadElement.href = URL.createObjectURL(blob);
+      downloadElement.download = 'code';
+      downloadElement.click();
+      document.body.removeChild(downloadElement);
     },
   },
   mounted() {
