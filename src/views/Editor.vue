@@ -2,14 +2,16 @@
   <div class="editor-container">
     <div class="title-block">
       <div class="title-text">Editor</div>
+      <div class="button-block">
+        <button class="title-button" @click="downloadCode">Download</button>
+      </div>
     </div>
     <div ref="editor" class="editor"></div>
     <div class="title-block">
       <div class="title-text">Console</div>
       <div class="button-block">
-        <button class="console-button" @click="runCode">Run</button>
-        <button class="console-button" @click="clearConsole">Clear</button>
-        <button class="console-button" @click="downloadCode">Download</button>
+        <button class="title-button" @click="runCode">Run</button>
+        <button class="title-button" @click="clearConsole">Clear</button>
       </div>
     </div>
     <div v-show="consoleVisible" class="console">
@@ -179,7 +181,7 @@ export default {
     text-align: right;
     margin-right: 8px;
 
-    .console-button {
+    .title-button {
       margin-left: 8px;
     }
   }
