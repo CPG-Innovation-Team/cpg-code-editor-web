@@ -4,6 +4,7 @@
       <div class="title-text">Editor</div>
       <div class="button-block">
         <button class="title-button" @click="downloadCode">Download</button>
+        <a ref="downloadElement" v-show="false" target="_blank" />
       </div>
     </div>
     <div ref="editor" class="editor"></div>
@@ -136,17 +137,11 @@ export default {
     },
     downloadCode() {
       const blob = new Blob([this.getCode()], { type: 'text' });
-      const downloadElement = document.createElement('a');
-      downloadElement.style.display = 'none';
-      downloadElement.target = '_blank';
-      document.body.appendChild(downloadElement);
-
       const URL = window.URL || window.webkitURL;
-      const fileName = `code-${formattedDateTime(new Date())}`;
+      const { downloadElement } = this.$refs;
       downloadElement.href = URL.createObjectURL(blob);
-      downloadElement.download = fileName;
+      downloadElement.download = `code-${formattedDateTime(new Date())}`;
       downloadElement.click();
-      document.body.removeChild(downloadElement);
     },
   },
   mounted() {
