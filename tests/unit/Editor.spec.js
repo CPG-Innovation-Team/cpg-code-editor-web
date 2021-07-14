@@ -32,16 +32,17 @@ describe('Editor.vue', () => {
     jest.restoreAllMocks();
   });
 
-  const getWrapper = (roomId = undefined) => shallowMount(Editor, {
-    mocks: {
-      $route: {
-        params: { roomId },
+  const getWrapper = (roomId = undefined) =>
+    shallowMount(Editor, {
+      mocks: {
+        $route: {
+          params: { roomId },
+        },
+        $router: {
+          push: jest.fn(),
+        },
       },
-      $router: {
-        push: jest.fn(),
-      },
-    },
-  });
+    });
 
   it('Render page with editor and console', () => {
     const wrapper = getWrapper();
