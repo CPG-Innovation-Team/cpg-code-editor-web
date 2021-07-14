@@ -3,6 +3,11 @@
     <div class="title-block">
       <div class="title-text">Editor</div>
       <div class="button-block">
+        <select v-model="selectedCodeLanguage" @change="onCodeLanguageChange">
+          <option v-for="option in codeLanguageList" :key="option.langValue" v-bind:value="option.langValue">
+            {{ option.langName }}
+          </option>
+        </select>
         <button class="title-button" @click="downloadCode">Download</button>
         <a ref="downloadElement" v-show="false" target="_blank" />
       </div>
@@ -30,6 +35,7 @@ import * as monaco from 'monaco-editor';
 import { io } from 'socket.io-client';
 import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
 import formattedDateTime from '../util';
+import CODE_LANGUAGE_LIST from '../map';
 
 export default {
   name: 'Editor',
@@ -44,12 +50,14 @@ export default {
       debounceTimeout: null,
       roomId: null,
       initStatus: true,
+      selectedCodeLanguage: 'javascript',
+      codeLanguageList: CODE_LANGUAGE_LIST,
     };
   },
   methods: {
     initEditor() {
       this.editor = monaco.editor.create(this.$refs.editor, {
-        language: 'javascript',
+        language: this.selectedCodeLanguage,
       });
     },
     initSocketIO() {
@@ -142,6 +150,12 @@ export default {
       downloadElement.href = URL.createObjectURL(blob);
       downloadElement.download = `code-${formattedDateTime(new Date())}`;
       downloadElement.click();
+    },
+    onCodeLanguageChange() {
+      const code = this.getCode();
+      this.editor.dispose();
+      this.initEditor();
+      this.setCode(code);
     },
   },
   mounted() {

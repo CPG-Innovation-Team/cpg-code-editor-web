@@ -1,0 +1,28 @@
+const CODE_LANGUAGE_LIST = [
+  { langName: 'C', langValue: 'c' },
+  { langName: 'C++', langValue: 'cpp' },
+  { langName: 'C#', langValue: 'csharp' },
+  { langName: 'CSS', langValue: 'css' },
+  { langName: 'Dart', langValue: 'dart' },
+  { langName: 'Go', langValue: 'go' },
+  { langName: 'GraphQL', langValue: 'graphql' },
+  { langName: 'HTML', langValue: 'html' },
+  { langName: 'Java', langValue: 'java' },
+  { langName: 'Javascript', langValue: 'javascript' },
+  { langName: 'JSON', langValue: 'json' },
+  { langName: 'Lua', langValue: 'lua' },
+  { langName: 'Markdown', langValue: 'markdown' },
+  { langName: 'Objective-C', langValue: 'objective-c' },
+  { langName: 'Pascal', langValue: 'pascal' },
+  { langName: 'Perl', langValue: 'perl' },
+  { langName: 'PHP', langValue: 'php' },
+  { langName: 'Python', langValue: 'python' },
+  { langName: 'Redis', langValue: 'redis' },
+  { langName: 'Ruby', langValue: 'ruby' },
+  { langName: 'SQL', langValue: 'sql' },
+  { langName: 'Swift', langValue: 'swift' },
+  { langName: 'Visual Basic', langValue: 'vb' },
+  { langName: 'XML', langValue: 'xml' },
+];
+
+export default CODE_LANGUAGE_LIST;
