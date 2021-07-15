@@ -58,6 +58,7 @@ export default {
     initEditor() {
       this.editor = monaco.editor.create(this.$refs.editor, {
         language: this.selectedCodeLanguage,
+        theme: 'vs-dark',
       });
     },
     initSocketIO() {
