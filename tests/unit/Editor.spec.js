@@ -116,4 +116,14 @@ describe('Editor.vue', () => {
     });
     socket.socketClient.emit('connect');
   });
+
+  it('Change programing language to Go then hide console, change to Javascript and then show console', async () => {
+    const wrapper = getWrapper();
+    const selector = wrapper.find('[test="codeLanguageSelector"]');
+    await selector.setValue('go');
+    expect(wrapper.find('.console').isVisible()).toBe(false);
+
+    await selector.setValue('javascript');
+    expect(wrapper.find('.console').isVisible()).toBe(true);
+  });
 });

@@ -3,7 +3,7 @@
     <div class="title-block">
       <div class="title-text">Editor</div>
       <div class="button-block">
-        <select v-model="selectedCodeLanguage" @change="onCodeLanguageChange">
+        <select v-model="selectedCodeLanguage" @change="onCodeLanguageChange" test="codeLanguageSelector">
           <option v-for="option in codeLanguageList" :key="option.langValue" v-bind:value="option.langValue">
             {{ option.langName }}
           </option>
