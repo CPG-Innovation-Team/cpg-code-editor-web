@@ -13,7 +13,7 @@
       </div>
     </div>
     <div ref="editor" class="editor"></div>
-    <div class="title-block">
+    <div v-show="consoleVisible" class="title-block">
       <div class="title-text">Console</div>
       <div class="button-block">
         <button class="title-button" @click="runCode">Run</button>
@@ -152,10 +152,17 @@ export default {
       downloadElement.click();
     },
     onCodeLanguageChange() {
-      const code = this.getCode();
-      this.editor.dispose();
-      this.initEditor();
-      this.setCode(code);
+      if (this.selectedCodeLanguage === 'javascript') {
+        this.consoleVisible = true;
+      } else {
+        this.consoleVisible = false;
+      }
+      this.$nextTick(() => {
+        const code = this.getCode();
+        this.editor.dispose();
+        this.initEditor();
+        this.setCode(code);
+      });
     },
   },
   mounted() {
