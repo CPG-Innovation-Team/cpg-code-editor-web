@@ -1,16 +1,17 @@
 <template>
-  <div id="app">
-    <Editor />
-  </div>
+  <v-app>
+    <Project />
+    <!-- <Editor /> -->
+  </v-app>
 </template>
 
 <script>
-import Editor from './views/Editor.vue';
+import Project from './views/Projects.vue';
 
 export default {
   name: 'App',
   components: {
-    Editor,
+    Project,
   },
 };
 </script>
