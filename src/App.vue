@@ -1,18 +1,17 @@
 <template>
   <div id="app">
-    <ProjectList />
+    <Editor />
   </div>
 </template>
 
 <script>
-// import Editor from './views/Editor.vue';
-import ProjectList from './views/ProjectList.vue';
+import Editor from './views/Editor.vue';
+// import ProjectList from './views/ProjectList.vue';
 
 export default {
   name: 'App',
   components: {
-    //  Editor,
-    ProjectList,
+    Editor,
   },
 };
 </script>
