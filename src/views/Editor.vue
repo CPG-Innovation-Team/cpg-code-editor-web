@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-row no-gutters>
-      <v-col cols="3" style="background-color: red"> </v-col>
-      <v-col cols="9" style="background-color: blue">
+      <v-col cols="3" class="left"> </v-col>
+      <v-col cols="9" class="middle">
         <div class="editor-container">
           <div class="title-block">
             <div class="title-text">Editor</div>
@@ -63,9 +63,21 @@ export default {
   },
   methods: {
     initEditor() {
+      const theme = {
+        base: 'vs-dark',
+        inherit: true,
+        colors: {
+          'editor.background': '#2C333B',
+        },
+        rules: [],
+      };
+      monaco.editor.defineTheme('my-dark', theme);
       this.editor = monaco.editor.create(this.$refs.editor, {
         language: this.selectedCodeLanguage,
-        theme: 'vs-dark',
+        theme: 'my-dark',
+        minimap: {
+          enabled: false,
+        },
       });
     },
     initSocketIO() {
@@ -219,6 +231,7 @@ export default {
   width: 100%;
   border-bottom: 1px solid #999;
   text-align: left;
+  padding-top: 20px;
 }
 
 .console {
@@ -238,5 +251,16 @@ export default {
       color: #c00;
     }
   }
+}
+
+.left {
+  border-top: 1px solid #eee;
+  background-color: #3d4b56;
+}
+
+.middle {
+  border-top: 1px solid #eee;
+  border-left: 1px solid #eee;
+  background-color: #2c333b;
 }
 </style>
