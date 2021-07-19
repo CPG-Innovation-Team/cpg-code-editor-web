@@ -1,16 +1,20 @@
 <template>
-  <div id="app">
-    <Editor />
-  </div>
+  <v-app>
+    <Header />
+    <v-main>
+      <!-- force refresh the page when at the same route -->
+      <router-view :key="$route.fullPath"></router-view>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-import Editor from './views/Editor.vue';
+import Header from './components/Header.vue';
 
 export default {
   name: 'App',
   components: {
-    Editor,
+    Header,
   },
 };
 </script>

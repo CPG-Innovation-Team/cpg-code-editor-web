@@ -1,10 +1,16 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import Projects from './views/Projects.vue';
 import Editor from './views/Editor.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: '/',
+    name: 'Projects',
+    component: Projects,
+  },
   {
     path: '/:roomId',
     name: 'Editor',
