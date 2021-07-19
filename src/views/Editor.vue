@@ -1,32 +1,39 @@
 <template>
-  <div class="editor-container">
-    <div class="title-block">
-      <div class="title-text">Editor</div>
-      <div class="button-block">
-        <select v-model="selectedCodeLanguage" @change="onCodeLanguageChange" test="codeLanguageSelector">
-          <option v-for="option in codeLanguageList" :key="option.langValue" v-bind:value="option.langValue">
-            {{ option.langName }}
-          </option>
-        </select>
-        <button class="title-button" @click="downloadCode">Download</button>
-        <a ref="downloadElement" v-show="false" target="_blank" />
-      </div>
-    </div>
-    <div ref="editor" class="editor"></div>
-    <div v-show="consoleVisible" class="title-block">
-      <div class="title-text">Console</div>
-      <div class="button-block">
-        <button class="title-button" @click="runCode">Run</button>
-        <button class="title-button" @click="clearConsole">Clear</button>
-      </div>
-    </div>
-    <div v-show="consoleVisible" class="console">
-      <p v-for="item in logList" class="log-item" :key="item.index" :class="item.style">
-        {{ item.style === 'warn' ? '&#9888;' : '' }}
-        {{ item.style === 'error' ? '&#215;' : '' }}
-        {{ item.msg }}
-      </p>
-    </div>
+  <div>
+    <v-row no-gutters>
+      <v-col cols="3" style="background-color: red"> </v-col>
+      <v-col cols="9" style="background-color: blue">
+        <div class="editor-container">
+          <div class="title-block">
+            <div class="title-text">Editor</div>
+            <div class="button-block">
+              <select v-model="selectedCodeLanguage" @change="onCodeLanguageChange" test="codeLanguageSelector">
+                <option v-for="option in codeLanguageList" :key="option.langValue" v-bind:value="option.langValue">
+                  {{ option.langName }}
+                </option>
+              </select>
+              <button class="title-button" @click="downloadCode">Download</button>
+              <a ref="downloadElement" v-show="false" target="_blank" />
+            </div>
+          </div>
+          <div ref="editor" class="editor"></div>
+          <div v-show="consoleVisible" class="title-block">
+            <div class="title-text">Console</div>
+            <div class="button-block">
+              <button class="title-button" @click="runCode">Run</button>
+              <button class="title-button" @click="clearConsole">Clear</button>
+            </div>
+          </div>
+          <div v-show="consoleVisible" class="console">
+            <p v-for="item in logList" class="log-item" :key="item.index" :class="item.style">
+              {{ item.style === 'warn' ? '&#9888;' : '' }}
+              {{ item.style === 'error' ? '&#215;' : '' }}
+              {{ item.msg }}
+            </p>
+          </div>
+        </div>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -183,6 +190,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  width: 100%;
 }
 
 .title-block {
