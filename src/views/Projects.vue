@@ -1,20 +1,13 @@
 <template>
-  <div>
-    <HeaderBefore />
-    <v-Container>
-      <h1>Code Projects</h1>
-    </v-Container>
-  </div>
+  <v-container>
+    <h1>Code Projects</h1>
+    <router-link to="/001">Editor</router-link>
+  </v-container>
 </template>
 
 <script>
-import HeaderBefore from '../components/HeaderBefore.vue';
-
 export default {
   name: 'Projects',
-  components: {
-    HeaderBefore,
-  },
 };
 </script>
 

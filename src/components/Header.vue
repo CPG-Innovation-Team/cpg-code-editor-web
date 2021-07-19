@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar color="primary" height="65px">
+  <v-app-bar app color="primary">
     <v-toolbar-title class="white--text">正大集团</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn class="white--text" color="blueBtn"> <v-icon>mdi-plus-box</v-icon>Create</v-btn>
@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: 'HeaderAfter',
+  name: 'Header',
   data: () => ({}),
 };
 </script>
