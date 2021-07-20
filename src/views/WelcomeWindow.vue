@@ -28,10 +28,11 @@
             <v-btn
               class="white--text"
               color="blueBtn"
+              :disabled="checkValidName(inputName) === false"
               @click="
                 dialog = false;
                 submit(inputName);
-                passUserInfo();
+                passUserInfo(userName, userAvatar);
               "
             >
               Confirm
@@ -44,7 +45,7 @@
 </template>
 
 <script>
-import Bus from '../bus';
+import { storage } from '../util';
 
 const avatar1 = require('../assets/img-avatar1.png');
 const avatar2 = require('../assets/img-avatar2.png');
@@ -62,6 +63,12 @@ const avatar6Selected = require('../assets/img-avatar6-selected.png');
 
 export default {
   name: 'WelcomeWindow',
+  props: {
+    userInfo: {
+      userName: '',
+      userAvatar: '',
+    },
+  },
   data() {
     return {
       dialog: true,
@@ -70,65 +77,60 @@ export default {
         (value) => (value && value.length >= 2 && value.length <= 50) || 'Min 2 characters, max 50 characters.',
       ],
       inputName: '',
-      inputAvatar: '',
       userName: '',
       userAvatar: 'avatar1',
       avatars: [avatar1Selected, avatar2, avatar3, avatar4, avatar5, avatar6],
     };
   },
   created() {
-    // retrieve user data from local storage
-    if (localStorage.userName) {
-      this.userName = localStorage.userName;
-    }
-    if (localStorage.inputName) {
-      this.inputName = localStorage.inputName;
-    }
-    if (localStorage.avatar) {
-      this.userAvatar = localStorage.avatar;
-      this.selectAvatar(parseInt(localStorage.avatar.substring(6) - 1, 10));
+    // retreive user data from local storage
+    this.userName = storage.getLocalStorage().userName;
+    this.inputName = storage.getLocalStorage().inputName;
+    this.userAvatar = storage.getLocalStorage().userAvatar;
+    if (this.userAvatar) {
+      this.selectAvatar(parseInt(this.userAvatar.substring(6) - 1, 10));
     }
   },
   methods: {
     submit(inputName) {
       // save user data to local storage
       this.userName = inputName;
-      localStorage.userName = this.userName;
-      localStorage.inputName = inputName;
-      this.userAvatar = this.inputAvatar;
-      localStorage.avatar = this.userAvatar;
+      storage.setLocalStorage(this.userName, this.userAvatar, inputName);
+    },
+    checkValidName(inputName) {
+      if (inputName && inputName !== '' && inputName.length <= 50 && inputName.length >= 2) return true;
+      return false;
+    },
+    passUserInfo(userName, userAvatar) {
+      this.$emit('passUserInfo', userName, userAvatar);
     },
     selectAvatar(index) {
       this.avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
       switch (index) {
         case 1:
           this.avatars.splice(1, 1, avatar2Selected);
-          this.inputAvatar = 'avatar2';
+          this.userAvatar = 'avatar2';
           break;
         case 2:
           this.avatars.splice(2, 1, avatar3Selected);
-          this.inputAvatar = 'avatar3';
+          this.userAvatar = 'avatar3';
           break;
         case 3:
           this.avatars.splice(3, 1, avatar4Selected);
-          this.inputAvatar = 'avatar4';
+          this.userAvatar = 'avatar4';
           break;
         case 4:
           this.avatars.splice(4, 1, avatar5Selected);
-          this.inputAvatar = 'avatar5';
+          this.userAvatar = 'avatar5';
           break;
         case 5:
           this.avatars.splice(5, 1, avatar6Selected);
-          this.inputAvatar = 'avatar6';
+          this.userAvatar = 'avatar6';
           break;
         default:
           this.avatars.splice(0, 1, avatar1Selected);
-          this.inputAvatar = 'avatar1';
+          this.userAvatar = 'avatar1';
       }
-    },
-    passUserInfo() {
-      Bus.$emit('userName', this.userName);
-      Bus.$emit('userAvatar', this.userAvatar);
     },
   },
 };
