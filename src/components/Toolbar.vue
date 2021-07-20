@@ -1,6 +1,6 @@
 <template>
   <v-list color="primary darken-1" height="100%">
-    <v-list-item-group class="d-flex flex-column justify-space-between fill-height">
+    <v-list-item-group class="list-group d-flex flex-column justify-space-between fill-height">
       <div>
         <v-menu left offset-x :close-on-content-click="false" content-class="elevation-0">
           <template v-slot:activator="{ on: menu, attrs }">
@@ -92,6 +92,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.list-group .v-list-item--active {
+  background-color: #161e27;
+  color: #161e27;
+}
+
 .toolbar-divider {
   margin: auto;
   width: 40%;
