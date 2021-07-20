@@ -2,28 +2,19 @@
   <v-app>
     <Header />
     <v-main>
-      <v-row style="height: 100vh" no-gutters>
-        <v-col cols="11">
-          <!-- force refresh the page when at the same route -->
-          <router-view :key="$route.fullPath"></router-view>
-        </v-col>
-        <v-col cols="1">
-          <Toolbar />
-        </v-col>
-      </v-row>
+      <!-- force refresh the page when at the same route -->
+      <router-view :key="$route.fullPath"></router-view>
     </v-main>
   </v-app>
 </template>
 
 <script>
 import Header from './components/Header.vue';
-import Toolbar from './components/Toolbar.vue';
 
 export default {
   name: 'App',
   components: {
     Header,
-    Toolbar,
   },
 };
 </script>

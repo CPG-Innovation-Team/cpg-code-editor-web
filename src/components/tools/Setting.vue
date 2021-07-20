@@ -5,7 +5,6 @@
       <div>
         <h5>Title</h5>
         <v-text-field
-          class="input-box"
           label="Project name"
           background-color="primary lighten-1"
           color="blueBtn"
@@ -65,10 +64,5 @@ export default {
   width: 20vw;
   padding: 20px;
   background-color: #161e27;
-}
-
-.input-box {
-  padding: 0 18px;
-  color: white !important;
 }
 </style>
