@@ -4,9 +4,8 @@
     <v-spacer></v-spacer>
     <div class="user-status">
       <div class="user-num">
-        {{ pluralize(users.length + 1) }}
+        {{ pluralize(users.length) }}
       </div>
-
       <div v-for="(user, index) in users" :key="index">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -23,32 +22,14 @@
         </v-tooltip>
       </div>
     </div>
-    <v-tooltip bottom>
-      <template v-slot:activator="{ on, attrs }">
-        <v-img
-          class="ml-1 mr-1"
-          max-height="40"
-          max-width="40"
-          :src="require(`../assets/img-${userAvatar}-selected.png`)"
-          v-bind="attrs"
-          v-on="on"
-        />
-      </template>
-      <span>{{ userName }}</span>
-    </v-tooltip>
-
     <v-btn class="white--text ml-2" color="blueBtn"> <v-icon>mdi-plus-box</v-icon>Create</v-btn>
   </v-app-bar>
 </template>
 
 <script>
-import Bus from '../bus';
-
 export default {
   name: 'Header',
   data: () => ({
-    userName: '',
-    userAvatar: 'avatar1',
     users: [
       { id: '01', userName: 'Kelly', userAvatar: 'avatar5' },
       { id: '02', userName: 'Mark', userAvatar: 'avatar2' },
@@ -58,23 +39,6 @@ export default {
       { id: '06', userName: 'Luke', userAvatar: 'avatar1' },
     ],
   }),
-  created() {
-    if (localStorage.userName) {
-      this.userName = localStorage.userName;
-    }
-    if (localStorage.avatar) {
-      this.userAvatar = localStorage.avatar;
-    }
-  },
-  mounted() {
-    const vm = this;
-    Bus.$on('userName', (data) => {
-      vm.userName = data;
-    });
-    Bus.$on('userAvatar', (data) => {
-      vm.userAvatar = data;
-    });
-  },
   methods: {
     pluralize(length) {
       if (length === 1) {
