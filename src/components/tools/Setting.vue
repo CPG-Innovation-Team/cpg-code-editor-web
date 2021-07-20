@@ -60,7 +60,7 @@ export default {
 
 <style scoped lang="scss">
 .container {
-  height: 88vh;
+  height: 91.5vh;
   width: 20vw;
   padding: 20px;
   background-color: #161e27;
