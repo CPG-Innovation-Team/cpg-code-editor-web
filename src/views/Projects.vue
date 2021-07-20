@@ -5,20 +5,6 @@
         <div class="project-list-container">
           <div class="title">
             <div class="title-text">Code Projects</div>
-            <router-link
-              to="/001"
-              style="
-                font-size: 40px;
-                text-decoration: none;
-                background-color: black;
-                position: absolute;
-                left: 600px;
-                top: 10px;
-                color: white;
-              "
-            >
-              进入editor
-            </router-link>
             <button
               style="
                 position: absolute;
@@ -42,6 +28,9 @@
               :items-per-page="8"
               item-key="URL"
             >
+              <template v-slot:item.title="{ item }">
+                <router-link to="/001">{{ item.title }}</router-link>
+              </template>
               <template v-slot:item.actions="{ item, index }">
                 <v-icon small class="mr-2" @click="copyURL(index)">mdi-share</v-icon>
                 <v-icon small class="mr-2" @click="deleteProject(index)">mdi-delete</v-icon>
@@ -80,9 +69,8 @@ export default {
         title: `Project name 0`,
         syntax: 'java',
         modified: '5 mins ago',
-        createdTime: '2 days ago',
+        createdTime: '1 days ago',
         URL: 'http://cpg.url/abcde',
-        actions: '',
       },
     ],
   }),
