@@ -36,7 +36,7 @@
         <v-divider color="#737d81" class="toolbar-divider"></v-divider>
 
         <v-list-item>
-          <v-list-item-content class="">
+          <v-list-item-content>
             <v-tooltip nudge-right="10" left>
               <template v-slot:activator="{ on, attrs }">
                 <v-icon color="greyBtn" v-bind="attrs" v-on="on">mdi-tune</v-icon>
