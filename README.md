@@ -26,13 +26,20 @@
 │   ├── App.vue    全局页面
 │   ├── assets    静态资源文件目录，含图片、视频等
 │   ├── components    公用组件目录
+│   │   ├── Header.vue    顶部菜单
+│   │   ├── Toolbar.vue    工具栏
+│   │   └── tools    工具栏中的菜单
+│   │       └── Setting.vue    设置菜单
+│   ├── plguins    插件
+│   │   └── vuetify.js    组件库Vuetify设置
 │   ├── indexedDb.js    本地indexedDb数据库文件
 │   ├── main.js    项目入口文件
 │   ├── registerServiceWorker.js
 │   ├── router.js    路由文件
 │   ├── util.js    公用方法文件
 │   └── views    页面目录
-│       └── Editor.vue    编辑器页面
+│       ├── Editor.vue    编辑器页面
+│       └── Projects    文档管理页面（首页）
 ├── tests
 │   ├── e2e    E2E测试目录
 │   └── unit    单元测试目录
