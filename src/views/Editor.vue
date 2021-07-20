@@ -1,33 +1,44 @@
 <template>
-  <div class="editor-container">
-    <WelcomeWindow></WelcomeWindow>
-    <div class="title-block">
-      <div class="title-text">Editor</div>
-      <div class="button-block">
-        <select v-model="selectedCodeLanguage" @change="onCodeLanguageChange" test="codeLanguageSelector">
-          <option v-for="option in codeLanguageList" :key="option.langValue" v-bind:value="option.langValue">
-            {{ option.langName }}
-          </option>
-        </select>
-        <button class="title-button" @click="downloadCode">Download</button>
-        <a ref="downloadElement" v-show="false" target="_blank" />
-      </div>
-    </div>
-    <div ref="editor" class="editor"></div>
-    <div v-show="consoleVisible" class="title-block">
-      <div class="title-text">Console</div>
-      <div class="button-block">
-        <button class="title-button" @click="runCode">Run</button>
-        <button class="title-button" @click="clearConsole">Clear</button>
-      </div>
-    </div>
-    <div v-show="consoleVisible" class="console">
-      <p v-for="item in logList" class="log-item" :key="item.index" :class="item.style">
-        {{ item.style === 'warn' ? '&#9888;' : '' }}
-        {{ item.style === 'error' ? '&#215;' : '' }}
-        {{ item.msg }}
-      </p>
-    </div>
+  <div>
+    <v-row no-gutters class="d-flex">
+      <v-col cols="3" class="left"> </v-col>
+      <v-col cols="8" class="middle">
+        <div class="editor-container">
+          <WelcomeWindow></WelcomeWindow>
+          <div class="title-block">
+            <div class="title-text">Editor</div>
+            <div class="button-block">
+              <select v-model="selectedCodeLanguage" @change="onCodeLanguageChange" test="codeLanguageSelector">
+                <option v-for="option in codeLanguageList" :key="option.langValue" v-bind:value="option.langValue">
+                  {{ option.langName }}
+                </option>
+              </select>
+              <button class="title-button" @click="downloadCode">Download</button>
+              <a ref="downloadElement" v-show="false" target="_blank" />
+            </div>
+          </div>
+          <div ref="editor" class="editor"></div>
+          <div v-show="consoleVisible" class="title-block">
+            <div class="title-text">Console</div>
+            <div class="button-block">
+              <button class="title-button" @click="runCode">Run</button>
+              <button class="title-button" @click="clearConsole">Clear</button>
+            </div>
+          </div>
+          <div v-show="consoleVisible" class="console">
+            <p v-for="item in logList" class="log-item" :key="item.index" :class="item.style">
+              {{ item.style === 'warn' ? '&#9888;' : '' }}
+              {{ item.style === 'error' ? '&#215;' : '' }}
+              {{ item.msg }}
+            </p>
+          </div>
+        </div>
+      </v-col>
+
+      <v-col cols="1">
+        <Toolbar />
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -38,9 +49,14 @@ import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
 import formattedDateTime from '../util';
 import CODE_LANGUAGE_LIST from '../map';
 import WelcomeWindow from './WelcomeWindow.vue';
+import Toolbar from '../components/Toolbar.vue';
 
 export default {
   name: 'Editor',
+  components: {
+    Toolbar,
+    WelcomeWindow,
+  },
   data() {
     return {
       editor: null,
@@ -56,12 +72,24 @@ export default {
       codeLanguageList: CODE_LANGUAGE_LIST,
     };
   },
-  components: { WelcomeWindow },
   methods: {
     initEditor() {
+      const theme = {
+        base: 'vs-dark',
+        inherit: true,
+        colors: {
+          'editor.background': '#2C333B',
+        },
+        rules: [],
+      };
+      monaco.editor.defineTheme('my-dark', theme);
       this.editor = monaco.editor.create(this.$refs.editor, {
         language: this.selectedCodeLanguage,
-        theme: 'vs-dark',
+        theme: 'my-dark',
+        minimap: {
+          enabled: false,
+        },
+        automaticLayout: true,
       });
     },
     initSocketIO() {
@@ -185,7 +213,8 @@ export default {
 .editor-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 88vh;
+  width: 100%;
 }
 
 .title-block {
@@ -211,9 +240,8 @@ export default {
 
 .editor {
   flex: 2;
-  width: 100%;
-  border-bottom: 1px solid #999;
-  text-align: left;
+  padding-top: 20px;
+  height: 100%;
 }
 
 .console {
@@ -233,5 +261,16 @@ export default {
       color: #c00;
     }
   }
+}
+
+.left {
+  border-top: 1px solid #eee;
+  background-color: #3d4b56;
+}
+
+.middle {
+  border-top: 1px solid #eee;
+  border-left: 1px solid #eee;
+  background-color: #2c333b;
 }
 </style>

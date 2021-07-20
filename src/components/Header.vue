@@ -4,7 +4,7 @@
     <v-spacer></v-spacer>
     <div class="user-status">
       <div class="user-num">
-        {{ pluralize(users.length) }}
+        {{ pluralize(users.length + 1) }}
       </div>
 
       <div v-for="(user, index) in users" :key="index">
