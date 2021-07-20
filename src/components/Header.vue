@@ -2,7 +2,7 @@
   <v-app-bar app color="primary">
     <v-toolbar-title class="white--text">正大集团</v-toolbar-title>
     <v-spacer></v-spacer>
-    <div class="user-status">
+    <div class="user-status" v-show="this.$route.path !== '/'">
       <div class="user-num">
         {{ pluralize(users.length) }}
       </div>
@@ -54,6 +54,7 @@ export default {
 .user-status {
   display: flex;
   align-items: center;
+
   .user-num {
     margin-right: 5px;
     color: white;
