@@ -1,5 +1,6 @@
 <template>
   <div class="editor-container">
+    <WelcomeWindow></WelcomeWindow>
     <div class="title-block">
       <div class="title-text">Editor</div>
       <div class="button-block">
@@ -36,6 +37,7 @@ import { io } from 'socket.io-client';
 import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
 import formattedDateTime from '../util';
 import CODE_LANGUAGE_LIST from '../map';
+import WelcomeWindow from './WelcomeWindow.vue';
 
 export default {
   name: 'Editor',
@@ -54,6 +56,7 @@ export default {
       codeLanguageList: CODE_LANGUAGE_LIST,
     };
   },
+  components: { WelcomeWindow },
   methods: {
     initEditor() {
       this.editor = monaco.editor.create(this.$refs.editor, {
