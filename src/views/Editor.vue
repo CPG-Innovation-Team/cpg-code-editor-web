@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-row no-gutters>
+    <v-row no-gutters class="d-flex">
       <v-col cols="3" class="left"> </v-col>
-      <v-col cols="9" class="middle">
+      <v-col cols="8" class="middle">
         <div class="editor-container">
           <div class="title-block">
             <div class="title-text">Editor</div>
@@ -33,6 +33,10 @@
           </div>
         </div>
       </v-col>
+
+      <v-col cols="1">
+        <Toolbar />
+      </v-col>
     </v-row>
   </div>
 </template>
@@ -43,9 +47,13 @@ import { io } from 'socket.io-client';
 import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
 import formattedDateTime from '../util';
 import CODE_LANGUAGE_LIST from '../map';
+import Toolbar from '../components/Toolbar.vue';
 
 export default {
   name: 'Editor',
+  components: {
+    Toolbar,
+  },
   data() {
     return {
       editor: null,
@@ -78,6 +86,7 @@ export default {
         minimap: {
           enabled: false,
         },
+        automaticLayout: true,
       });
     },
     initSocketIO() {
@@ -201,7 +210,7 @@ export default {
 .editor-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 88vh;
   width: 100%;
 }
 
@@ -228,10 +237,8 @@ export default {
 
 .editor {
   flex: 2;
-  width: 100%;
-  border-bottom: 1px solid #999;
-  text-align: left;
   padding-top: 20px;
+  height: 100%;
 }
 
 .console {

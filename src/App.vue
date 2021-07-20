@@ -2,7 +2,7 @@
   <v-app>
     <Header />
     <v-main>
-      <v-row style="height: 100%" no-gutters>
+      <v-row style="height: 100vh" no-gutters>
         <v-col cols="11">
           <!-- force refresh the page when at the same route -->
           <router-view :key="$route.fullPath"></router-view>
