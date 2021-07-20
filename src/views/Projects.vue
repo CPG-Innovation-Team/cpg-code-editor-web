@@ -58,10 +58,10 @@ export default {
   data: () => ({
     headers: [
       { text: 'Title', align: 'start', sortable: false, value: 'title' },
-      { text: 'Syntax', value: 'syntax' },
+      { text: 'Syntax', value: 'syntax' }, //  change sorting to dropdown
       { text: 'Modified', value: 'modified' },
       { text: 'Created', value: 'createdTime' },
-      { text: 'URL', value: 'URL' },
+      { text: 'URL', value: 'URL', sortable: false },
       { text: 'Actions', value: 'actions', sortable: false },
     ],
     Projects: [
