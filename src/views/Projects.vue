@@ -18,8 +18,8 @@
       </button>
     </div>
     <div class="table-container">
-      <table class="project-list-table">
-        <tr>
+      <v-data-table class="project-list-table">
+        <tr class="table-top-line">
           <th>TITLE</th>
           <th>SYNTAX</th>
           <th>MODIFIED</th>
@@ -35,7 +35,7 @@
           <th>{{ element.URL }}</th>
           <th><button @click="copyURL(index)">share</button> <button @click="deleteProject(index)">delete</button></th>
         </tr>
-      </table>
+      </v-data-table>
       <button v-show="Projects.length == 0" style="font-size: 200px" @click="addNewProject()">ADD PROJECT</button>
     </div>
   </div>
@@ -113,5 +113,8 @@ button {
 }
 .project-list-table {
   width: 100%;
+}
+.table-top-line {
+  background-color: #e4e4e410;
 }
 </style>
