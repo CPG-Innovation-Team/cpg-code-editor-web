@@ -1,4 +1,4 @@
-import formattedDateTime from '../../src/util';
+import { formattedDateTime } from '../../src/util';
 
 describe('util.js', () => {
   it('Formatt date time with single-digit month, day, hour, minute and second', () => {
