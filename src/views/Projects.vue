@@ -66,7 +66,7 @@ export default {
     ],
     Projects: [
       {
-        title: `Project name 0`,
+        title: `项目名称(点击我进入editor)`,
         syntax: 'java',
         modified: '5 mins ago',
         createdTime: '1 days ago',
