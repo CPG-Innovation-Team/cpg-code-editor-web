@@ -37,9 +37,11 @@
 │   ├── registerServiceWorker.js
 │   ├── router.js    路由文件
 │   ├── util.js    公用方法文件
+│   ├── bus.js    数据传输文件
 │   └── views    页面目录
 │       ├── Editor.vue    编辑器页面
-│       └── Projects    文档管理页面（首页）
+│       ├── Projects.vue    文档管理页面（首页）
+|       └── WelcomeWindow.vue    欢迎弹窗组件
 ├── tests
 │   ├── e2e    E2E测试目录
 │   └── unit    单元测试目录
