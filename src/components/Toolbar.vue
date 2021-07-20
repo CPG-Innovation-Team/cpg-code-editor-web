@@ -48,19 +48,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-tooltip nudge-left="10" left>
-              <template v-slot:activator="{ on, attrs }">
-                <v-img
-                  class="mx-auto"
-                  max-height="40"
-                  max-width="40"
-                  :src="require(`../assets/img-${userInfo.userAvatar}-selected.png`)"
-                  v-bind="attrs"
-                  v-on="on"
-                />
-              </template>
-              <span>{{ userInfo.userName }}</span>
-            </v-tooltip>
+            <v-icon>mdi-account-circle</v-icon>
           </v-list-item-content>
         </v-list-item>
       </div>
@@ -70,18 +58,11 @@
 
 <script>
 import Setting from './tools/Setting.vue';
-import { storage } from '../util';
 
 export default {
   name: 'Toolbar',
   components: {
     Setting,
-  },
-  props: {
-    userInfo: {
-      userName: '',
-      userAvatar: '',
-    },
   },
   data() {
     return {
@@ -93,10 +74,6 @@ export default {
         { icon: 'mdi-video', tooltip: 'Something' },
       ],
     };
-  },
-  created() {
-    this.userInfo.userName = storage.getLocalStorage().userName;
-    this.userInfo.userAvatar = storage.getLocalStorage().userAvatar;
   },
 };
 </script>

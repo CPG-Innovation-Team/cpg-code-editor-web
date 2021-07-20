@@ -4,7 +4,7 @@
       <v-col cols="3" class="left"> </v-col>
       <v-col cols="8" class="middle">
         <div class="editor-container">
-          <WelcomeWindow :userInfo="userInfo" @passUserInfo="getUserInfo" />
+          <WelcomeWindow />
           <div class="title-block">
             <div class="title-text">Editor</div>
             <div class="button-block">
@@ -36,7 +36,7 @@
       </v-col>
 
       <v-col cols="1">
-        <Toolbar :userInfo="userInfo" />
+        <Toolbar />
       </v-col>
     </v-row>
   </div>
@@ -199,10 +199,6 @@ export default {
         this.initEditor();
         this.setCode(code);
       });
-    },
-    getUserInfo(userName, userAvatar) {
-      this.userInfo.userName = userName;
-      this.userInfo.userAvatar = userAvatar;
     },
   },
   mounted() {
