@@ -1,9 +1,16 @@
 <template>
-  <v-list color="primary darken-1" height="100%">
+  <v-list color="primary darken-1" height="100%" ref="toolbar">
     <v-list-item-group class="list-group d-flex flex-column justify-space-between fill-height">
       <div>
-        <v-menu left offset-x :close-on-content-click="false" content-class="elevation-0">
-          <template v-slot:activator="{ on: menu, attrs }">
+        <v-menu
+          left
+          offset-x
+          :close-on-content-click="false"
+          content-class="elevation-0 tool-menu"
+          z-index="1"
+          rounded="0"
+        >
+          <template v-slot:activator="{ on: menu, attrs }" class="tool-menu">
             <v-tooltip nudge-right="10" left>
               <template v-slot:activator="{ on: tooltip }">
                 <v-list-item v-bind="attrs" v-on="{ ...tooltip, ...menu }">
@@ -26,8 +33,9 @@
           left
           offset-x
           :close-on-content-click="false"
-          content-class="elevation-0"
-          nudge-top="0"
+          content-class="elevation-0 tool-menu"
+          z-index="1"
+          rounded="0"
         >
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip nudge-right="10" left>
@@ -95,6 +103,11 @@ export default {
 .list-group .v-list-item--active {
   background-color: #161e27;
   color: #161e27;
+}
+
+.tool-menu {
+  top: 64px !important;
+  bottom: 0px;
 }
 
 .toolbar-divider {
