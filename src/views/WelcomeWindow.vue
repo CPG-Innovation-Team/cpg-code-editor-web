@@ -94,11 +94,12 @@ export default {
   methods: {
     submit(inputName) {
       // save user data to local storage
-      this.userName = inputName;
-      storage.setUserInfo(this.userName, this.userAvatar, inputName);
+      this.userName = inputName.trim();
+      storage.setUserInfo(this.userName, this.userAvatar, inputName.trim());
     },
     checkValidName(inputName) {
-      if (inputName && inputName !== '' && inputName.length <= 50 && inputName.length >= 2) return true;
+      if (inputName && inputName.trim() !== '' && inputName.trim().length <= 50 && inputName.trim().length >= 2)
+        return true;
       return false;
     },
     passUserInfo(userName, userAvatar) {
