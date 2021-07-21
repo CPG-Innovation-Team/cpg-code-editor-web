@@ -4,6 +4,7 @@
       <v-col cols="3" class="left"> </v-col>
       <v-col cols="8" class="middle">
         <div class="editor-container">
+          <WelcomeWindow />
           <div class="title-block">
             <div class="title-text">Editor</div>
             <div class="button-block">
@@ -45,14 +46,16 @@
 import * as monaco from 'monaco-editor';
 import { io } from 'socket.io-client';
 import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
-import formattedDateTime from '../util';
+import { formattedDateTime } from '../util';
 import CODE_LANGUAGE_LIST from '../map';
+import WelcomeWindow from './WelcomeWindow.vue';
 import Toolbar from '../components/Toolbar.vue';
 
 export default {
   name: 'Editor',
   components: {
     Toolbar,
+    WelcomeWindow,
   },
   data() {
     return {
