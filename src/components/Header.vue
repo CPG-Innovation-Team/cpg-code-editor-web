@@ -9,14 +9,25 @@
       <div v-for="(user, index) in users" :key="index">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-img
-              class="ml-1 mr-1"
-              max-height="40"
-              max-width="40"
-              :src="require(`../assets/img-${user.userAvatar}-selected.png`)"
-              v-bind="attrs"
-              v-on="on"
-            />
+            <v-avatar rounded>
+              <img
+                class="user-avatar ml-1 mr-1"
+                outlined
+                :src="require(`../assets/img-${user.userAvatar}.png`)"
+                v-bind="attrs"
+                v-on="on"
+                :style="{
+                  'border-color': getColor(user),
+                  filter: user.isOnline ? 'saturate(100%)' : 'saturate(10%)',
+                  opacity: user.isOnline ? 1 : 0.5,
+                }"
+              />
+              <div
+                v-show="user.isOnline"
+                class="user-editing-status"
+                :style="{ 'background-color': user.isEditing ? 'rgb(221, 115, 55)' : 'rgb(107, 189, 115)' }"
+              ></div>
+            </v-avatar>
           </template>
           <span>{{ user.userName }}</span>
         </v-tooltip>
@@ -31,12 +42,12 @@ export default {
   name: 'Header',
   data: () => ({
     users: [
-      { id: '01', userName: 'Kelly', userAvatar: 'avatar5' },
-      { id: '02', userName: 'Mark', userAvatar: 'avatar2' },
-      { id: '03', userName: 'Jack', userAvatar: 'avatar1' },
-      { id: '04', userName: 'Lucy', userAvatar: 'avatar6' },
-      { id: '05', userName: 'Martin', userAvatar: 'avatar3' },
-      { id: '06', userName: 'Luke', userAvatar: 'avatar1' },
+      { id: '01', userName: 'Kelly', userAvatar: 'avatar5', isOnline: false },
+      { id: '02', userName: 'Mark', userAvatar: 'avatar2', isOnline: true, isEditing: false },
+      { id: '03', userName: 'Jack', userAvatar: 'avatar1', isOnline: true, isEditing: true },
+      { id: '04', userName: 'Lucy', userAvatar: 'avatar4', isOnline: false },
+      { id: '05', userName: 'Martin', userAvatar: 'avatar3', isOnline: true, isEditing: true },
+      { id: '06', userName: 'Alice', userAvatar: 'avatar6', isOnline: true, isEditing: false },
     ],
   }),
   methods: {
@@ -45,6 +56,24 @@ export default {
         return '1 member online';
       }
       return `${length} members online`;
+    },
+    getColor(user) {
+      if (user.userAvatar === 'avatar1') {
+        return 'rgb(198, 148, 48)';
+      }
+      if (user.userAvatar === 'avatar2') {
+        return 'rgb(198, 201, 131)';
+      }
+      if (user.userAvatar === 'avatar3') {
+        return 'rgb(135, 93, 69)';
+      }
+      if (user.userAvatar === 'avatar4') {
+        return 'rgb(71, 92, 147)';
+      }
+      if (user.userAvatar === 'avatar5') {
+        return 'rgb(123, 170, 164)';
+      }
+      return 'rgb(226, 109, 93)';
     },
   },
 };
@@ -59,6 +88,23 @@ export default {
     margin-right: 5px;
     color: white;
     font-size: 14px;
+  }
+
+  .user-avatar {
+    height: 40px;
+    border: 2px solid;
+    border-radius: 50%;
+    padding: 3px;
+  }
+
+  .user-editing-status {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid white;
+    border-radius: 50%;
+    top: 4px;
+    right: 4px;
   }
 }
 
