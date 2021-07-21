@@ -84,9 +84,9 @@ export default {
   },
   created() {
     // retreive user data from local storage
-    this.userName = storage.getLocalStorage().userName;
-    this.inputName = storage.getLocalStorage().inputName;
-    this.userAvatar = storage.getLocalStorage().userAvatar;
+    this.userName = storage.getUserInfo().userName;
+    this.inputName = storage.getUserInfo().inputName;
+    this.userAvatar = storage.getUserInfo().userAvatar;
     if (this.userAvatar) {
       this.selectAvatar(parseInt(this.userAvatar.substring(6) - 1, 10));
     }
@@ -95,7 +95,7 @@ export default {
     submit(inputName) {
       // save user data to local storage
       this.userName = inputName;
-      storage.setLocalStorage(this.userName, this.userAvatar, inputName);
+      storage.setUserInfo(this.userName, this.userAvatar, inputName);
     },
     checkValidName(inputName) {
       if (inputName && inputName !== '' && inputName.length <= 50 && inputName.length >= 2) return true;

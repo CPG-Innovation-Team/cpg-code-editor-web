@@ -9,7 +9,7 @@ export const formattedDateTime = (date) => {
 };
 
 export const storage = {
-  getLocalStorage() {
+  getUserInfo() {
     const output = [];
     if (localStorage.userName) {
       output.userName = localStorage.userName;
@@ -22,7 +22,7 @@ export const storage = {
     }
     return output;
   },
-  setLocalStorage(userName, userAvatar, inputName) {
+  setUserInfo(userName, userAvatar, inputName) {
     localStorage.userName = userName;
     localStorage.inputName = inputName;
     localStorage.avatar = userAvatar;

@@ -70,10 +70,6 @@ export default {
       initStatus: true,
       selectedCodeLanguage: 'javascript',
       codeLanguageList: CODE_LANGUAGE_LIST,
-      userInfo: {
-        userName: '',
-        userAvatar: '',
-      },
     };
   },
   methods: {
