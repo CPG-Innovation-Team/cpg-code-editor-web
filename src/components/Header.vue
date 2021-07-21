@@ -4,7 +4,13 @@
     <v-spacer></v-spacer>
     <div class="user-status" v-show="this.$route.path !== '/'">
       <div class="user-num">
-        {{ pluralize(users.length) }}
+        {{
+          pluralize(
+            users.filter((user) => {
+              return user.isOnline;
+            }).length
+          )
+        }}
       </div>
       <div v-for="(user, index) in users" :key="index">
         <v-tooltip bottom>
