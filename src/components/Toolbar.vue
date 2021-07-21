@@ -48,7 +48,13 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-icon>mdi-account-circle</v-icon>
+            <v-avatar>
+              <img
+                class="user-avatar ml-1 mr-1"
+                outlined
+                :src="require('../assets/img-' + (getUserAvatar || userAvatar) + '.png')"
+              />
+            </v-avatar>
           </v-list-item-content>
         </v-list-item>
       </div>
@@ -58,11 +64,18 @@
 
 <script>
 import Setting from './tools/Setting.vue';
+import { storage } from '../util';
 
 export default {
   name: 'Toolbar',
   components: {
     Setting,
+  },
+  props: {
+    userInfo: {
+      userName: '',
+      userAvatar: '',
+    },
   },
   data() {
     return {
@@ -73,7 +86,27 @@ export default {
         { icon: 'mdi-download', tooltip: 'Download' },
         { icon: 'mdi-video', tooltip: 'Something' },
       ],
+      userName: '',
+      userAvatar: '',
     };
+  },
+  created() {
+    this.userName = storage.getUserInfo().userName;
+    this.userAvatar = storage.getUserInfo().userAvatar;
+  },
+  computed: {
+    getUserAvatar() {
+      if (this.userInfo) {
+        return this.userInfo.userAvatar;
+      }
+      return this.userAvatar;
+    },
+    getUserName() {
+      if (this.userInfo) {
+        return this.userInfo.userName;
+      }
+      return this.userName;
+    },
   },
 };
 </script>
@@ -82,5 +115,10 @@ export default {
 .toolbar-divider {
   margin: auto;
   width: 40%;
+}
+
+.user-avatar {
+  height: 35px;
+  width: 35px;
 }
 </style>
