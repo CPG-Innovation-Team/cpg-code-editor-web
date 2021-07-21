@@ -1,59 +1,57 @@
 <template>
-  <div>
-    <v-row style="height: 88vh" no-gutters>
-      <v-col cols="11">
-        <div class="project-list-container">
-          <div class="title">
-            <div class="title-text">Code Projects</div>
-            <button
-              style="
-                position: absolute;
-                right: 130px;
-                bottom: 0;
-                height: 30px;
-                width: 280px;
-                background-color: white;
-                color: black;
-              "
-              @click="addNewProject()"
-            >
-              点击这里手动添加list行
-            </button>
-          </div>
-          <div class="table-container">
-            <v-data-table
-              :headers="headers"
-              :items="Projects"
-              class="project-list-table"
-              :items-per-page="8"
-              item-key="URL"
-            >
-              <template v-slot:item.title="{ item }">
-                <router-link to="/001">{{ item.title }}</router-link>
-              </template>
-              <template v-slot:item.actions="{ item, index }">
-                <v-icon small class="mr-2" @click="copyURL(index)">mdi-share</v-icon>
-                <v-icon small class="mr-2" @click="deleteProject(index)">mdi-delete</v-icon>
-              </template>
-            </v-data-table>
-            <button v-show="Projects.length == 0" style="font-size: 200px" @click="addNewProject()">ADD PROJECT</button>
-          </div>
+  <v-row class="fill-height" no-gutters>
+    <v-col cols="11">
+      <div class="project-list-container">
+        <div class="title">
+          <div class="title-text">Code Projects</div>
+          <button
+            style="
+              position: absolute;
+              right: 130px;
+              bottom: 0;
+              height: 30px;
+              width: 280px;
+              background-color: white;
+              color: black;
+            "
+            @click="addNewProject()"
+          >
+            点击这里手动添加list行
+          </button>
         </div>
-      </v-col>
-      <v-col cols="1">
-        <Toolbar />
-      </v-col>
-    </v-row>
-  </div>
+        <div class="table-container">
+          <v-data-table
+            :headers="headers"
+            :items="Projects"
+            class="project-list-table"
+            :items-per-page="8"
+            item-key="URL"
+          >
+            <template v-slot:item.title="{ item }">
+              <router-link to="/001">{{ item.title }}</router-link>
+            </template>
+            <template v-slot:item.actions="{ item, index }">
+              <v-icon small class="mr-2" @click="copyURL(index)">mdi-share</v-icon>
+              <v-icon small class="mr-2" @click="deleteProject(index)">mdi-delete</v-icon>
+            </template>
+          </v-data-table>
+          <button v-show="Projects.length == 0" style="font-size: 200px" @click="addNewProject()">ADD PROJECT</button>
+        </div>
+      </div>
+    </v-col>
+    <v-col cols="1">
+      <ToolbarA />
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar.vue';
+import ToolbarA from '../components/ToolbarA.vue';
 
 export default {
   name: 'Projects',
   components: {
-    Toolbar,
+    ToolbarA,
   },
   data: () => ({
     headers: [

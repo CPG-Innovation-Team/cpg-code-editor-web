@@ -35,7 +35,7 @@
     </v-col>
 
     <v-col cols="1">
-      <Toolbar :userInfo="userInfo" />
+      <ToolbarB :userInfo="userInfo" />
     </v-col>
   </v-row>
 </template>
@@ -47,12 +47,12 @@ import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
 import { formattedDateTime } from '../util';
 import CODE_LANGUAGE_LIST from '../map';
 import WelcomeWindow from './WelcomeWindow.vue';
-import Toolbar from '../components/Toolbar.vue';
+import ToolbarB from '../components/ToolbarB.vue';
 
 export default {
   name: 'Editor',
   components: {
-    Toolbar,
+    ToolbarB,
     WelcomeWindow,
   },
   data() {
