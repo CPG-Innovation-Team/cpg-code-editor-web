@@ -29,6 +29,8 @@
 │   │   ├── Header.vue    顶部菜单
 │   │   ├── Toolbar.vue    工具栏
 │   │   └── tools    工具栏中的菜单
+│   │       ├── History.vue    编辑历史
+│   │       ├── Profile.vue    个人简介
 │   │       └── Setting.vue    设置菜单
 │   ├── plguins    插件
 │   │   └── vuetify.js    组件库Vuetify设置
