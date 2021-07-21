@@ -5,5 +5,5 @@ module.exports = {
   moduleNameMapper: {
     'monaco-editor': '<rootDir>/node_modules/monaco-editor/esm/vs/editor/editor.api.js',
   },
-  setupFiles: ['fake-indexeddb/auto'],
+  setupFiles: ['fake-indexeddb/auto', './tests/unit/setup.js'],
 };
