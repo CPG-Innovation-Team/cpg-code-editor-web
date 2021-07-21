@@ -49,11 +49,18 @@
         <v-list-item>
           <v-list-item-content>
             <v-avatar v-if="getUserAvatar || userAvatar">
-              <img
-                class="user-avatar ml-1 mr-1"
-                outlined
-                :src="require('../assets/img-' + (getUserAvatar || userAvatar) + '.png')"
-              />
+              <v-tooltip nudge-left="10" left>
+                <template v-slot:activator="{ on, attrs }">
+                  <img
+                    class="user-avatar ml-1 mr-1"
+                    outlined
+                    :src="require('../assets/img-' + (getUserAvatar || userAvatar) + '.png')"
+                    v-bind="attrs"
+                    v-on="on"
+                  />
+                </template>
+                <span>{{ getUserName || userName }}</span>
+              </v-tooltip>
             </v-avatar>
             <v-icon v-else>mdi-account-circle</v-icon>
           </v-list-item-content>
