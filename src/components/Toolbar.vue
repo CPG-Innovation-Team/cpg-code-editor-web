@@ -79,17 +79,6 @@
           <Profile />
         </v-menu>
 
-        <!-- <v-list-item>
-          <v-list-item-content>
-            <v-tooltip nudge-right="10" left>
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon color="greyBtn" v-bind="attrs" v-on="on">mdi-tune</v-icon>
-              </template>
-              <span>Language</span>
-            </v-tooltip>
-          </v-list-item-content>
-        </v-list-item> -->
-
         <v-list-item>
           <v-list-item-content>
             <v-icon>mdi-account-circle</v-icon>
