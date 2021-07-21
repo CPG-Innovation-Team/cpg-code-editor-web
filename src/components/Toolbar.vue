@@ -81,7 +81,21 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-icon>mdi-account-circle</v-icon>
+            <v-avatar v-if="getUserAvatar || userAvatar">
+              <v-tooltip nudge-left="10" left>
+                <template v-slot:activator="{ on, attrs }">
+                  <img
+                    class="user-avatar ml-1 mr-1"
+                    outlined
+                    :src="require('../assets/img-' + (getUserAvatar || userAvatar) + '.png')"
+                    v-bind="attrs"
+                    v-on="on"
+                  />
+                </template>
+                <span>{{ getUserName || userName }}</span>
+              </v-tooltip>
+            </v-avatar>
+            <v-icon v-else>mdi-account-circle</v-icon>
           </v-list-item-content>
         </v-list-item>
       </div>
@@ -91,6 +105,7 @@
 
 <script>
 import Setting from './tools/Setting.vue';
+import { storage } from '../util';
 import Profile from './tools/Profile.vue';
 import History from './tools/History.vue';
 
@@ -101,6 +116,12 @@ export default {
     Profile,
     History,
   },
+  props: {
+    userInfo: {
+      userName: '',
+      userAvatar: '',
+    },
+  },
   data() {
     return {
       tools: [
@@ -110,7 +131,27 @@ export default {
         { icon: 'mdi-download', tooltip: 'Download', menu: Setting },
         { icon: 'mdi-video', tooltip: 'Something', menu: Setting },
       ],
+      userName: '',
+      userAvatar: '',
     };
+  },
+  created() {
+    this.userName = storage.getUserInfo().userName;
+    this.userAvatar = storage.getUserInfo().userAvatar;
+  },
+  computed: {
+    getUserAvatar() {
+      if (this.userInfo) {
+        return this.userInfo.userAvatar;
+      }
+      return this.userAvatar;
+    },
+    getUserName() {
+      if (this.userInfo) {
+        return this.userInfo.userName;
+      }
+      return this.userName;
+    },
   },
 };
 </script>
@@ -129,5 +170,10 @@ export default {
 .toolbar-divider {
   margin: auto;
   width: 40%;
+}
+
+.user-avatar {
+  height: 35px;
+  width: 35px;
 }
 </style>
