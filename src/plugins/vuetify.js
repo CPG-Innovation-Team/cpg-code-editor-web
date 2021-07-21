@@ -11,7 +11,7 @@ export default new Vuetify({
           base: '#24303C', // header
           lighten2: '#3D4B56', // left sidebar
           lighten1: '#2C333B', // middle coding part
-          darlen1: '#1F2933', // right toolbar section
+          darken1: '#1F2933', // right toolbar section
           darken2: '#161E27', // right pop up section of tools
         },
         // for buttons
