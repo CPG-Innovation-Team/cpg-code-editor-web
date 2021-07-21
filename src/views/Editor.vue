@@ -208,7 +208,6 @@ export default {
 .editor-container {
   display: flex;
   flex-direction: column;
-  /* height: inherit; */
   width: 100%;
 }
 

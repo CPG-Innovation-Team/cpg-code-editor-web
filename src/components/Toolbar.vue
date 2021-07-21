@@ -1,5 +1,5 @@
 <template>
-  <v-list color="primary darken-1" height="100%" ref="toolbar">
+  <v-list color="primary darken-1" height="100%">
     <v-list-item-group class="list-group d-flex flex-column justify-space-between fill-height">
       <div>
         <v-menu
@@ -56,7 +56,30 @@
       <div class="mt-auto">
         <v-divider color="#737d81" class="toolbar-divider"></v-divider>
 
-        <v-list-item>
+        <v-menu
+          left
+          offset-x
+          :close-on-content-click="false"
+          content-class="elevation-0 tool-menu"
+          z-index="1"
+          rounded="0"
+        >
+          <template v-slot:activator="{ on: menu, attrs }" class="tool-menu">
+            <v-tooltip nudge-right="10" left>
+              <template v-slot:activator="{ on: tooltip }">
+                <v-list-item v-bind="attrs" v-on="{ ...tooltip, ...menu }">
+                  <v-list-item-content>
+                    <v-icon color="greyBtn">mdi-tune</v-icon>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              <span>Language</span>
+            </v-tooltip>
+          </template>
+          <Profile />
+        </v-menu>
+
+        <!-- <v-list-item>
           <v-list-item-content>
             <v-tooltip nudge-right="10" left>
               <template v-slot:activator="{ on, attrs }">
@@ -65,7 +88,7 @@
               <span>Language</span>
             </v-tooltip>
           </v-list-item-content>
-        </v-list-item>
+        </v-list-item> -->
 
         <v-list-item>
           <v-list-item-content>
@@ -79,18 +102,22 @@
 
 <script>
 import Setting from './tools/Setting.vue';
+import Profile from './tools/Profile.vue';
+import History from './tools/History.vue';
 
 export default {
   name: 'Toolbar',
   components: {
     Setting,
+    Profile,
+    History,
   },
   data() {
     return {
       tools: [
         { icon: 'mdi-cog', tooltip: 'Settiing', menu: Setting },
         { icon: 'mdi-magnify', tooltip: 'Search', menu: Setting },
-        { icon: 'mdi-history', tooltip: 'History', menu: Setting },
+        { icon: 'mdi-history', tooltip: 'History', menu: History },
         { icon: 'mdi-download', tooltip: 'Download', menu: Setting },
         { icon: 'mdi-video', tooltip: 'Something', menu: Setting },
       ],
