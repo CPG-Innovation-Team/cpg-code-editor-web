@@ -48,13 +48,14 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-avatar>
+            <v-avatar v-if="getUserAvatar || userAvatar">
               <img
                 class="user-avatar ml-1 mr-1"
                 outlined
                 :src="require('../assets/img-' + (getUserAvatar || userAvatar) + '.png')"
               />
             </v-avatar>
+            <v-icon v-else>mdi-account-circle</v-icon>
           </v-list-item-content>
         </v-list-item>
       </div>

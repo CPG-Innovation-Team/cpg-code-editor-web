@@ -2,7 +2,7 @@
   <v-app-bar app color="primary">
     <v-toolbar-title class="white--text">正大集团</v-toolbar-title>
     <v-spacer></v-spacer>
-    <div class="user-status" v-show="this.$route.path !== '/'">
+    <div class="user-status" v-if="this.$route.path !== '/'">
       <div class="user-num">
         {{
           pluralize(
@@ -29,7 +29,7 @@
                 }"
               />
               <div
-                v-show="user.isOnline"
+                v-if="user.isOnline"
                 class="user-editing-status"
                 :style="{ 'background-color': user.isEditing ? 'rgb(221, 115, 55)' : 'rgb(107, 189, 115)' }"
               ></div>
