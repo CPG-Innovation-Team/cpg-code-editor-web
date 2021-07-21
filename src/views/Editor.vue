@@ -258,6 +258,7 @@ export default {
   overflow-y: auto;
 
   .log-item {
+    color: white;
     margin: 0;
     padding: 5px 8px;
     border-bottom: 1px solid #eee;
