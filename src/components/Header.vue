@@ -17,7 +17,7 @@
           <template v-slot:activator="{ on, attrs }">
             <v-avatar rounded>
               <img
-                class="user-avatar ml-1 mr-1"
+                class="user-avatar"
                 outlined
                 :src="require(`../assets/img-${user.userAvatar}.png`)"
                 v-bind="attrs"
@@ -98,6 +98,7 @@ export default {
 
   .user-avatar {
     height: 40px;
+    width: 40px;
     border: 2px solid;
     border-radius: 50%;
     padding: 3px;
