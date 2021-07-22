@@ -39,7 +39,7 @@
         </v-tooltip>
       </div>
     </div>
-    <v-menu offset-y :close-on-content-click="false" max-height="auto" max-width="400">
+    <v-menu offset-y :close-on-content-click="false" max-height="auto" max-width="420">
       <template v-slot:activator="{ on, attrs }">
         <v-btn class="white--text ml-2" color="blueBtn" v-bind="attrs" v-on="on">
           <v-icon>mdi-share</v-icon>Share
@@ -47,18 +47,20 @@
       </template>
       <div>
         <!-- <div class="bubble"></div> -->
-        <div class="share-container white--text">
+
+        <v-container class="share-container white--text">
           <v-row>
-            <v-col cols="3">
-              <h3>Share</h3>
+            <v-col cols="2">
+              <h3 class="mr-5">Share</h3>
             </v-col>
+
             <v-col>
-              <h4>Project name</h4>
+              <h3 style="color: #bec6c9">Project name</h3>
             </v-col>
           </v-row>
 
           <v-row>
-            <v-col cols="7">
+            <v-col>
               <v-text-field
                 v-model="url"
                 background-color="primary lighten-1"
@@ -70,17 +72,36 @@
                 style="border-radius: 12px"
               ></v-text-field>
             </v-col>
-            <v-col>
-              <v-btn x-large depressed color="blueBtn" class="white--text" style="border-radius: 12px" @click="copyURL">
+            <v-col cols="5">
+              <v-btn
+                v-if="!copied"
+                x-large
+                depressed
+                color="blueBtn"
+                class="white--text"
+                style="border-radius: 12px"
+                @click="copyURL"
+              >
                 <v-icon small class="mr-2">mdi-content-copy</v-icon>Copy
+              </v-btn>
+              <v-btn
+                v-else
+                x-large
+                depressed
+                color="text darken-1"
+                class="white--text"
+                style="border-radius: 12px"
+                @click="copyURL"
+              >
+                <v-icon small class="mr-2">mdi-content-copy</v-icon>Copied
               </v-btn>
             </v-col>
           </v-row>
 
           <v-row>
-            <p class="hint mx-auto">Use keyboard short cut Ctrl+V / +V to paste on your favorite way to share link.</p>
+            <p class="hint mx-auto">Use keyboard short cut Ctrl+V / ⌘+V to paste on your favorite way to share link.</p>
           </v-row>
-        </div>
+        </v-container>
       </div>
     </v-menu>
   </v-app-bar>
@@ -98,7 +119,8 @@ export default {
       { id: '05', userName: 'Martin', userAvatar: 'avatar3', isOnline: true, isEditing: true },
       { id: '06', userName: 'Alice', userAvatar: 'avatar6', isOnline: true, isEditing: false },
     ],
-    url: 'http://cgp.url/abcd666',
+    url: 'https://cgp.url',
+    copied: false,
   }),
   methods: {
     pluralize(length) {
@@ -127,10 +149,12 @@ export default {
     },
     copyURL() {
       navigator.clipboard.writeText(this.url);
-      console.log(this.url);
+      this.copied = true;
     },
   },
-  mounted() {},
+  mounted() {
+    this.url += this.$route.fullPath;
+  },
 };
 </script>
 
@@ -168,22 +192,22 @@ export default {
 }
 
 .share-container {
-  display: block;
+  display: grid;
   height: 100%;
   width: 100%;
-  min-width: 200px;
   background: #3d4b56;
-  padding: 5%;
+  padding: 8%;
+  padding-top: 10%;
   border-radius: 20px;
   /* display: block;
-	margin: 0 auto;
 	border-radius: 20px;
 	margin-top: 50px;
 	font-size: 200px;
 	text-align: center; */
-  .col {
-    /* padding: 8px; */
-  }
+
+  /* .col {
+    padding: 8px;
+  } */
   .hint {
     width: 80%;
     color: #737d81;
