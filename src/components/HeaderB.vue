@@ -39,13 +39,22 @@
         </v-tooltip>
       </div>
     </div>
-    <v-menu offset-y :close-on-content-click="false" max-height="auto" max-width="440">
+    <v-menu
+      offset-y
+      :close-on-content-click="false"
+      max-height="auto"
+      max-width="400"
+      nudge-bottom="10"
+      content-class="elevation-0"
+    >
       <template v-slot:activator="{ on, attrs }">
-        <v-btn class="white--text ml-2" color="blueBtn" v-bind="attrs" v-on="on">
+        <v-btn class="white--text ml-5 mr-5" color="blueBtn" v-bind="attrs" v-on="on">
           <v-icon>mdi-share</v-icon>Share
         </v-btn>
       </template>
       <div>
+        <div class="bubble"></div>
+
         <v-container class="share-container white--text">
           <v-row>
             <v-col cols="2">
@@ -196,9 +205,21 @@ export default {
   background: #3d4b56;
   padding: 8%;
   border-radius: 26px;
+
   .hint {
     width: 90%;
     color: #737d81;
   }
+}
+
+.bubble {
+  height: 50px;
+  width: 50px;
+  background: #3d4b56;
+  transform: rotate(-135deg);
+  border-radius: 0 0 8px 0;
+  margin: 14px 0 -44px 78%;
+  position: relative;
+  z-index: -1;
 }
 </style>
