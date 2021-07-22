@@ -51,10 +51,58 @@
           </template>
           <div :is="tool.menu" />
         </v-menu>
+
+        <v-divider color="#737d81" class="toolbar-divider"></v-divider>
+
+        <v-menu
+          left
+          offset-x
+          :close-on-content-click="false"
+          content-class="elevation-0 tool-menu"
+          z-index="1"
+          rounded="0"
+        >
+          <template v-slot:activator="{ on: menu, attrs }" class="tool-menu">
+            <v-tooltip nudge-right="10" left>
+              <template v-slot:activator="{ on: tooltip }">
+                <v-list-item v-bind="attrs" v-on="{ ...tooltip, ...menu }">
+                  <v-list-item-content>
+                    <v-icon color="greyBtn">mdi-video</v-icon>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              <span>Something</span>
+            </v-tooltip>
+          </template>
+          <Setting />
+        </v-menu>
       </div>
 
       <div class="mt-auto">
         <v-divider color="#737d81" class="toolbar-divider"></v-divider>
+
+        <v-menu
+          left
+          offset-x
+          :close-on-content-click="false"
+          content-class="elevation-0 tool-menu"
+          z-index="1"
+          rounded="0"
+        >
+          <template v-slot:activator="{ on: menu, attrs }" class="tool-menu">
+            <v-tooltip nudge-right="10" left>
+              <template v-slot:activator="{ on: tooltip }">
+                <v-list-item v-bind="attrs" v-on="{ ...tooltip, ...menu }">
+                  <v-list-item-content>
+                    <v-icon color="greyBtn">mdi-information</v-icon>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              <span>Information</span>
+            </v-tooltip>
+          </template>
+          <Setting />
+        </v-menu>
 
         <v-menu
           left
@@ -76,17 +124,16 @@
               <span>Language</span>
             </v-tooltip>
           </template>
-          <Profile />
+          <Setting />
         </v-menu>
 
         <v-list-item>
-          <v-list-item-content>
+          <v-list-item-content style="padding: 0">
             <v-avatar v-if="getUserAvatar || userAvatar">
               <v-tooltip nudge-left="10" left>
                 <template v-slot:activator="{ on, attrs }">
                   <img
-                    class="user-avatar ml-1 mr-1"
-                    outlined
+                    class="user-avatar"
                     :src="require('../assets/img-' + (getUserAvatar || userAvatar) + '.png')"
                     v-bind="attrs"
                     v-on="on"
@@ -128,7 +175,6 @@ export default {
         { icon: 'mdi-magnify', tooltip: 'Search', menu: Setting },
         { icon: 'mdi-history', tooltip: 'History', menu: History },
         { icon: 'mdi-download', tooltip: 'Download', menu: Setting },
-        { icon: 'mdi-video', tooltip: 'Something', menu: Setting },
       ],
       userName: '',
       userAvatar: '',
