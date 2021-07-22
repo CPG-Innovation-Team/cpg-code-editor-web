@@ -1,6 +1,6 @@
 <template>
   <v-row no-gutters d-flex class="fill-height">
-    <v-col cols="3" class="left"> </v-col>
+    <v-col class="left"> </v-col>
     <v-col cols="8" class="middle">
       <div class="editor-container">
         <WelcomeWindow :userInfo="userInfo" @passUserInfo="getUserInfo" />
@@ -34,7 +34,7 @@
       </div>
     </v-col>
 
-    <v-col cols="1">
+    <v-col cols="1" class="right">
       <EditorToolbar :userInfo="userInfo" />
     </v-col>
   </v-row>
@@ -278,5 +278,10 @@ export default {
   border-top: 1px solid #eee;
   border-left: 1px solid #eee;
   background-color: #2c333b;
+}
+
+.right {
+  min-width: 75px;
+  max-width: 100px;
 }
 </style>

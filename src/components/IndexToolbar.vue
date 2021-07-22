@@ -17,6 +17,29 @@
               <template v-slot:activator="{ on: tooltip }">
                 <v-list-item v-bind="attrs" v-on="{ ...tooltip, ...menu }">
                   <v-list-item-content>
+                    <v-icon color="greyBtn">mdi-information</v-icon>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              <span>Information</span>
+            </v-tooltip>
+          </template>
+          <Setting />
+        </v-menu>
+
+        <v-menu
+          left
+          offset-x
+          :close-on-content-click="false"
+          content-class="elevation-0 tool-menu"
+          z-index="1"
+          rounded="0"
+        >
+          <template v-slot:activator="{ on: menu, attrs }" class="tool-menu">
+            <v-tooltip nudge-right="10" left>
+              <template v-slot:activator="{ on: tooltip }">
+                <v-list-item v-bind="attrs" v-on="{ ...tooltip, ...menu }">
+                  <v-list-item-content>
                     <v-icon color="greyBtn">mdi-tune</v-icon>
                   </v-list-item-content>
                 </v-list-item>
@@ -28,7 +51,7 @@
         </v-menu>
 
         <v-list-item>
-          <v-list-item-content>
+          <v-list-item-content style="padding: 0">
             <v-avatar v-if="getUserAvatar || userAvatar">
               <v-tooltip nudge-left="10" left>
                 <template v-slot:activator="{ on, attrs }">
