@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="text-center">
-      <v-dialog v-model="dialog" dark persistent width="350">
+      <v-dialog v-model="dialog" dark persistent overlay-opacity="0.8" width="350">
         <v-card color="rgb(58,75,87)">
           <v-card-title class="text-h5"> Hellooooooo </v-card-title>
           <v-card-text>
@@ -11,6 +11,7 @@
               placeholder="Your name"
               :rules="rules"
               solo
+              clearable
               background-color="rgb(42,51,60)"
               hide-details="auto"
               persistent-placeholder
@@ -32,7 +33,7 @@
               @click="
                 dialog = false;
                 submit(inputName);
-                passUserInfo(userName, userAvatar);
+                passUserInfo(userName, userAvatar || 'avatar1');
               "
             >
               Confirm
@@ -73,12 +74,13 @@ export default {
     return {
       dialog: true,
       rules: [
-        (value) => !!value || 'Required.',
-        (value) => (value && value.length >= 2 && value.length <= 50) || 'Min 2 characters, max 50 characters.',
+        (value) => !!value || 'This field is required',
+        (value) =>
+          (value && value.trim().length >= 2 && value.trim().length <= 50) || 'Min 2 characters, max 50 characters',
       ],
       inputName: '',
       userName: '',
-      userAvatar: 'avatar1',
+      userAvatar: '',
       avatars: [avatar1Selected, avatar2, avatar3, avatar4, avatar5, avatar6],
     };
   },
@@ -95,7 +97,7 @@ export default {
     submit(inputName) {
       // save user data to local storage
       this.userName = inputName.trim();
-      storage.setUserInfo(this.userName, this.userAvatar, inputName.trim());
+      storage.setUserInfo(this.userName, this.userAvatar || 'avatar1', inputName.trim());
     },
     checkValidName(inputName) {
       if (inputName && inputName.trim() !== '' && inputName.trim().length <= 50 && inputName.trim().length >= 2)
