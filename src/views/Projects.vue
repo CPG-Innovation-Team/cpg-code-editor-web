@@ -28,10 +28,10 @@
               :items-per-page="8"
               item-key="URL"
             >
-              <template v-slot:item.title="{ item }">
+              <template v-slot:[`item.title`]="{ item }">
                 <router-link to="/001">{{ item.title }}</router-link>
               </template>
-              <template v-slot:item.actions="{ item, index }">
+              <template v-slot:[`item.actions`]="{ index }">
                 <v-icon small class="mr-2" @click="copyURL(index)">mdi-share</v-icon>
                 <v-icon small class="mr-2" @click="deleteProject(index)">mdi-delete</v-icon>
               </template>
