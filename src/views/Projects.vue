@@ -23,6 +23,7 @@
           <div class="table-container">
             <v-data-table
               hide-default-header
+              :hide-default-footer="Projects.length < 8"
               :headers="headers"
               :items="Projects"
               :items-per-page="8"
@@ -35,10 +36,10 @@
                 </tr>
               </template>
               <template v-slot:body="{ items }">
-                <tbody style="height: 50px">
+                <tbody>
                   <tr v-for="(item, index) in items" :key="item.URL">
-                    <td style="background-color: yellow; width: 8%">
-                      <v-simple-checkbox small value="item.star" class="star-checkbox">{{ item }}</v-simple-checkbox>
+                    <td style="width: 8%">
+                      <v-checkbox small color="orange" v-model="item.star" class="star-checkbox"></v-checkbox>
                     </td>
                     <td style="background-color: white; width: 23%">
                       <router-link to="/001" class="project-title">{{ item.title }}</router-link>
@@ -49,9 +50,9 @@
                     <td style="background-color: orange">{{ item.modified }}</td>
                     <td style="background-color: brown">{{ item.createdTime }}</td>
                     <td style="background-color: purple">{{ item.URL }}</td>
-                    <td style="background-color: lightblue">
-                      <v-icon small class="actions-icon" @click="copyURL(index)">mdi-share</v-icon>
-                      <v-icon small class="actions-icon" @click="deleteProject(index)">mdi-delete</v-icon>
+                    <td>
+                      <v-icon class="actions-icon" color="white" @click="copyURL(index)">mdi-share</v-icon>
+                      <v-icon class="actions-icon" color="white" @click="deleteProject(index)">mdi-delete</v-icon>
                     </td>
                   </tr>
                 </tbody>
@@ -94,7 +95,7 @@ export default {
           modified: '5 mins ago',
           createdTime: '1 days ago',
           URL: 'http://cpg.url/abcde',
-          star: false,
+          star: true,
         },
       ],
     };
