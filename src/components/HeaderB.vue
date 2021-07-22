@@ -60,7 +60,7 @@
           <v-row>
             <v-col cols="7">
               <v-text-field
-                value="http://cgp.url/abcd666"
+                v-model="url"
                 background-color="primary lighten-1"
                 single-line
                 outlined
@@ -71,7 +71,7 @@
               ></v-text-field>
             </v-col>
             <v-col>
-              <v-btn x-large depressed color="blueBtn" class="white--text" style="border-radius: 12px">
+              <v-btn x-large depressed color="blueBtn" class="white--text" style="border-radius: 12px" @click="copyURL">
                 <v-icon small class="mr-2">mdi-content-copy</v-icon>Copy
               </v-btn>
             </v-col>
@@ -98,6 +98,7 @@ export default {
       { id: '05', userName: 'Martin', userAvatar: 'avatar3', isOnline: true, isEditing: true },
       { id: '06', userName: 'Alice', userAvatar: 'avatar6', isOnline: true, isEditing: false },
     ],
+    url: 'http://cgp.url/abcd666',
   }),
   methods: {
     pluralize(length) {
@@ -124,7 +125,12 @@ export default {
       }
       return 'rgb(226, 109, 93)';
     },
+    copyURL() {
+      navigator.clipboard.writeText(this.url);
+      console.log(this.url);
+    },
   },
+  mounted() {},
 };
 </script>
 
