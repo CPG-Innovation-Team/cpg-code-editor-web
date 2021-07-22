@@ -35,21 +35,21 @@
                 </tr>
               </template>
               <template v-slot:body="{ items }">
-                <tbody>
+                <tbody style="height: 50px">
                   <tr v-for="(item, index) in items" :key="item.URL">
-                    <td>
+                    <td style="background-color: yellow; width: 8%">
                       <v-simple-checkbox small value="item.star" class="star-checkbox">{{ item }}</v-simple-checkbox>
                     </td>
-                    <td>
+                    <td style="background-color: white; width: 23%">
                       <router-link to="/001" class="project-title">{{ item.title }}</router-link>
                     </td>
-                    <td>{{ item.syntax }}</td>
-                    <td>
+                    <td style="background-color: green">
                       <v-chip :color="getColor(item.syntax)" dark>{{ item.syntax }}</v-chip>
                     </td>
-                    <td>{{ item.modified }}</td>
-                    <td>{{ item.createdTime }}</td>
-                    <td>
+                    <td style="background-color: orange">{{ item.modified }}</td>
+                    <td style="background-color: brown">{{ item.createdTime }}</td>
+                    <td style="background-color: purple">{{ item.URL }}</td>
+                    <td style="background-color: lightblue">
                       <v-icon small class="actions-icon" @click="copyURL(index)">mdi-share</v-icon>
                       <v-icon small class="actions-icon" @click="deleteProject(index)">mdi-delete</v-icon>
                     </td>
