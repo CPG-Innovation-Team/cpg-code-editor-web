@@ -3,7 +3,6 @@
     <v-col cols="3" class="left"> </v-col>
     <v-col cols="8" class="middle">
       <div class="editor-container">
-        <WelcomeWindow :userInfo="userInfo" @passUserInfo="getUserInfo" />
         <div class="title-block">
           <div class="title-text">Editor</div>
           <div class="button-block">
@@ -35,7 +34,7 @@
     </v-col>
 
     <v-col cols="1">
-      <Toolbar :userInfo="userInfo" />
+      <Toolbar />
     </v-col>
   </v-row>
 </template>
@@ -46,14 +45,12 @@ import { io } from 'socket.io-client';
 import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
 import { formattedDateTime } from '../util';
 import CODE_LANGUAGE_LIST from '../map';
-import WelcomeWindow from './WelcomeWindow.vue';
 import Toolbar from '../components/Toolbar.vue';
 
 export default {
   name: 'Editor',
   components: {
     Toolbar,
-    WelcomeWindow,
   },
   data() {
     return {
@@ -68,10 +65,6 @@ export default {
       initStatus: true,
       selectedCodeLanguage: 'javascript',
       codeLanguageList: CODE_LANGUAGE_LIST,
-      userInfo: {
-        userName: '',
-        userAvatar: '',
-      },
     };
   },
   methods: {
@@ -197,10 +190,6 @@ export default {
         this.initEditor();
         this.setCode(code);
       });
-    },
-    getUserInfo(userName, userAvatar) {
-      this.userInfo.userName = userName;
-      this.userInfo.userAvatar = userAvatar;
     },
   },
   mounted() {

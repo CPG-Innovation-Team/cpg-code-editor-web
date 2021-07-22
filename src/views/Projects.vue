@@ -2,6 +2,7 @@
   <div>
     <v-row style="height: 88vh" no-gutters>
       <v-col cols="11">
+        <WelcomeWindow :userInfo="userInfo" @passUserInfo="getUserInfo" />
         <div class="project-list-container">
           <div class="title">
             <div class="title-text">Code Projects</div>
@@ -41,7 +42,7 @@
         </div>
       </v-col>
       <v-col cols="1">
-        <Toolbar />
+        <Toolbar :userInfo="userInfo" />
       </v-col>
     </v-row>
   </div>
@@ -49,11 +50,13 @@
 
 <script>
 import Toolbar from '../components/Toolbar.vue';
+import WelcomeWindow from './WelcomeWindow.vue';
 
 export default {
   name: 'Projects',
   components: {
     Toolbar,
+    WelcomeWindow,
   },
   data: () => ({
     headers: [
@@ -73,6 +76,10 @@ export default {
         URL: 'http://cpg.url/abcde',
       },
     ],
+    userInfo: {
+      userName: '',
+      userAvatar: '',
+    },
   }),
   methods: {
     addNewProject() {
@@ -98,6 +105,10 @@ export default {
     deleteProject(ProjectID) {
       this.Projects.splice(ProjectID, 1);
       console.log(this.Projects);
+    },
+    getUserInfo(userName, userAvatar) {
+      this.userInfo.userName = userName;
+      this.userInfo.userAvatar = userAvatar;
     },
   },
 };
