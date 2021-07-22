@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <HeaderA v-if="this.$route.path === '/'" />
-    <HeaderB v-else />
+    <IndexHeader v-if="this.$route.path === '/'" />
+    <EditorHeader v-else />
     <v-main>
       <!-- force refresh the page when at the same route -->
       <router-view :key="$route.fullPath"></router-view>
@@ -10,14 +10,14 @@
 </template>
 
 <script>
-import HeaderA from './components/HeaderA.vue';
-import HeaderB from './components/HeaderB.vue';
+import IndexHeader from './components/IndexHeader.vue';
+import EditorHeader from './components/EditorHeader.vue';
 
 export default {
   name: 'App',
   components: {
-    HeaderA,
-    HeaderB,
+    IndexHeader,
+    EditorHeader,
   },
 };
 </script>

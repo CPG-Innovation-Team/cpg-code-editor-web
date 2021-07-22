@@ -40,18 +40,18 @@
       </div>
     </v-col>
     <v-col cols="1">
-      <ToolbarA />
+      <IndexToolbar />
     </v-col>
   </v-row>
 </template>
 
 <script>
-import ToolbarA from '../components/ToolbarA.vue';
+import IndexToolbar from '../components/IndexToolbar.vue';
 
 export default {
   name: 'Projects',
   components: {
-    ToolbarA,
+    IndexToolbar,
   },
   data: () => ({
     headers: [
