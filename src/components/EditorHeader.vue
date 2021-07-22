@@ -197,6 +197,11 @@ export default {
   color: white;
 }
 
+.v-menu__content {
+  border-radius: 26px;
+  box-shadow: 2px 14px 0px -4px #343f48;
+}
+
 .share-container {
   display: grid;
   height: 100%;
