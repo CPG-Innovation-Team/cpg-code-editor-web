@@ -39,7 +39,50 @@
         </v-tooltip>
       </div>
     </div>
-    <v-btn class="white--text ml-2" color="blueBtn"> <v-icon>mdi-share</v-icon>Share</v-btn>
+    <v-menu offset-y :close-on-content-click="false" max-height="auto" max-width="400">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn class="white--text ml-2" color="blueBtn" v-bind="attrs" v-on="on">
+          <v-icon>mdi-share</v-icon>Share
+        </v-btn>
+      </template>
+      <div>
+        <!-- <div class="bubble"></div> -->
+        <div class="share-container white--text">
+          <v-row>
+            <v-col cols="3">
+              <h3>Share</h3>
+            </v-col>
+            <v-col>
+              <h4>Project name</h4>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="7">
+              <v-text-field
+                value="http://cgp.url/abcd666"
+                background-color="primary lighten-1"
+                single-line
+                outlined
+                dark
+                disabled
+                hide-details="auto"
+                style="border-radius: 12px"
+              ></v-text-field>
+            </v-col>
+            <v-col>
+              <v-btn x-large depressed color="blueBtn" class="white--text" style="border-radius: 12px">
+                <v-icon small class="mr-2">mdi-content-copy</v-icon>Copy
+              </v-btn>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <p class="hint mx-auto">Use keyboard short cut Ctrl+V / +V to paste on your favorite way to share link.</p>
+          </v-row>
+        </div>
+      </div>
+    </v-menu>
   </v-app-bar>
 </template>
 
@@ -116,5 +159,40 @@ export default {
 
 .user-info {
   color: white;
+}
+
+.share-container {
+  display: block;
+  height: 100%;
+  width: 100%;
+  min-width: 200px;
+  background: #3d4b56;
+  padding: 5%;
+  border-radius: 20px;
+  /* display: block;
+	margin: 0 auto;
+	border-radius: 20px;
+	margin-top: 50px;
+	font-size: 200px;
+	text-align: center; */
+  .col {
+    /* padding: 8px; */
+  }
+  .hint {
+    width: 80%;
+    color: #737d81;
+  }
+}
+
+.bubble {
+  height: 40px;
+  width: 40px;
+  background: ivory;
+  margin: 0 auto;
+  transform: rotate(45deg);
+  border-radius: 0 0 12px 0;
+  margin-top: -22px;
+  position: relative;
+  left: calc(0.5vw - 50px);
 }
 </style>
