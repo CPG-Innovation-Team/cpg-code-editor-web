@@ -17,6 +17,13 @@
               persistent-placeholder
               rounded
               v-model="inputName"
+              @keyup.enter="
+                if (checkValidName(inputName)) {
+                  dialog = false;
+                  submit(inputName);
+                  passUserInfo(userName, userAvatar || 'avatar1');
+                }
+              "
             ></v-text-field>
             <div class="avatar-container">
               <div v-for="(avatar, index) in avatars" :key="index">
