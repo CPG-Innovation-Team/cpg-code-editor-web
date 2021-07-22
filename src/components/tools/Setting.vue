@@ -60,9 +60,9 @@ export default {
 
 <style scoped lang="scss">
 .container {
-  height: 88vh;
+  height: 100%;
   width: 20vw;
-  padding: 20px;
+  padding: 10%;
   background-color: #161e27;
 }
 </style>

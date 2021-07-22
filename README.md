@@ -29,6 +29,8 @@
 │   │   ├── Header.vue    顶部菜单
 │   │   ├── Toolbar.vue    工具栏
 │   │   └── tools    工具栏中的菜单
+│   │       ├── History.vue    编辑历史
+│   │       ├── Profile.vue    个人简介
 │   │       └── Setting.vue    设置菜单
 │   ├── plguins    插件
 │   │   └── vuetify.js    组件库Vuetify设置
@@ -39,7 +41,8 @@
 │   ├── util.js    公用方法文件
 │   └── views    页面目录
 │       ├── Editor.vue    编辑器页面
-│       └── Projects    文档管理页面（首页）
+│       ├── Projects.vue    文档管理页面（首页）
+|       └── WelcomeWindow.vue    欢迎弹窗组件
 ├── tests
 │   ├── e2e    E2E测试目录
 │   └── unit    单元测试目录

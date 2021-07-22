@@ -1,58 +1,59 @@
 <template>
-  <div>
-    <v-row no-gutters class="d-flex">
-      <v-col cols="3" class="left"> </v-col>
-      <v-col cols="8" class="middle">
-        <div class="editor-container">
-          <div class="title-block">
-            <div class="title-text">Editor</div>
-            <div class="button-block">
-              <select v-model="selectedCodeLanguage" @change="onCodeLanguageChange" test="codeLanguageSelector">
-                <option v-for="option in codeLanguageList" :key="option.langValue" v-bind:value="option.langValue">
-                  {{ option.langName }}
-                </option>
-              </select>
-              <button class="title-button" @click="downloadCode">Download</button>
-              <a ref="downloadElement" v-show="false" target="_blank" />
-            </div>
-          </div>
-          <div ref="editor" class="editor"></div>
-          <div v-show="consoleVisible" class="title-block">
-            <div class="title-text">Console</div>
-            <div class="button-block">
-              <button class="title-button" @click="runCode">Run</button>
-              <button class="title-button" @click="clearConsole">Clear</button>
-            </div>
-          </div>
-          <div v-show="consoleVisible" class="console">
-            <p v-for="item in logList" class="log-item" :key="item.index" :class="item.style">
-              {{ item.style === 'warn' ? '&#9888;' : '' }}
-              {{ item.style === 'error' ? '&#215;' : '' }}
-              {{ item.msg }}
-            </p>
+  <v-row no-gutters d-flex class="fill-height">
+    <v-col cols="3" class="left"> </v-col>
+    <v-col cols="8" class="middle">
+      <div class="editor-container">
+        <WelcomeWindow :userInfo="userInfo" @passUserInfo="getUserInfo" />
+        <div class="title-block">
+          <div class="title-text">Editor</div>
+          <div class="button-block">
+            <select v-model="selectedCodeLanguage" @change="onCodeLanguageChange" test="codeLanguageSelector">
+              <option v-for="option in codeLanguageList" :key="option.langValue" v-bind:value="option.langValue">
+                {{ option.langName }}
+              </option>
+            </select>
+            <button class="title-button" @click="downloadCode">Download</button>
+            <a ref="downloadElement" v-show="false" target="_blank" />
           </div>
         </div>
-      </v-col>
+        <div ref="editor" class="editor"></div>
+        <div v-show="consoleVisible" class="title-block">
+          <div class="title-text">Console</div>
+          <div class="button-block">
+            <button class="title-button" @click="runCode">Run</button>
+            <button class="title-button" @click="clearConsole">Clear</button>
+          </div>
+        </div>
+        <div v-show="consoleVisible" class="console">
+          <p v-for="item in logList" class="log-item" :key="item.index" :class="item.style">
+            {{ item.style === 'warn' ? '&#9888;' : '' }}
+            {{ item.style === 'error' ? '&#215;' : '' }}
+            {{ item.msg }}
+          </p>
+        </div>
+      </div>
+    </v-col>
 
-      <v-col cols="1">
-        <Toolbar />
-      </v-col>
-    </v-row>
-  </div>
+    <v-col cols="1">
+      <Toolbar :userInfo="userInfo" />
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 import * as monaco from 'monaco-editor';
 import { io } from 'socket.io-client';
 import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
-import formattedDateTime from '../util';
+import { formattedDateTime } from '../util';
 import CODE_LANGUAGE_LIST from '../map';
+import WelcomeWindow from './WelcomeWindow.vue';
 import Toolbar from '../components/Toolbar.vue';
 
 export default {
   name: 'Editor',
   components: {
     Toolbar,
+    WelcomeWindow,
   },
   data() {
     return {
@@ -67,6 +68,10 @@ export default {
       initStatus: true,
       selectedCodeLanguage: 'javascript',
       codeLanguageList: CODE_LANGUAGE_LIST,
+      userInfo: {
+        userName: '',
+        userAvatar: '',
+      },
     };
   },
   methods: {
@@ -193,6 +198,10 @@ export default {
         this.setCode(code);
       });
     },
+    getUserInfo(userName, userAvatar) {
+      this.userInfo.userName = userName;
+      this.userInfo.userAvatar = userAvatar;
+    },
   },
   mounted() {
     this.initEditor();
@@ -210,7 +219,6 @@ export default {
 .editor-container {
   display: flex;
   flex-direction: column;
-  height: 88vh;
   width: 100%;
 }
 
@@ -247,6 +255,7 @@ export default {
   overflow-y: auto;
 
   .log-item {
+    color: white;
     margin: 0;
     padding: 5px 8px;
     border-bottom: 1px solid #eee;
