@@ -1,66 +1,66 @@
 <template>
-    <v-row style="height: 88vh" no-gutters>
-      <v-col cols="11">
-        <div class="project-list-container">
-          <div class="title">
-            <div class="title-text">Code Projects</div>
-            <button
-              style="
-                position: absolute;
-                right: 130px;
-                bottom: 0;
-                height: 30px;
-                width: 280px;
-                background-color: white;
-                color: black;
-              "
-              @click="addNewProject()"
-            >
-              点击这里手动添加list行
-            </button>
-          </div>
-          <div class="table-container">
-            <v-data-table
-              hide-default-header
-              :hide-default-footer="Projects.length < 7"
-              :headers="headers"
-              :items="Projects"
-              :items-per-page="7"
-              item-key="URL"
-              class="project-list-table tableBackground"
-            >
-              <template v-slot:header="{ props: { headers } }">
-                <tr class="table-header">
-                  <td v-for="header in headers" v-bind:key="header.value" style="padding-left: 15px">
-                    {{ header.text }}
+  <v-row style="height: 88vh" no-gutters>
+    <v-col cols="11">
+      <div class="project-list-container">
+        <div class="title">
+          <div class="title-text">Code Projects</div>
+          <button
+            style="
+              position: absolute;
+              right: 130px;
+              bottom: 0;
+              height: 30px;
+              width: 280px;
+              background-color: white;
+              color: black;
+            "
+            @click="addNewProject()"
+          >
+            点击这里手动添加list行
+          </button>
+        </div>
+        <div class="table-container">
+          <v-data-table
+            hide-default-header
+            :hide-default-footer="Projects.length < 7"
+            :headers="headers"
+            :items="Projects"
+            :items-per-page="7"
+            item-key="URL"
+            class="project-list-table tableBackground"
+          >
+            <template v-slot:header="{ props: { headers } }">
+              <tr class="table-header">
+                <td v-for="header in headers" v-bind:key="header.value" style="padding-left: 15px">
+                  {{ header.text }}
+                </td>
+              </tr>
+            </template>
+            <template v-slot:body="{ items }">
+              <tbody>
+                <tr v-for="(item, index) in items" :key="item.URL" class="table-row">
+                  <td class="item-style">
+                    <v-checkbox small v-model="item.star" class="star-checkbox"></v-checkbox>
+                  </td>
+                  <td class="item-style">
+                    <router-link to="/001" class="project-title">{{ item.title }}</router-link>
+                  </td>
+                  <td class="item-style">
+                    <v-chip :color="getColor(item.syntax)" dark>{{ item.syntax }}</v-chip>
+                  </td>
+                  <td class="item-style">{{ item.modified }}</td>
+                  <td class="item-style">{{ item.createdTime }}</td>
+                  <td class="item-style">{{ item.URL }}</td>
+                  <td class="item-style">
+                    <v-icon class="actions-icon" color="white" @click="copyURL(index)">mdi-share</v-icon>
+                    <v-icon class="actions-icon" color="white" @click="deleteProject(index)">mdi-delete</v-icon>
                   </td>
                 </tr>
-              </template>
-              <template v-slot:body="{ items }">
-                <tbody>
-                  <tr v-for="(item, index) in items" :key="item.URL" class="table-row">
-                    <td class="item-style">
-                      <v-checkbox small v-model="item.star" class="star-checkbox"></v-checkbox>
-                    </td>
-                    <td class="item-style">
-                      <router-link to="/001" class="project-title">{{ item.title }}</router-link>
-                    </td>
-                    <td class="item-style">
-                      <v-chip :color="getColor(item.syntax)" dark>{{ item.syntax }}</v-chip>
-                    </td>
-                    <td class="item-style">{{ item.modified }}</td>
-                    <td class="item-style">{{ item.createdTime }}</td>
-                    <td class="item-style">{{ item.URL }}</td>
-                    <td class="item-style">
-                      <v-icon class="actions-icon" color="white" @click="copyURL(index)">mdi-share</v-icon>
-                      <v-icon class="actions-icon" color="white" @click="deleteProject(index)">mdi-delete</v-icon>
-                    </td>
-                  </tr>
-                </tbody>
-              </template>
-            </v-data-table>
-            <button v-if="Projects.length == 0" style="font-size: 200px" @click="addNewProject()">ADD PROJECT</button>
-          </div>
+              </tbody>
+            </template>
+          </v-data-table>
+          <button v-if="Projects.length == 0" style="font-size: 200px" @click="addNewProject()">ADD PROJECT</button>
+        </div>
       </div>
     </v-col>
     <v-col cols="1">
