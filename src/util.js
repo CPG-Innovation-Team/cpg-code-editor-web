@@ -14,17 +14,16 @@ export const storage = {
     if (localStorage.userName) {
       output.userName = localStorage.userName;
     }
-    if (localStorage.inputName) {
-      output.inputName = localStorage.inputName;
-    }
-    if (localStorage.avatar) {
-      output.userAvatar = localStorage.avatar;
+    if (localStorage.userAvatar) {
+      output.userAvatar = localStorage.userAvatar;
     }
     return output;
   },
-  setUserInfo(userName, userAvatar, inputName) {
+  setUserInfo(userName, userAvatar) {
     localStorage.userName = userName;
-    localStorage.inputName = inputName;
-    localStorage.avatar = userAvatar;
+    localStorage.userAvatar = userAvatar;
+  },
+  clearUserInfo() {
+    localStorage.clear();
   },
 };

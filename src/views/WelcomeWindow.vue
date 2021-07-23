@@ -16,12 +16,13 @@
               hide-details="auto"
               persistent-placeholder
               rounded
-              v-model="inputName"
+              v-model="userName"
               @keyup.enter="
-                if (checkValidName(inputName)) {
+                if (checkValidName(userName)) {
                   dialog = false;
-                  submit(inputName);
+                  submit(userName);
                   passUserInfo(userName, userAvatar || 'avatar1');
+                  userInfoChanged(true);
                 }
               "
             ></v-text-field>
@@ -36,11 +37,12 @@
             <v-btn
               class="white--text"
               color="blueBtn"
-              :disabled="checkValidName(inputName) === false"
+              :disabled="checkValidName(userName) === false"
               @click="
                 dialog = false;
-                submit(inputName);
+                submit(userName);
                 passUserInfo(userName, userAvatar || 'avatar1');
+                userInfoChanged(true);
               "
             >
               Confirm
@@ -85,7 +87,6 @@ export default {
         (value) =>
           (value && value.trim().length >= 2 && value.trim().length <= 50) || 'Min 2 characters, max 50 characters',
       ],
-      inputName: '',
       userName: '',
       userAvatar: '',
       avatars: [avatar1Selected, avatar2, avatar3, avatar4, avatar5, avatar6],
@@ -94,25 +95,28 @@ export default {
   created() {
     // retreive user data from local storage
     this.userName = storage.getUserInfo().userName;
-    this.inputName = storage.getUserInfo().inputName;
     this.userAvatar = storage.getUserInfo().userAvatar;
     if (this.userAvatar) {
       this.selectAvatar(parseInt(this.userAvatar.substring(6) - 1, 10));
     }
   },
   methods: {
-    submit(inputName) {
+    submit(userName) {
       // save user data to local storage
-      this.userName = inputName.trim();
-      storage.setUserInfo(this.userName, this.userAvatar || 'avatar1', inputName.trim());
+      // TODO: 从后端获取返回的userid 然后存到storage
+      this.userName = userName.trim();
+      storage.setUserInfo(this.userName, this.userAvatar || 'avatar1');
     },
-    checkValidName(inputName) {
-      if (inputName && inputName.trim() !== '' && inputName.trim().length <= 50 && inputName.trim().length >= 2)
+    checkValidName(userName) {
+      if (userName && userName.trim() !== '' && userName.trim().length <= 50 && userName.trim().length >= 2)
         return true;
       return false;
     },
     passUserInfo(userName, userAvatar) {
       this.$emit('passUserInfo', userName, userAvatar);
+    },
+    userInfoChanged(bool) {
+      this.$emit('getUserInfoChangeStatus', bool);
     },
     selectAvatar(index) {
       this.avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
