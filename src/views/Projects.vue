@@ -92,7 +92,7 @@ export default {
       ],
       Projects: [
         {
-          title: `进入editor`,
+          title: '进入editor',
           syntax: 'JS',
           modified: '5 mins ago',
           createdTime: '1 days ago',
@@ -169,7 +169,7 @@ export default {
 }
 .project-list-table {
   width: 100%;
-  border-radius: 10px 10px 10px 10px;
+  border-radius: 10px;
 }
 .star-checkbox {
   left: 15px;
