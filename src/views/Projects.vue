@@ -108,7 +108,7 @@ export default {
       const link = Math.floor(Math.random() * 9999);
       console.log(link);
       this.Projects.push({
-        title: `Project name ${this.Projects.length}`,
+        title: `Project ${this.Projects.length}`,
         syntax: 'SQL',
         modified: '1 second ago',
         createdTime: '1 seconds ago',
@@ -218,5 +218,10 @@ td:first-child {
 .table-row:nth-child(odd) > .item-style {
   height: 70px;
   background-color: rgb(53, 66, 77);
+}
+tbody {
+  tr:hover {
+    background-color: transparent !important;
+  }
 }
 </style>
