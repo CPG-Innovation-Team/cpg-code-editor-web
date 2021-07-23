@@ -23,34 +23,36 @@
           <div class="table-container">
             <v-data-table
               hide-default-header
-              :hide-default-footer="Projects.length < 8"
+              :hide-default-footer="Projects.length < 7"
               :headers="headers"
               :items="Projects"
-              :items-per-page="8"
+              :items-per-page="7"
               item-key="URL"
               class="project-list-table tableBackground"
             >
               <template v-slot:header="{ props: { headers } }">
                 <tr class="table-header">
-                  <td v-for="header in headers" v-bind:key="header.value">{{ header.text }}</td>
+                  <td v-for="header in headers" v-bind:key="header.value" style="padding-left: 15px">
+                    {{ header.text }}
+                  </td>
                 </tr>
               </template>
               <template v-slot:body="{ items }">
                 <tbody>
-                  <tr v-for="(item, index) in items" :key="item.URL">
-                    <td style="width: 8%">
-                      <v-checkbox small color="orange" v-model="item.star" class="star-checkbox"></v-checkbox>
+                  <tr v-for="(item, index) in items" :key="item.URL" class="table-row">
+                    <td class="item-style">
+                      <v-checkbox small v-model="item.star" class="star-checkbox"></v-checkbox>
                     </td>
-                    <td style="background-color: white; width: 23%">
+                    <td class="item-style">
                       <router-link to="/001" class="project-title">{{ item.title }}</router-link>
                     </td>
-                    <td style="background-color: green">
+                    <td class="item-style">
                       <v-chip :color="getColor(item.syntax)" dark>{{ item.syntax }}</v-chip>
                     </td>
-                    <td style="background-color: orange">{{ item.modified }}</td>
-                    <td style="background-color: brown">{{ item.createdTime }}</td>
-                    <td style="background-color: purple">{{ item.URL }}</td>
-                    <td>
+                    <td class="item-style">{{ item.modified }}</td>
+                    <td class="item-style">{{ item.createdTime }}</td>
+                    <td class="item-style">{{ item.URL }}</td>
+                    <td class="item-style">
                       <v-icon class="actions-icon" color="white" @click="copyURL(index)">mdi-share</v-icon>
                       <v-icon class="actions-icon" color="white" @click="deleteProject(index)">mdi-delete</v-icon>
                     </td>
@@ -90,7 +92,7 @@ export default {
       ],
       Projects: [
         {
-          title: `项目名称(点击我进入editor)`,
+          title: `进入editor`,
           syntax: 'JS',
           modified: '5 mins ago',
           createdTime: '1 days ago',
@@ -160,7 +162,7 @@ export default {
   font-size: 30px;
 }
 .table-container {
-  padding-top: 30px;
+  padding-top: 20px;
   padding-left: 100px;
   padding-right: 100px;
   color: white;
@@ -207,5 +209,14 @@ td:first-child {
   color: rgb(83, 124, 213);
   font-size: 15px;
   font-weight: 600;
+}
+.table-row {
+  color: rgb(190, 198, 201);
+}
+.table-row:nth-child(even) > .item-style {
+}
+.table-row:nth-child(odd) > .item-style {
+  height: 70px;
+  background-color: rgb(53, 66, 77);
 }
 </style>
