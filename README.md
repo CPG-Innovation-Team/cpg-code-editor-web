@@ -26,10 +26,10 @@
 │   ├── App.vue    全局页面
 │   ├── assets    静态资源文件目录，含图片、视频等
 │   ├── components    公用组件目录
-│   │   ├── HeaderA.vue    主页的顶部菜单
-│   │   ├── HeaderB.vue    编辑页面的顶部菜单
-│   │   ├── ToolbarA.vue    主页的工具栏
-│   │   ├── ToolbarB.vue    编辑页面的工具栏
+│   │   ├── IndexHeader.vue    主页的顶部菜单
+│   │   ├── EditorHeader.vue    编辑页面的顶部菜单
+│   │   ├── IndexToolbar.vue    主页的工具栏
+│   │   ├── EditorToolbar.vue    编辑页面的工具栏
 │   │   └── tools    工具栏中的菜单
 │   │       ├── History.vue    编辑历史
 │   │       ├── Profile.vue    个人简介
