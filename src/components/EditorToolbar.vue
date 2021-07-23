@@ -178,15 +178,7 @@ export default {
       ],
       userName: '',
       userAvatar: '',
-      profileName: '',
-      profileAvatar: '',
     };
-  },
-  methods: {
-    updateUserInfo(userName, userAvatar) {
-      this.profileName = userName;
-      this.profileAvatar = userAvatar;
-    },
   },
   created() {
     this.userName = storage.getUserInfo().userName;
