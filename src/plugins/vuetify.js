@@ -14,6 +14,7 @@ export default new Vuetify({
           darken1: '#1F2933', // right toolbar section
           darken2: '#161E27', // right pop up section of tools
         },
+        tableBackground: '#3D4B56',
         // for buttons
         blueBtn: '#537CD6',
         greyBtn: '#737D81',
