@@ -64,5 +64,7 @@ export default {
   width: 20vw;
   padding: 10%;
   background-color: #161e27;
+  min-width: 240px;
+  max-width: 400px;
 }
 </style>

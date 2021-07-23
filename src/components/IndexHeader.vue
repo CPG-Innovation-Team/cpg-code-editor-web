@@ -45,7 +45,6 @@
 
 <script>
 export default {
-  name: 'Header',
   data: () => ({
     users: [
       { id: '01', userName: 'Kelly', userAvatar: 'avatar5', isOnline: false },

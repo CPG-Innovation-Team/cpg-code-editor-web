@@ -1,89 +1,115 @@
 <template>
-  <div>
-    <v-row style="height: 88vh" no-gutters>
-      <v-col cols="11">
-        <WelcomeWindow v-if="!userName" :userInfo="userInfo" @passUserInfo="getUserInfo" />
-        <div class="project-list-container">
-          <div class="title">
-            <div class="title-text">Code Projects</div>
-            <button
-              style="
-                position: absolute;
-                right: 130px;
-                bottom: 0;
-                height: 30px;
-                width: 280px;
-                background-color: white;
-                color: black;
-              "
-              @click="addNewProject()"
-            >
-              点击这里手动添加list行
-            </button>
-          </div>
-          <div class="table-container">
-            <v-data-table
-              :headers="headers"
-              :items="Projects"
-              class="project-list-table"
-              :items-per-page="8"
-              item-key="URL"
-            >
-              <template v-slot:item.title="{ item }">
-                <router-link to="/001">{{ item.title }}</router-link>
-              </template>
-              <template v-slot:item.actions="{ item, index }">
-                <v-icon small class="mr-2" @click="copyURL(index)">mdi-share</v-icon>
-                <v-icon small class="mr-2" @click="deleteProject(index)">mdi-delete</v-icon>
-              </template>
-            </v-data-table>
-            <button v-show="Projects.length == 0" style="font-size: 200px" @click="addNewProject()">ADD PROJECT</button>
-          </div>
+  <v-row style="height: 88vh" no-gutters>
+    <v-col cols="11">
+      <WelcomeWindow v-if="!userName" :userInfo="userInfo" @passUserInfo="getUserInfo" />
+      <div class="project-list-container">
+        <div class="title">
+          <div class="title-text">Code Projects</div>
+          <button
+            style="
+              position: absolute;
+              right: 130px;
+              bottom: 0;
+              height: 30px;
+              width: 280px;
+              background-color: white;
+              color: black;
+            "
+            @click="addNewProject()"
+          >
+            点击这里手动添加list行
+          </button>
         </div>
-      </v-col>
-      <v-col cols="1">
-        <Toolbar :userInfo="userInfo" />
-      </v-col>
-    </v-row>
-  </div>
+        <div class="table-container">
+          <v-data-table
+            hide-default-header
+            :hide-default-footer="Projects.length < 7"
+            :headers="headers"
+            :items="Projects"
+            :items-per-page="7"
+            item-key="URL"
+            class="project-list-table tableBackground"
+          >
+            <template v-slot:header="{ props: { headers } }">
+              <tr class="table-header">
+                <td v-for="header in headers" v-bind:key="header.value" style="padding-left: 15px">
+                  {{ header.text }}
+                </td>
+              </tr>
+            </template>
+            <template v-slot:body="{ items }">
+              <tbody>
+                <tr v-for="(item, index) in items" :key="item.URL" class="table-row">
+                  <td class="item-style">
+                    <v-checkbox small v-model="item.star" class="star-checkbox"></v-checkbox>
+                  </td>
+                  <td class="item-style">
+                    <router-link to="/001" class="project-title">{{ item.title }}</router-link>
+                  </td>
+                  <td class="item-style">
+                    <v-chip :color="getColor(item.syntax)" dark>{{ item.syntax }}</v-chip>
+                  </td>
+                  <td class="item-style">{{ item.modified }}</td>
+                  <td class="item-style">{{ item.createdTime }}</td>
+                  <td class="item-style">{{ item.URL }}</td>
+                  <td class="item-style">
+                    <v-icon class="actions-icon" color="white" @click="copyURL(index)">mdi-share</v-icon>
+                    <v-icon class="actions-icon" color="white" @click="deleteProject(index)">mdi-delete</v-icon>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-data-table>
+          <button v-if="Projects.length == 0" style="font-size: 200px" @click="addNewProject()">ADD PROJECT</button>
+        </div>
+      </div>
+    </v-col>
+    <v-col cols="1">
+      <IndexToolbar :userInfo="userInfo" />
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar.vue';
+import IndexToolbar from '../components/IndexToolbar.vue';
 import WelcomeWindow from './WelcomeWindow.vue';
 import { storage } from '../util';
 
 export default {
   name: 'Projects',
   components: {
-    Toolbar,
+    IndexToolbar,
     WelcomeWindow,
   },
-  data: () => ({
-    headers: [
-      { text: 'Title', align: 'start', sortable: false, value: 'title' },
-      { text: 'Syntax', value: 'syntax' },
-      { text: 'Modified', value: 'modified' },
-      { text: 'Created', value: 'createdTime' },
-      { text: 'URL', value: 'URL' },
-      { text: 'Actions', value: 'actions', sortable: false },
-    ],
-    Projects: [
-      {
-        title: `Project name 0`,
-        syntax: 'java',
-        modified: '5 mins ago',
-        createdTime: '1 days ago',
-        URL: 'http://cpg.url/abcde',
+  data() {
+    return {
+      headers: [
+        { text: ' ', sortable: false, value: 'star', class: 'table-header' },
+        { text: 'Title', align: 'start', sortable: false, value: 'title' },
+        { text: 'Syntax', value: 'syntax' }, //  change sorting to dropdown
+        { text: 'Modified', value: 'modified' },
+        { text: 'Created', value: 'createdTime' },
+        { text: 'URL', value: 'URL', sortable: false },
+        { text: 'Actions', value: 'actions', sortable: false },
+      ],
+      Projects: [
+        {
+          title: '进入editor',
+          syntax: 'JS',
+          modified: '5 mins ago',
+          createdTime: '1 days ago',
+          URL: 'http://cpg.url/abcde',
+          star: true,
+        },
+      ],
+      userInfo: {
+        userName: '',
+        userAvatar: '',
       },
-    ],
-    userInfo: {
+      storage,
       userName: '',
-      userAvatar: '',
-    },
-    storage,
-    userName: '',
-  }),
+    };
+  },
   created() {
     this.userName = storage.getUserInfo().userName;
   },
@@ -93,11 +119,12 @@ export default {
       const link = Math.floor(Math.random() * 9999);
       console.log(link);
       this.Projects.push({
-        title: `Project name ${this.Projects.length}`,
-        syntax: 'java',
+        title: `Project ${this.Projects.length}`,
+        syntax: 'SQL',
         modified: '1 second ago',
         createdTime: '1 seconds ago',
         URL: `http://cpg.url/${link}`,
+        star: false,
       });
     },
     copyURL(ProjectID) {
@@ -115,6 +142,15 @@ export default {
     getUserInfo(userName, userAvatar) {
       this.userInfo.userName = userName;
       this.userInfo.userAvatar = userAvatar;
+    },
+    getColor(syntax) {
+      if (syntax === 'JS') {
+        return 'yellow';
+      }
+      if (syntax === 'SQL') {
+        return 'green';
+      }
+      return 'blue';
     },
   },
 };
@@ -141,15 +177,66 @@ export default {
   font-size: 30px;
 }
 .table-container {
-  padding-top: 30px;
+  padding-top: 20px;
   padding-left: 100px;
   padding-right: 100px;
   color: white;
 }
 .project-list-table {
   width: 100%;
+  border-radius: 10px;
 }
-.table-top-line {
-  background-color: #e4e4e410;
+.star-checkbox {
+  left: 15px;
+}
+.table-header {
+  //background-color: yellow;
+  background-color: rgb(64, 78, 89);
+  font-size: 20px;
+  text-align: left;
+  color: rgb(190, 198, 201);
+}
+td {
+  height: 20px;
+  border: solid 0px #000;
+  border-style: none solid solid none;
+  padding: 5px;
+}
+td:first-child {
+  border-top-left-radius: 7px;
+}
+td:last-child {
+  border-top-right-radius: 7px;
+}
+td:first-child {
+  border-bottom-left-radius: 7px;
+}
+td:last-child {
+  border-bottom-right-radius: 7px;
+}
+td {
+  border-top-style: solid;
+}
+td:first-child {
+  border-left-style: solid;
+}
+.project-title {
+  color: rgb(83, 124, 213);
+  font-size: 15px;
+  font-weight: 600;
+}
+.table-row {
+  color: rgb(190, 198, 201);
+}
+.table-row:nth-child(even) > .item-style {
+}
+.table-row:nth-child(odd) > .item-style {
+  height: 70px;
+  background-color: rgb(53, 66, 77);
+}
+tbody {
+  tr:hover {
+    background-color: transparent !important;
+  }
 }
 </style>
