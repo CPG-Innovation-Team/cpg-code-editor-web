@@ -39,14 +39,7 @@
         </v-tooltip>
       </div>
     </div>
-    <v-menu
-      offset-y
-      :close-on-content-click="false"
-      max-height="auto"
-      max-width="400"
-      nudge-bottom="10"
-      content-class="elevation-0"
-    >
+    <v-menu offset-y :close-on-content-click="false" max-height="auto" max-width="400" nudge-bottom="10">
       <template v-slot:activator="{ on, attrs }">
         <v-btn class="white--text ml-5 mr-5" color="blueBtn" v-bind="attrs" v-on="on">
           <v-icon>mdi-share</v-icon>Share
@@ -199,7 +192,7 @@ export default {
 
 .v-menu__content {
   border-radius: 26px;
-  box-shadow: 2px 14px 0px -4px #343f48;
+  box-shadow: 0px 14px 0px -4px #343f48;
 }
 
 .share-container {
