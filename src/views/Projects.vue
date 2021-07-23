@@ -1,6 +1,7 @@
 <template>
   <v-row style="height: 88vh" no-gutters>
     <v-col cols="11">
+      <WelcomeWindow v-if="!userName" :userInfo="userInfo" @passUserInfo="getUserInfo" />
       <div class="project-list-container">
         <div class="title">
           <div class="title-text">Code Projects</div>
@@ -64,18 +65,21 @@
       </div>
     </v-col>
     <v-col cols="1">
-      <IndexToolbar />
+      <IndexToolbar :userInfo="userInfo" />
     </v-col>
   </v-row>
 </template>
 
 <script>
 import IndexToolbar from '../components/IndexToolbar.vue';
+import WelcomeWindow from './WelcomeWindow.vue';
+import { storage } from '../util';
 
 export default {
   name: 'Projects',
   components: {
     IndexToolbar,
+    WelcomeWindow,
   },
   data() {
     return {
@@ -98,7 +102,16 @@ export default {
           star: true,
         },
       ],
+      userInfo: {
+        userName: '',
+        userAvatar: '',
+      },
+      storage,
+      userName: '',
     };
+  },
+  created() {
+    this.userName = storage.getUserInfo().userName;
   },
   methods: {
     addNewProject() {
@@ -125,6 +138,10 @@ export default {
     deleteProject(ProjectID) {
       this.Projects.splice(ProjectID, 1);
       console.log(this.Projects);
+    },
+    getUserInfo(userName, userAvatar) {
+      this.userInfo.userName = userName;
+      this.userInfo.userAvatar = userAvatar;
     },
     getColor(syntax) {
       if (syntax === 'JS') {

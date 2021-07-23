@@ -1,44 +1,56 @@
 <template>
-  <div class="text-center">
-    <v-dialog v-model="dialog" dark persistent width="350">
-      <v-card color="rgb(58,75,87)">
-        <v-card-title class="text-h5"> Hellooooooo </v-card-title>
-        <v-card-text>
-          Please enter your name and select avatar to continue
-          <v-text-field
-            class="mt-6"
-            placeholder="Your name"
-            :rules="rules"
-            solo
-            background-color="rgb(42,51,60)"
-            hide-details="auto"
-            persistent-placeholder
-            rounded
-            v-model="inputName"
-          ></v-text-field>
-          <div class="avatar-container">
-            <div v-for="(avatar, index) in avatars" :key="index">
-              <img class="avatar" :src="avatar" @click="selectAvatar(index)" />
+  <div>
+    <div class="text-center">
+      <v-dialog v-model="dialog" dark persistent overlay-opacity="0.8" width="350">
+        <v-card color="rgb(58,75,87)">
+          <v-card-title class="text-h5"> Hellooooooo </v-card-title>
+          <v-card-text>
+            Please enter your name and select avatar to continue
+            <v-text-field
+              class="mt-6"
+              placeholder="Your name"
+              :rules="rules"
+              solo
+              clearable
+              background-color="rgb(42,51,60)"
+              hide-details="auto"
+              persistent-placeholder
+              rounded
+              v-model="userName"
+              @keyup.enter="
+                if (checkValidName(userName)) {
+                  dialog = false;
+                  submit(userName);
+                  passUserInfo(userName, userAvatar || 'avatar1');
+                  userInfoChanged(true);
+                }
+              "
+            ></v-text-field>
+            <div class="avatar-container">
+              <div v-for="(avatar, index) in avatars" :key="index">
+                <img class="avatar" :src="avatar" @click="selectAvatar(index)" />
+              </div>
             </div>
-          </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            class="white--text"
-            color="blueBtn"
-            :disabled="checkValidName(inputName) === false"
-            @click="
-              dialog = false;
-              submit(inputName);
-              passUserInfo(userName, userAvatar);
-            "
-          >
-            Confirm
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              class="white--text"
+              color="blueBtn"
+              :disabled="checkValidName(userName) === false"
+              @click="
+                dialog = false;
+                submit(userName);
+                passUserInfo(userName, userAvatar || 'avatar1');
+                userInfoChanged(true);
+              "
+            >
+              Confirm
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
   </div>
 </template>
 
@@ -71,37 +83,40 @@ export default {
     return {
       dialog: true,
       rules: [
-        (value) => !!value || 'Required.',
-        (value) => (value && value.length >= 2 && value.length <= 50) || 'Min 2 characters, max 50 characters.',
+        (value) => !!value || 'This field is required',
+        (value) =>
+          (value && value.trim().length >= 2 && value.trim().length <= 50) || 'Min 2 characters, max 50 characters',
       ],
-      inputName: '',
       userName: '',
-      userAvatar: 'avatar1',
+      userAvatar: '',
       avatars: [avatar1Selected, avatar2, avatar3, avatar4, avatar5, avatar6],
     };
   },
   created() {
     // retreive user data from local storage
     this.userName = storage.getUserInfo().userName;
-    this.inputName = storage.getUserInfo().inputName;
     this.userAvatar = storage.getUserInfo().userAvatar;
     if (this.userAvatar) {
       this.selectAvatar(parseInt(this.userAvatar.substring(6) - 1, 10));
     }
   },
   methods: {
-    submit(inputName) {
+    submit(userName) {
       // save user data to local storage
-      this.userName = inputName.trim();
-      storage.setUserInfo(this.userName, this.userAvatar, inputName.trim());
+      // TODO: 从后端获取返回的userid 然后存到storage
+      this.userName = userName.trim();
+      storage.setUserInfo(this.userName, this.userAvatar || 'avatar1');
     },
-    checkValidName(inputName) {
-      if (inputName && inputName.trim() !== '' && inputName.trim().length <= 50 && inputName.trim().length >= 2)
+    checkValidName(userName) {
+      if (userName && userName.trim() !== '' && userName.trim().length <= 50 && userName.trim().length >= 2)
         return true;
       return false;
     },
     passUserInfo(userName, userAvatar) {
       this.$emit('passUserInfo', userName, userAvatar);
+    },
+    userInfoChanged(bool) {
+      this.$emit('getUserInfoChangeStatus', bool);
     },
     selectAvatar(index) {
       this.avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
