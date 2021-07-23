@@ -2,7 +2,7 @@
   <div>
     <v-row style="height: 88vh" no-gutters>
       <v-col cols="11">
-        <WelcomeWindow :userInfo="userInfo" @passUserInfo="getUserInfo" />
+        <WelcomeWindow v-if="!userName" :userInfo="userInfo" @passUserInfo="getUserInfo" />
         <div class="project-list-container">
           <div class="title">
             <div class="title-text">Code Projects</div>
@@ -51,6 +51,7 @@
 <script>
 import Toolbar from '../components/Toolbar.vue';
 import WelcomeWindow from './WelcomeWindow.vue';
+import { storage } from '../util';
 
 export default {
   name: 'Projects',
@@ -80,7 +81,12 @@ export default {
       userName: '',
       userAvatar: '',
     },
+    storage,
+    userName: '',
   }),
+  created() {
+    this.userName = storage.getUserInfo().userName;
+  },
   methods: {
     addNewProject() {
       // generating random number as url. temporary method
