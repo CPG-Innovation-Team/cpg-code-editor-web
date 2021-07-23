@@ -47,7 +47,7 @@
               <span>Language</span>
             </v-tooltip>
           </template>
-          <Profile />
+          <Profile @passUserInfo="updateUserInfo" />
         </v-menu>
 
         <v-list-item>
@@ -58,12 +58,12 @@
                   <img
                     class="user-avatar ml-1 mr-1"
                     outlined
-                    :src="require('../assets/img-' + (getUserAvatar || userAvatar) + '.png')"
+                    :src="require('../assets/img-' + (profileAvatar || getUserAvatar || userAvatar) + '.png')"
                     v-bind="attrs"
                     v-on="on"
                   />
                 </template>
-                <span>{{ getUserName || userName }}</span>
+                <span>{{ profileAvatar || getUserName || userName }}</span>
               </v-tooltip>
             </v-avatar>
             <v-icon v-else>mdi-account-circle</v-icon>
@@ -92,7 +92,15 @@ export default {
     return {
       userName: '',
       userAvatar: '',
+      profileName: '',
+      profileAvatar: '',
     };
+  },
+  methods: {
+    updateUserInfo(userName, userAvatar) {
+      this.profileName = userName;
+      this.profileAvatar = userAvatar;
+    },
   },
   created() {
     this.userName = storage.getUserInfo().userName;
