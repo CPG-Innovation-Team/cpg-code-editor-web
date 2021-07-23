@@ -76,16 +76,16 @@
               <span>Language</span>
             </v-tooltip>
           </template>
-          <Profile />
+          <Profile @passUserInfo="updateUserInfo" />
         </v-menu>
 
         <v-list-item disabled>
           <v-list-item-content>
-            <v-avatar v-if="getUserAvatar || userAvatar">
+            <v-avatar v-if="profileAvatar || getUserAvatar || userAvatar">
               <img
                 class="user-avatar ml-1 mr-1"
                 outlined
-                :src="require('../assets/img-' + (getUserAvatar || userAvatar) + '.png')"
+                :src="require('../assets/img-' + (profileAvatar || getUserAvatar || userAvatar) + '.png')"
               />
             </v-avatar>
             <v-icon v-else>mdi-account-circle</v-icon>
@@ -126,7 +126,15 @@ export default {
       ],
       userName: '',
       userAvatar: '',
+      profileName: '',
+      profileAvatar: '',
     };
+  },
+  methods: {
+    updateUserInfo(userName, userAvatar) {
+      this.profileName = userName;
+      this.profileAvatar = userAvatar;
+    },
   },
   created() {
     this.userName = storage.getUserInfo().userName;
