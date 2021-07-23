@@ -1,5 +1,4 @@
 <template>
-  <div>
     <v-row style="height: 88vh" no-gutters>
       <v-col cols="11">
         <div class="project-list-container">
@@ -62,22 +61,21 @@
             </v-data-table>
             <button v-if="Projects.length == 0" style="font-size: 200px" @click="addNewProject()">ADD PROJECT</button>
           </div>
-        </div>
-      </v-col>
-      <v-col cols="1">
-        <Toolbar />
-      </v-col>
-    </v-row>
-  </div>
+      </div>
+    </v-col>
+    <v-col cols="1">
+      <IndexToolbar />
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar.vue';
+import IndexToolbar from '../components/IndexToolbar.vue';
 
 export default {
   name: 'Projects',
   components: {
-    Toolbar,
+    IndexToolbar,
   },
   data() {
     return {

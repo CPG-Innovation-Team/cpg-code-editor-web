@@ -1,46 +1,44 @@
 <template>
-  <div>
-    <div class="text-center">
-      <v-dialog v-model="dialog" dark persistent width="350">
-        <v-card color="rgb(58,75,87)">
-          <v-card-title class="text-h5"> Hellooooooo </v-card-title>
-          <v-card-text>
-            Please enter your name and select avatar to continue
-            <v-text-field
-              class="mt-6"
-              placeholder="Your name"
-              :rules="rules"
-              solo
-              background-color="rgb(42,51,60)"
-              hide-details="auto"
-              persistent-placeholder
-              rounded
-              v-model="inputName"
-            ></v-text-field>
-            <div class="avatar-container">
-              <div v-for="(avatar, index) in avatars" :key="index">
-                <img class="avatar" :src="avatar" @click="selectAvatar(index)" />
-              </div>
+  <div class="text-center">
+    <v-dialog v-model="dialog" dark persistent width="350">
+      <v-card color="rgb(58,75,87)">
+        <v-card-title class="text-h5"> Hellooooooo </v-card-title>
+        <v-card-text>
+          Please enter your name and select avatar to continue
+          <v-text-field
+            class="mt-6"
+            placeholder="Your name"
+            :rules="rules"
+            solo
+            background-color="rgb(42,51,60)"
+            hide-details="auto"
+            persistent-placeholder
+            rounded
+            v-model="inputName"
+          ></v-text-field>
+          <div class="avatar-container">
+            <div v-for="(avatar, index) in avatars" :key="index">
+              <img class="avatar" :src="avatar" @click="selectAvatar(index)" />
             </div>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              class="white--text"
-              color="blueBtn"
-              :disabled="checkValidName(inputName) === false"
-              @click="
-                dialog = false;
-                submit(inputName);
-                passUserInfo(userName, userAvatar);
-              "
-            >
-              Confirm
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </div>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            class="white--text"
+            color="blueBtn"
+            :disabled="checkValidName(inputName) === false"
+            @click="
+              dialog = false;
+              submit(inputName);
+              passUserInfo(userName, userAvatar);
+            "
+          >
+            Confirm
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
