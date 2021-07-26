@@ -17,11 +17,15 @@ export const storage = {
     if (localStorage.userAvatar) {
       output.userAvatar = localStorage.userAvatar;
     }
+    if (localStorage.userID) {
+      output.userID = localStorage.userID;
+    }
     return output;
   },
-  setUserInfo(userName, userAvatar) {
+  setUserInfo(userName, userAvatar, userID) {
     localStorage.userName = userName;
     localStorage.userAvatar = userAvatar;
+    localStorage.userID = userID;
   },
   clearUserInfo() {
     localStorage.clear();

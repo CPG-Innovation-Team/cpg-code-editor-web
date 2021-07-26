@@ -1,7 +1,7 @@
 <template>
   <v-row style="height: 88vh" no-gutters>
     <v-col cols="11">
-      <WelcomeWindow v-if="!userName" :userInfo="userInfo" @passUserInfo="getUserInfo" />
+      <WelcomeWindow v-if="!userID" :userInfo="userInfo" @passUserInfo="getUserInfo" />
       <div class="project-list-container">
         <div class="title">
           <div class="title-text">Code Projects</div>
@@ -107,11 +107,11 @@ export default {
         userAvatar: '',
       },
       storage,
-      userName: '',
+      userID: '',
     };
   },
   created() {
-    this.userName = storage.getUserInfo().userName;
+    this.userID = storage.getUserInfo().userID;
   },
   methods: {
     addNewProject() {
