@@ -16,18 +16,3 @@ export const UPDATE_USER = gql`
     }
   }
 `;
-
-export const CREATE_PROJECT = gql`
-  mutation ($projectName: String!, $syntax: String!) {
-    createProject(projectName: $projectName, syntax: $syntax) {
-      success
-      data {
-        _id
-        hash
-        code
-        updateTime
-        syntax
-      }
-    }
-  }
-`;
