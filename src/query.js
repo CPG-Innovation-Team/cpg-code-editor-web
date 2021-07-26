@@ -9,6 +9,14 @@ export const CREATE_USER = gql`
   }
 `;
 
+export const UPDATE_USER = gql`
+  mutation ($id: String!, $userName: String, $avatar: String) {
+    updateUser(id: $id, userName: $userName, avatar: $avatar) {
+      success
+    }
+  }
+`;
+
 export const CREATE_PROJECT = gql`
   mutation ($projectName: String!, $syntax: String!) {
     createProject(projectName: $projectName, syntax: $syntax) {
