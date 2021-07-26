@@ -27,4 +27,7 @@ export const storage = {
     localStorage.userAvatar = userAvatar;
     localStorage.userID = userID;
   },
+  clearUserInfo() {
+    localStorage.clear();
+  },
 };
