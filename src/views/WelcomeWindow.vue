@@ -56,6 +56,7 @@
 
 <script>
 import { storage } from '../util';
+import { CREATE_USER } from '../query';
 
 const avatar1 = require('../assets/img-avatar1.png');
 const avatar2 = require('../assets/img-avatar2.png');
@@ -89,6 +90,7 @@ export default {
       ],
       userName: '',
       userAvatar: '',
+      userID: '',
       avatars: [avatar1Selected, avatar2, avatar3, avatar4, avatar5, avatar6],
     };
   },
@@ -103,9 +105,17 @@ export default {
   methods: {
     submit(userName) {
       // save user data to local storage
-      // TODO: 从后端获取返回的userid 然后存到storage
-      this.userName = userName.trim();
-      storage.setUserInfo(this.userName, this.userAvatar || 'avatar1');
+      this.$apollo
+        .mutate({
+          mutation: CREATE_USER,
+          variables: { userName: this.userName, avatar: this.userAvatar },
+        })
+        .then((res) => {
+          console.log(res);
+          this.userName = userName.trim();
+          this.userID = res.data.createUser.userId;
+          storage.setUserInfo(this.userName, this.userAvatar || 'avatar1', this.userID);
+        });
     },
     checkValidName(userName) {
       if (userName && userName.trim() !== '' && userName.trim().length <= 50 && userName.trim().length >= 2)
