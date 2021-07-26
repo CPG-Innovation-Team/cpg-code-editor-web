@@ -20,7 +20,12 @@
               @keyup.enter="
                 if (checkValidName(userName)) {
                   dialog = false;
-                  submit(userName);
+                  if (!userID) {
+                    submit(userName);
+                  }
+                  if (userID) {
+                    update(userName);
+                  }
                   passUserInfo(userName, userAvatar || 'avatar1');
                   userInfoChanged(true);
                 }
@@ -40,7 +45,12 @@
               :disabled="checkValidName(userName) === false"
               @click="
                 dialog = false;
-                submit(userName);
+                if (!userID) {
+                  submit(userName);
+                }
+                if (userID) {
+                  update(userName);
+                }
                 passUserInfo(userName, userAvatar || 'avatar1');
                 userInfoChanged(true);
               "
@@ -56,7 +66,7 @@
 
 <script>
 import { storage } from '../util';
-import { CREATE_USER } from '../query';
+import { CREATE_USER, UPDATE_USER } from '../query';
 
 const avatar1 = require('../assets/img-avatar1.png');
 const avatar2 = require('../assets/img-avatar2.png');
@@ -98,6 +108,7 @@ export default {
     // retreive user data from local storage
     this.userName = storage.getUserInfo().userName;
     this.userAvatar = storage.getUserInfo().userAvatar;
+    this.userID = storage.getUserInfo().userID;
     if (this.userAvatar) {
       this.selectAvatar(parseInt(this.userAvatar.substring(6) - 1, 10));
     }
@@ -114,6 +125,18 @@ export default {
           console.log(res);
           this.userName = userName.trim();
           this.userID = res.data.createUser.userId;
+          storage.setUserInfo(this.userName, this.userAvatar || 'avatar1', this.userID);
+        });
+    },
+    update(userName) {
+      this.$apollo
+        .mutate({
+          mutation: UPDATE_USER,
+          variables: { id: this.userID, userName: this.userName, avatar: this.userAvatar },
+        })
+        .then((res) => {
+          console.log(res);
+          this.userName = userName.trim();
           storage.setUserInfo(this.userName, this.userAvatar || 'avatar1', this.userID);
         });
     },
