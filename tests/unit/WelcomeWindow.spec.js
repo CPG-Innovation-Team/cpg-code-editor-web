@@ -5,6 +5,7 @@ import Vuetify from 'vuetify';
 const vuetify = new Vuetify();
 
 describe('WelcomeWindow.vue', () => {
+  const mutate = jest.fn();
   const getWrapper = (roomId = undefined) =>
     shallowMount(WelcomeWindow, vuetify, {
       mocks: {
@@ -14,14 +15,11 @@ describe('WelcomeWindow.vue', () => {
         $router: {
           push: jest.fn(),
         },
+        $apollo: {
+          mutate,
+        },
       },
     });
-
-  it('Submit a user name with default avatar should render on page succesfully', () => {
-    const wrapper = getWrapper();
-    wrapper.vm.submit('testuser1');
-    expect(wrapper.vm.$data.userName).toBe('testuser1');
-  });
 
   it('Inputting index to selectAvatar() should save the correct avatar to inputAvatar', () => {
     const wrapper = getWrapper();
