@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { GET_PROJECT, CREATE_PROJECT } from '../query';
+import { CREATE_PROJECT } from '../query';
 
 export default {
   data() {
@@ -57,9 +57,6 @@ export default {
       projectSyntax: '',
       dialog: false,
     };
-  },
-  apollo: {
-    project: GET_PROJECT,
   },
   methods: {
     validate() {
