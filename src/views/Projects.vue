@@ -5,20 +5,6 @@
       <div class="project-list-container">
         <div class="title">
           <div class="title-text">Code Projects</div>
-          <button
-            style="
-              position: absolute;
-              right: 130px;
-              bottom: 0;
-              height: 30px;
-              width: 280px;
-              background-color: white;
-              color: black;
-            "
-            @click="addNewProject()"
-          >
-            点击这里手动添加list行
-          </button>
         </div>
         <div class="table-container">
           <v-data-table
