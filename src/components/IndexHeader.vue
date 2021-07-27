@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { GET_PROJECT, CREATE_PROJECT } from '../query';
+import { CREATE_PROJECT } from '../query';
 
 export default {
   data() {
@@ -67,12 +67,8 @@ export default {
       projectName: '',
       nameRules: [(v) => !!v || 'Name is required'],
       projectSyntax: '',
-      project: '',
       dialog: false,
     };
-  },
-  apollo: {
-    project: GET_PROJECT,
   },
   methods: {
     validate() {
@@ -86,10 +82,6 @@ export default {
       this.projectName = '';
       this.projectSyntax = '';
       this.$refs.form.reset();
-    },
-    test() {
-      console.log(this.project);
-      console.log(this.projectName, this.projectSyntax);
     },
     createProject() {
       this.$apollo
