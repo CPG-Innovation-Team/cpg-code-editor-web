@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export const SEARCH_PROJECT = gql`
+export const GET_PROJECT = gql`
   query ($_id: String, $hash: String) {
     project(_id: $_id, hash: $hash) {
       _id
@@ -10,15 +10,13 @@ export const SEARCH_PROJECT = gql`
       createTime
       updateTime
       syntax
-      createUser
-      lastModifiedUser
     }
   }
 `;
 
 export const CREATE_PROJECT = gql`
   mutation ($projectName: String!, $syntax: String!, $userId: String!) {
-    createUser(projectName: $projectName, syntax: $syntax, userId: $userId) {
+    createProject(projectName: $projectName, syntax: $syntax, userId: $userId) {
       success
       data
     }
@@ -27,7 +25,7 @@ export const CREATE_PROJECT = gql`
 
 export const REMOVE_PROJECT = gql`
   mutation ($id: String!) {
-    createUser(id: $id) {
+    removeProject(id: $id) {
       result
     }
   }
