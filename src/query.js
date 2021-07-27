@@ -10,6 +10,8 @@ export const GET_PROJECT = gql`
       createTime
       updateTime
       syntax
+      createUser
+      lastModifiedUser
     }
   }
 `;
@@ -18,7 +20,17 @@ export const CREATE_PROJECT = gql`
   mutation ($projectName: String!, $syntax: String!, $userId: String!) {
     createProject(projectName: $projectName, syntax: $syntax, userId: $userId) {
       success
-      data
+      data {
+        _id
+        hash
+        projectName
+        code
+        createTime
+        updateTime
+        syntax
+        createUser
+        lastModifiedUser
+      }
     }
   }
 `;

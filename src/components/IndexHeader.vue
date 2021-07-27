@@ -38,19 +38,7 @@
             "
             >Cancel</v-btn
           >
-          <v-btn
-            text
-            @keyup.enter="
-              test();
-              validate();
-            "
-            @click="
-              createProject();
-              validate();
-            "
-          >
-            Create
-          </v-btn>
+          <v-btn text @keyup.enter="validate()" @click="validate()"> Create </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -58,7 +46,7 @@
 </template>
 
 <script>
-import { CREATE_PROJECT } from '../query';
+import { GET_PROJECT, CREATE_PROJECT } from '../query';
 
 export default {
   data() {
@@ -70,10 +58,14 @@ export default {
       dialog: false,
     };
   },
+  apollo: {
+    project: GET_PROJECT,
+  },
   methods: {
     validate() {
       this.$refs.form.validate();
-      if (this.projectName !== '' && this.projectSyntax !== '') {
+      if (!!this.projectName && !!this.projectSyntax) {
+        this.createProject();
         this.dialog = false;
         this.resetForm();
       }
@@ -87,7 +79,7 @@ export default {
       this.$apollo
         .mutate({
           mutation: CREATE_PROJECT,
-          variables: { projectName: this.projectName, syntax: this.projectSyntax, userId: '123456' },
+          variables: { projectName: this.projectName, syntax: this.projectSyntax, userId: '60ff6e1ce3280033d1b9dbdc' },
         })
         .then((res) => {
           console.log(res);
