@@ -77,10 +77,12 @@
 <script>
 import { storage } from '../util';
 import Profile from './tools/Profile.vue';
+import Setting from './tools/Setting.vue';
 
 export default {
   components: {
     Profile,
+    Setting,
   },
   props: {
     userInfo: {

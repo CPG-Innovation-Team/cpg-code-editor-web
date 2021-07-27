@@ -5,29 +5,14 @@
       <div class="project-list-container">
         <div class="title">
           <div class="title-text">Code Projects</div>
-          <button
-            style="
-              position: absolute;
-              right: 130px;
-              bottom: 0;
-              height: 30px;
-              width: 280px;
-              background-color: white;
-              color: black;
-            "
-            @click="addNewProject()"
-          >
-            点击这里手动添加list行
-          </button>
         </div>
         <div class="table-container">
           <v-data-table
             hide-default-header
-            :hide-default-footer="Projects.length < 7"
+            :hide-default-footer="project.length < 7"
             :headers="headers"
-            :items="Projects"
+            :items="project"
             :items-per-page="7"
-            item-key="URL"
             class="project-list-table tableBackground"
           >
             <template v-slot:header="{ props: { headers } }">
@@ -37,30 +22,57 @@
                 </td>
               </tr>
             </template>
+
             <template v-slot:body="{ items }">
               <tbody>
-                <tr v-for="(item, index) in items" :key="item.URL" class="table-row">
+                <tr v-for="(item, index) in items" :key="index" class="table-row">
                   <td class="item-style">
-                    <v-checkbox small v-model="item.star" class="star-checkbox"></v-checkbox>
+                    <v-checkbox small class="star-checkbox"></v-checkbox>
                   </td>
                   <td class="item-style">
-                    <router-link to="/001" class="project-title">{{ item.title }}</router-link>
+                    <router-link to="/001" class="project-title">{{ item.projectName }}</router-link>
                   </td>
                   <td class="item-style">
                     <v-chip :color="getColor(item.syntax)" dark>{{ item.syntax }}</v-chip>
                   </td>
-                  <td class="item-style">{{ item.modified }}</td>
-                  <td class="item-style">{{ item.createdTime }}</td>
-                  <td class="item-style">{{ item.URL }}</td>
+                  <td class="item-style">{{ item.updateTime }}</td>
+                  <td class="item-style">{{ item.createTime }}</td>
+                  <td class="item-style">{{ item._id }}</td>
                   <td class="item-style">
                     <v-icon class="actions-icon" color="white" @click="copyURL(index)">mdi-share</v-icon>
-                    <v-icon class="actions-icon" color="white" @click="deleteProject(index)">mdi-delete</v-icon>
+
+                    <v-dialog v-model="dialog" width="500" :retain-focus="false">
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-icon class="actions-icon" color="white" v-bind="attrs" v-on="on">mdi-delete</v-icon>
+                      </template>
+
+                      <v-card>
+                        <v-card-title class="headline grey lighten-2">
+                          Are you sure to delete {{ item.projectName }}?
+                        </v-card-title>
+
+                        <v-divider></v-divider>
+
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn text @click="dialog = false"> No </v-btn>
+                          <v-btn
+                            text
+                            @click="
+                              dialog = false;
+                              removeProject(item._id);
+                            "
+                          >
+                            Yes
+                          </v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
                   </td>
                 </tr>
               </tbody>
             </template>
           </v-data-table>
-          <button v-if="Projects.length == 0" style="font-size: 200px" @click="addNewProject()">ADD PROJECT</button>
         </div>
       </div>
     </v-col>
@@ -74,12 +86,16 @@
 import IndexToolbar from '../components/IndexToolbar.vue';
 import WelcomeWindow from './WelcomeWindow.vue';
 import { storage } from '../util';
+import { GET_PROJECT } from '../query';
 
 export default {
   name: 'Projects',
   components: {
     IndexToolbar,
     WelcomeWindow,
+  },
+  apollo: {
+    project: GET_PROJECT,
   },
   data() {
     return {
@@ -92,16 +108,8 @@ export default {
         { text: 'URL', value: 'URL', sortable: false },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
-      Projects: [
-        {
-          title: '进入editor',
-          syntax: 'JS',
-          modified: '5 mins ago',
-          createdTime: '1 days ago',
-          URL: 'http://cpg.url/abcde',
-          star: true,
-        },
-      ],
+      project: [],
+      dialog: false,
       userInfo: {
         userName: '',
         userAvatar: '',
@@ -114,18 +122,8 @@ export default {
     this.userID = storage.getUserInfo().userID;
   },
   methods: {
-    addNewProject() {
-      // generating random number as url. temporary method
-      const link = Math.floor(Math.random() * 9999);
-      console.log(link);
-      this.Projects.push({
-        title: `Project ${this.Projects.length}`,
-        syntax: 'SQL',
-        modified: '1 second ago',
-        createdTime: '1 seconds ago',
-        URL: `http://cpg.url/${link}`,
-        star: false,
-      });
+    removeProject(id) {
+      console.log(id);
     },
     copyURL(ProjectID) {
       const input = document.createElement('input');
@@ -134,10 +132,6 @@ export default {
       input.select();
       document.execCommand('copy');
       document.body.removeChild(input);
-    },
-    deleteProject(ProjectID) {
-      this.Projects.splice(ProjectID, 1);
-      console.log(this.Projects);
     },
     getUserInfo(userName, userAvatar) {
       this.userInfo.userName = userName;
