@@ -38,7 +38,18 @@ export const CREATE_PROJECT = gql`
 export const REMOVE_PROJECT = gql`
   mutation ($id: String!) {
     removeProject(id: $id) {
-      result
+      success
+      data {
+        _id
+        hash
+        projectName
+        code
+        createTime
+        updateTime
+        syntax
+        createUser
+        lastModifiedUser
+      }
     }
   }
 `;
