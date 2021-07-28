@@ -7,9 +7,13 @@
       min-width="100%"
       :close-on-content-click="false"
       content-class="elevation-0 projects-menu"
+      v-model="projectMenu"
     >
       <template v-slot:activator="{ on, attrs }">
-        <h4 class="white--text" v-bind="attrs" v-on="on">Project Name</h4>
+        <h4 class="white--text" v-bind="attrs" v-on="on">
+          Project Name <v-icon v-if="projectMenu" color="white" class="mb-1">mdi-chevron-up</v-icon>
+          <v-icon v-else color="white" class="mb-1">mdi-chevron-down</v-icon>
+        </h4>
       </template>
       <div class="projects-container">
         <v-row>
@@ -21,6 +25,12 @@
           <v-col cols="3">
             <div class="project"></div>
             <p>Project 2</p>
+          </v-col>
+
+          <v-col cols="3">
+            <div class="new-project">
+              <v-icon class="plus-icon" color="greyBtn">mdi-plus-box</v-icon>
+            </div>
           </v-col>
         </v-row>
       </div>
@@ -142,6 +152,7 @@
 <script>
 export default {
   data: () => ({
+    projectMenu: false,
     users: [
       { id: '01', userName: 'Kelly', userAvatar: 'avatar5', isOnline: false },
       { id: '02', userName: 'Mark', userAvatar: 'avatar2', isOnline: true, isEditing: false },
@@ -195,17 +206,41 @@ export default {
 }
 
 .projects-container {
-  height: 230px;
-  padding: 30px;
+  padding: 30px 30px 10px 30px;
   background-color: #24303c;
   color: white;
   border-top: 1px solid white;
+  overflow: hidden;
 
   .project {
     height: 150px;
     width: 200px;
     background-color: #2c333b;
     margin-bottom: 10px;
+    border: 1px solid white;
+    cursor: pointer;
+
+    &:hover {
+      border: 1px solid #537cd6;
+    }
+  }
+
+  .new-project {
+    display: flex;
+    justify-content: center;
+    height: 150px;
+    width: 200px;
+    background-color: #1f2933;
+    margin-bottom: 10px;
+    cursor: pointer;
+
+    .plus-icon {
+      font-size: 72px;
+    }
+
+    &:hover {
+      border: 1px solid #537cd6;
+    }
   }
 }
 
