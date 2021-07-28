@@ -21,6 +21,12 @@ describe('WelcomeWindow.vue', () => {
       },
     });
 
+  it('Check valid name should return false when the input name is <= 2 chars or >= 50 chars', () => {
+    const wrapper = getWrapper();
+    const inputName = 'h';
+    expect(wrapper.vm.checkValidName(inputName)).toBeFalsy();
+  });
+
   it('Inputting index to selectAvatar() should save the correct avatar to inputAvatar', () => {
     const wrapper = getWrapper();
     wrapper.vm.selectAvatar(0);
