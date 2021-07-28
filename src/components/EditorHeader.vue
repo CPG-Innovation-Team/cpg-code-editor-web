@@ -121,7 +121,7 @@ export default {
       { id: '07', userName: 'user1', userAvatar: 'avatar1', isOnline: false },
       { id: '10', userName: 'user4', userAvatar: 'avatar4', isOnline: false },
     ],
-    index: 4,
+    index: document.body.clientWidth / 320,
     clientWidth: document.body.clientWidth,
     url: 'https://cgp.url',
     copied: false,
@@ -141,16 +141,17 @@ export default {
   mounted() {
     this.url += this.$route.fullPath;
     // watch the width of the window
+    const that = this;
     window.onresize = () => {
       return (() => {
         window.clientWidth = document.body.clientWidth;
-        this.clientWidth = window.clientWidth;
+        that.clientWidth = window.clientWidth;
       })();
     };
   },
   watch: {
     clientWidth(newVal) {
-      this.index = newVal / 300;
+      this.index = newVal / 320;
     },
   },
 };
@@ -169,11 +170,12 @@ export default {
 }
 
 .user-menu {
-  margin-top: 10px;
+  margin-top: 20px;
 
   .user-list {
     width: 230px;
     justify-content: center;
+    background-color: #3d4b56;
   }
 }
 
