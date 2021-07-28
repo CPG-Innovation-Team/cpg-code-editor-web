@@ -47,31 +47,19 @@
           )
         }}
       </div>
-      <div v-for="(user, index) in users" :key="index">
-        <v-tooltip bottom>
+      <UserStatus :usersList="users.slice(0, index)" />
+
+      <div>
+        <v-menu content-class="user-menu" offset-y dark>
           <template v-slot:activator="{ on, attrs }">
-            <v-avatar rounded>
-              <img
-                class="user-avatar ml-1 mr-1"
-                outlined
-                :src="require(`../assets/img-${user.userAvatar}.png`)"
-                v-bind="attrs"
-                v-on="on"
-                :style="{
-                  'border-color': getColor(user),
-                  filter: user.isOnline ? 'saturate(100%)' : 'saturate(10%)',
-                  opacity: user.isOnline ? 1 : 0.5,
-                }"
-              />
-              <div
-                v-if="user.isOnline"
-                class="user-editing-status"
-                :style="{ 'background-color': user.isEditing ? 'rgb(221, 115, 55)' : 'rgb(107, 189, 115)' }"
-              ></div>
-            </v-avatar>
+            <v-btn v-if="users.length >= 5" class="mx-2" v-bind="attrs" v-on="on" fab dark small color="indigo">
+              <v-icon dark> ... </v-icon>
+            </v-btn>
           </template>
-          <span>{{ user.userName }}</span>
-        </v-tooltip>
+          <v-list class="user-list">
+            <UserStatus :usersList="users.slice(index)" />
+          </v-list>
+        </v-menu>
       </div>
     </div>
     <v-menu
@@ -150,17 +138,33 @@
 </template>
 
 <script>
+import UserStatus from './UserStatus.vue';
+
 export default {
+  components: {
+    UserStatus,
+  },
   data: () => ({
     projectMenu: false,
     users: [
-      { id: '01', userName: 'Kelly', userAvatar: 'avatar5', isOnline: false },
       { id: '02', userName: 'Mark', userAvatar: 'avatar2', isOnline: true, isEditing: false },
       { id: '03', userName: 'Jack', userAvatar: 'avatar1', isOnline: true, isEditing: true },
-      { id: '04', userName: 'Lucy', userAvatar: 'avatar4', isOnline: false },
       { id: '05', userName: 'Martin', userAvatar: 'avatar3', isOnline: true, isEditing: true },
       { id: '06', userName: 'Alice', userAvatar: 'avatar6', isOnline: true, isEditing: false },
+      { id: '08', userName: 'user2', userAvatar: 'avatar3', isOnline: true, isEditing: true },
+      { id: '09', userName: 'user3', userAvatar: 'avatar2', isOnline: true, isEditing: false },
+      { id: '14', userName: 'user8', userAvatar: 'avatar1', isOnline: true, isEditing: true },
+      { id: '15', userName: 'user9', userAvatar: 'avatar3', isOnline: true, isEditing: false },
+      { id: '11', userName: 'user5', userAvatar: 'avatar5', isOnline: true, isEditing: true },
+      { id: '12', userName: 'user6', userAvatar: 'avatar6', isOnline: true, isEditing: false },
+      { id: '13', userName: 'user7', userAvatar: 'avatar2', isOnline: false },
+      { id: '04', userName: 'Lucy', userAvatar: 'avatar4', isOnline: false },
+      { id: '01', userName: 'Kelly', userAvatar: 'avatar5', isOnline: false },
+      { id: '07', userName: 'user1', userAvatar: 'avatar1', isOnline: false },
+      { id: '10', userName: 'user4', userAvatar: 'avatar4', isOnline: false },
     ],
+    index: document.body.clientWidth / 320,
+    clientWidth: document.body.clientWidth,
     url: 'https://cgp.url',
     copied: false,
   }),
@@ -171,24 +175,6 @@ export default {
       }
       return `${length} members online`;
     },
-    getColor(user) {
-      if (user.userAvatar === 'avatar1') {
-        return 'rgb(198, 148, 48)';
-      }
-      if (user.userAvatar === 'avatar2') {
-        return 'rgb(198, 201, 131)';
-      }
-      if (user.userAvatar === 'avatar3') {
-        return 'rgb(135, 93, 69)';
-      }
-      if (user.userAvatar === 'avatar4') {
-        return 'rgb(71, 92, 147)';
-      }
-      if (user.userAvatar === 'avatar5') {
-        return 'rgb(123, 170, 164)';
-      }
-      return 'rgb(226, 109, 93)';
-    },
     copyURL() {
       navigator.clipboard.writeText(this.url);
       this.copied = true;
@@ -196,6 +182,19 @@ export default {
   },
   mounted() {
     this.url += this.$route.fullPath;
+    // watch the width of the window
+    const that = this;
+    window.onresize = () => {
+      return (() => {
+        window.clientWidth = document.body.clientWidth;
+        that.clientWidth = window.clientWidth;
+      })();
+    };
+  },
+  watch: {
+    clientWidth(newVal) {
+      this.index = newVal / 320;
+    },
   },
 };
 </script>
@@ -251,24 +250,17 @@ export default {
   .user-num {
     margin-right: 5px;
     color: white;
-    font-size: 14px;
+    font-size: 12px;
   }
+}
 
-  .user-avatar {
-    height: 40px;
-    border: 2px solid;
-    border-radius: 50%;
-    padding: 3px;
-  }
+.user-menu {
+  margin-top: 20px;
 
-  .user-editing-status {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    border: 2px solid white;
-    border-radius: 50%;
-    top: 4px;
-    right: 4px;
+  .user-list {
+    width: 230px;
+    justify-content: center;
+    background-color: #3d4b56;
   }
 }
 

@@ -30,6 +30,7 @@
 │   │   ├── EditorHeader.vue    编辑页面的顶部菜单
 │   │   ├── IndexToolbar.vue    主页的工具栏
 │   │   ├── EditorToolbar.vue    编辑页面的工具栏
+│   │   ├── UserStatus.vue    头像状态组件
 │   │   └── tools    工具栏中的菜单
 │   │       ├── History.vue    编辑历史
 │   │       ├── Profile.vue    个人简介
@@ -41,6 +42,7 @@
 │   ├── registerServiceWorker.js
 │   ├── router.js    路由文件
 │   ├── util.js    公用方法文件
+│   ├── query.js    graphql api文件
 │   └── views    页面目录
 │       ├── Editor.vue    编辑器页面
 │       ├── Projects.vue    文档管理页面（首页）
