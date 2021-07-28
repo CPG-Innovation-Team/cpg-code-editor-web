@@ -1,6 +1,31 @@
 <template>
   <v-app-bar app color="primary">
-    <v-toolbar-title class="white--text">正大集团</v-toolbar-title>
+    <v-toolbar-title class="white--text mr-5">正大集团</v-toolbar-title>
+    <v-menu
+      offset-y
+      min-height
+      min-width="100%"
+      :close-on-content-click="false"
+      content-class="elevation-0 projects-menu"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <h4 class="white--text" v-bind="attrs" v-on="on">Project Name</h4>
+      </template>
+      <div class="projects-container">
+        <v-row>
+          <v-col cols="3">
+            <div class="project"></div>
+            <p>Project 1</p>
+          </v-col>
+
+          <v-col cols="3">
+            <div class="project"></div>
+            <p>Project 2</p>
+          </v-col>
+        </v-row>
+      </div>
+    </v-menu>
+
     <v-spacer></v-spacer>
     <div class="user-status">
       <div class="user-num">
@@ -39,7 +64,14 @@
         </v-tooltip>
       </div>
     </div>
-    <v-menu offset-y :close-on-content-click="false" max-height="auto" max-width="400" nudge-bottom="10">
+    <v-menu
+      offset-y
+      :close-on-content-click="false"
+      max-height="auto"
+      max-width="400"
+      nudge-bottom="10"
+      content-class="share-menu"
+    >
       <template v-slot:activator="{ on, attrs }">
         <v-btn class="white--text ml-5 mr-5" color="blueBtn" v-bind="attrs" v-on="on">
           <v-icon>mdi-share</v-icon>Share
@@ -158,6 +190,25 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.projects-menu {
+  top: 64px !important;
+}
+
+.projects-container {
+  height: 230px;
+  padding: 30px;
+  background-color: #24303c;
+  color: white;
+  border-top: 1px solid white;
+
+  .project {
+    height: 150px;
+    width: 200px;
+    background-color: #2c333b;
+    margin-bottom: 10px;
+  }
+}
+
 .user-status {
   display: flex;
   align-items: center;
@@ -190,7 +241,7 @@ export default {
   color: white;
 }
 
-.v-menu__content {
+.share-menu {
   border-radius: 26px;
   box-shadow: 0px 14px 0px -4px #343f48;
 }
