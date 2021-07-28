@@ -10,7 +10,7 @@
         >
       </template>
 
-      <v-card>
+      <v-card @keyup.enter="validate()">
         <v-card-title class="headline grey lighten-2">Create Project</v-card-title>
 
         <v-form v-model="valid" ref="form">
@@ -38,7 +38,7 @@
             "
             >Cancel</v-btn
           >
-          <v-btn text @keyup.enter="validate()" @click="validate()"> Create </v-btn>
+          <v-btn text @click="validate()"> Create </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
