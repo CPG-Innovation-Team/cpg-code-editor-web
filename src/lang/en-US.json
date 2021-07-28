@@ -1,0 +1,32 @@
+{
+  "header": {
+    "create": {
+      "name": "Create",
+      "title": "Create Project"
+    },
+    "share": {
+      "name": "Share",
+      "copy": "Copy",
+      "hint": "Use keyboard short cut Ctrl+V / ⌘+V to paste on your favorite way to share link."
+    }
+  },
+  "projects": {
+    "CodeProjects": "Code Projects",
+    "table": {
+      "title": "Title",
+      "syntax": "Syntax",
+      "modified": "Modified",
+      "created": "Created",
+      "url": "URL",
+      "action": "Action"
+    }
+  },
+  "tools": {
+    "setting": {
+      "name": "Setting",
+      "title": "Title",
+      "syntax": "Syntax",
+      "tabSize": "Tab Size"
+    }
+  }
+}

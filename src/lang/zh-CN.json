@@ -1,0 +1,32 @@
+{
+  "header": {
+    "create": {
+      "name": "新建",
+      "title": "新建项目"
+    },
+    "share": {
+      "name": "分享",
+      "copy": "复制",
+      "hint": "使用快捷键 Ctrl+V / ⌘+V来复制链接。"
+    }
+  },
+  "projects": {
+    "CodeProjects": "目录",
+    "table": {
+      "title": "名字",
+      "syntax": "语言",
+      "modified": "上次更改",
+      "created": "创建日期",
+      "url": "url",
+      "action": "操作"
+    }
+  },
+  "tools": {
+    "setting": {
+      "name": "设置",
+      "title": "文件名",
+      "syntax": "语言",
+      "tabSize": "tab长度"
+    }
+  }
+}
