@@ -12,7 +12,7 @@
           )
         }}
       </div>
-      <UserStatus :usersList="users.slice(0, 5)" />
+      <UserStatus :usersList="users.slice(0, index)" />
 
       <div>
         <v-menu content-class="user-menu" offset-y dark>
@@ -22,7 +22,7 @@
             </v-btn>
           </template>
           <v-list class="user-list">
-            <UserStatus :usersList="users.slice(5)" />
+            <UserStatus :usersList="users.slice(index)" />
           </v-list>
         </v-menu>
       </div>
@@ -121,6 +121,8 @@ export default {
       { id: '07', userName: 'user1', userAvatar: 'avatar1', isOnline: false },
       { id: '10', userName: 'user4', userAvatar: 'avatar4', isOnline: false },
     ],
+    index: 4,
+    clientWidth: document.body.clientWidth,
     url: 'https://cgp.url',
     copied: false,
   }),
@@ -138,6 +140,18 @@ export default {
   },
   mounted() {
     this.url += this.$route.fullPath;
+    // watch the width of the window
+    window.onresize = () => {
+      return (() => {
+        window.clientWidth = document.body.clientWidth;
+        this.clientWidth = window.clientWidth;
+      })();
+    };
+  },
+  watch: {
+    clientWidth(newVal) {
+      this.index = newVal / 300;
+    },
   },
 };
 </script>
@@ -150,7 +164,7 @@ export default {
   .user-num {
     margin-right: 5px;
     color: white;
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 
