@@ -37,7 +37,7 @@
                   </td>
                   <td class="item-style">{{ item.updateTime }}</td>
                   <td class="item-style">{{ item.createTime }}</td>
-                  <td class="item-style">{{ item._id }}</td>
+                  <td class="item-style">http://cpg.url/{{ item.hash }}</td>
                   <td class="item-style">
                     <v-icon class="actions-icon" color="white" @click="copyURL(index)">mdi-share</v-icon>
 
@@ -105,7 +105,7 @@ export default {
         { text: 'Syntax', value: 'syntax' }, //  change sorting to dropdown
         { text: 'Modified', value: 'modified' },
         { text: 'Created', value: 'createdTime' },
-        { text: 'URL', value: 'URL', sortable: false },
+        { text: 'URL', value: '_id', sortable: false },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       project: [],
