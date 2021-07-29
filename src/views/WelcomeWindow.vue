@@ -17,7 +17,7 @@
               persistent-placeholder
               rounded
               v-model="userName"
-              @keyup.enter="
+              @keypress.enter.native="
                 if (checkValidName(userName)) {
                   dialog = false;
                   if (!userID) {
