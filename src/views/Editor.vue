@@ -116,7 +116,6 @@ export default {
         } else if (res.code !== this.getCode() && this.codeUpdateEnable) {
           // Prevent remote code override local
           this.setCode(res.code);
-          console.log(res);
         }
       });
     },
