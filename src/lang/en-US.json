@@ -7,6 +7,7 @@
     "share": {
       "name": "Share",
       "copy": "Copy",
+      "copied": "Copied",
       "hint": "Use keyboard short cut Ctrl+V / ⌘+V to paste on your favorite way to share link."
     }
   },
@@ -27,6 +28,13 @@
       "title": "Title",
       "syntax": "Syntax",
       "tabSize": "Tab Size"
+    },
+    "profile": {
+      "userProfile": "User Profile",
+      "change": "change",
+      "name": "Name",
+      "email": "Email",
+      "language": "Language"
     }
   }
 }

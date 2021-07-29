@@ -7,6 +7,7 @@
     "share": {
       "name": "分享",
       "copy": "复制",
+      "copied": "已复制",
       "hint": "使用快捷键 Ctrl+V / ⌘+V来复制链接。"
     }
   },
@@ -23,10 +24,18 @@
   },
   "tools": {
     "setting": {
+      "": "设置",
       "name": "设置",
       "title": "文件名",
       "syntax": "语言",
       "tabSize": "tab长度"
+    },
+    "profile": {
+      "userProfile": "个人信息",
+      "change": "上传",
+      "name": "名字",
+      "email": "邮箱",
+      "language": "语言"
     }
   }
 }

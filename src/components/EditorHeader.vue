@@ -81,7 +81,7 @@
 
         <v-container class="share-container white--text">
           <v-row>
-            <v-col cols="2">
+            <v-col cols="3">
               <h3 class="mr-5">{{ $t('header.share.name') }}</h3>
             </v-col>
 
@@ -124,13 +124,13 @@
                 style="border-radius: 12px"
                 @click="copyURL"
               >
-                <v-icon small class="mr-2">mdi-content-copy</v-icon>Copied
+                <v-icon small class="mr-2">mdi-content-copy</v-icon>{{ $t('header.share.copied') }}
               </v-btn>
             </v-col>
           </v-row>
 
           <v-row>
-            <p class="hint mx-auto">Use keyboard short cut Ctrl+V / ⌘+V to paste on your favorite way to share link.</p>
+            <p class="hint mx-auto">{{ $t('header.share.hint') }}</p>
           </v-row>
         </v-container>
       </div>
@@ -278,6 +278,7 @@ export default {
   display: grid;
   height: 100%;
   width: 100%;
+  min-width: 400px;
   background: #3d4b56;
   padding: 8%;
   border-radius: 26px;
