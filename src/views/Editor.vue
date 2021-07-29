@@ -43,7 +43,7 @@
 import * as monaco from 'monaco-editor';
 import { io } from 'socket.io-client';
 import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
-import { formattedDateTime } from '../util';
+import { formattedDateTime, storage } from '../util';
 import CODE_LANGUAGE_LIST from '../map';
 import EditorToolbar from '../components/EditorToolbar.vue';
 
@@ -61,10 +61,12 @@ export default {
       logList: [],
       codeUpdateEnable: true, // Debounce for real-time sync
       debounceTimeout: null,
-      roomId: null,
+      projectId: null,
+      userId: storage.getUserInfo().userID,
       initStatus: true,
       selectedCodeLanguage: 'javascript',
       codeLanguageList: CODE_LANGUAGE_LIST,
+      users: [],
     };
   },
   methods: {
@@ -88,32 +90,33 @@ export default {
       });
     },
     initSocketIO() {
-      this.roomId = this.$route.params.roomId;
+      this.projectId = this.$route.params.projectId;
 
       const socketUrl = process.env.NODE_ENV === 'test' ? '' : 'ws://localhost:3000';
       this.socket = io(socketUrl, { transports: ['websocket'] });
       this.socket.on('connect', () => {
-        if (this.roomId) {
-          this.socket.emit('clientEnterRoom', this.roomId);
+        if (this.projectId) {
+          this.socket.emit('clientEnterProject', this.projectId, this.userId);
         }
       });
 
       this.socket.on('connect_error', async () => {
         if (this.initStatus) {
-          this.setCode(await getCodeInLocalDb(this.roomId || 'localDefault'));
+          this.setCode(await getCodeInLocalDb(this.projectId || 'localDefault'));
           this.initStatus = false;
         }
       });
 
       // Receive code from server
-      this.socket.on('serverCodeSync', (res) => {
-        if (this.roomId !== res.roomId) {
-          this.$router.push(`/${res.roomId}`);
-          this.roomId = res.roomId;
-          this.socket.emit('clientEnterRoom', res.roomId);
+      this.socket.on('serverProjectInfoSync', (res) => {
+        if (this.projectId !== res.projectId) {
+          this.$router.push(`/${res.projectId}`);
+          this.projectId = res.projectId;
+          this.socket.emit('clientEnterProject', { projectId: this.projectId, userId: this.userId });
         } else if (res.code !== this.getCode() && this.codeUpdateEnable) {
           // Prevent remote code override local
           this.setCode(res.code);
+          console.log(res);
         }
       });
     },
@@ -129,8 +132,8 @@ export default {
         this.debounceTimeout = setTimeout(() => {
           console.original.log(e);
           const code = this.getCode();
-          this.socket.emit('clientUploadCode', { code, roomId: this.roomId });
-          updateCodeInLocalDb(code, this.roomId || 'localDefault');
+          this.socket.emit('clientUpdateProjectInfo', { code, projectId: this.projectId });
+          updateCodeInLocalDb(code, this.projectId || 'localDefault');
           this.codeUpdateEnable = true;
         }, 1000);
       });
