@@ -35,8 +35,8 @@
                   <td class="item-style">
                     <v-chip :color="getColor(item.syntax)" dark>{{ item.syntax }}</v-chip>
                   </td>
-                  <td class="item-style">{{ item.updateTime }}</td>
-                  <td class="item-style">{{ item.createTime }}</td>
+                  <td class="item-style">{{ showTime(item.updateTime) }}</td>
+                  <td class="item-style">{{ showTime(item.createTime) }}</td>
                   <td class="item-style">http://cpg.url/{{ item.hash }}</td>
                   <td class="item-style">
                     <v-icon class="actions-icon" color="white" @click="copyURL(index)">mdi-share</v-icon>
@@ -122,9 +122,6 @@ export default {
     this.userID = storage.getUserInfo().userID;
   },
   methods: {
-    removeProject(id) {
-      console.log(id);
-    },
     copyURL(ProjectID) {
       const input = document.createElement('input');
       input.value = this.Projects[ProjectID].URL;
@@ -145,6 +142,10 @@ export default {
         return 'green';
       }
       return 'blue';
+    },
+    showTime(date) {
+      // add features later to display correct time
+      return Date(date);
     },
   },
 };
@@ -225,7 +226,6 @@ td:first-child {
 .table-row:nth-child(even) > .item-style {
 }
 .table-row:nth-child(odd) > .item-style {
-  height: 70px;
   background-color: rgb(53, 66, 77);
 }
 tbody {
