@@ -46,7 +46,16 @@
     </div>
     <div>
       <div>Language</div>
-      <v-select class="mt-1" :items="languages" dark label="Language"></v-select>
+      <v-select
+        v-model="selected"
+        class="mt-1"
+        :items="languages"
+        item-text="text"
+        item-value="locale"
+        dark
+        label="Language"
+        @change="changeLang(selected)"
+      ></v-select>
     </div>
   </div>
 </template>
@@ -66,7 +75,11 @@ export default {
       userName: '',
       userAvatar: '',
       userEmail: 'example@example.com',
-      languages: ['简体中文', 'English'],
+      selected: { text: 'English', locale: 'en-US' },
+      languages: [
+        { text: '简体中文', locale: 'zh-CN' },
+        { text: 'English', locale: 'en-US' },
+      ],
       changeIsClicked: false,
     };
   },
@@ -77,6 +90,9 @@ export default {
     getUserInfo(userName, userAvatar) {
       this.userName = userName;
       this.userAvatar = userAvatar;
+    },
+    changeLang(locale) {
+      this.$i18n.locale = locale;
     },
   },
   created() {

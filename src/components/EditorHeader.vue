@@ -62,6 +62,7 @@
         </v-menu>
       </div>
     </div>
+
     <v-menu
       offset-y
       :close-on-content-click="false"
@@ -72,7 +73,7 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn class="white--text ml-5 mr-5" color="blueBtn" v-bind="attrs" v-on="on">
-          <v-icon>mdi-share</v-icon>Share
+          <v-icon>mdi-share</v-icon>{{ $t('header.share.name') }}
         </v-btn>
       </template>
       <div>
@@ -81,7 +82,7 @@
         <v-container class="share-container white--text">
           <v-row>
             <v-col cols="2">
-              <h3 class="mr-5">Share</h3>
+              <h3 class="mr-5">{{ $t('header.share.name') }}</h3>
             </v-col>
 
             <v-col>
@@ -112,7 +113,7 @@
                 style="border-radius: 12px"
                 @click="copyURL"
               >
-                <v-icon small class="mr-2">mdi-content-copy</v-icon>Copy
+                <v-icon small class="mr-2">mdi-content-copy</v-icon>{{ $t('header.share.copy') }}
               </v-btn>
               <v-btn
                 v-else
