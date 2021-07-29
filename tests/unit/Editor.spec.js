@@ -32,11 +32,11 @@ describe('Editor.vue', () => {
     jest.restoreAllMocks();
   });
 
-  const getWrapper = (roomId = undefined) =>
+  const getWrapper = (projectId = undefined) =>
     shallowMount(Editor, {
       mocks: {
         $route: {
-          params: { roomId },
+          params: { projectId },
         },
         $router: {
           push: jest.fn(),
@@ -89,28 +89,31 @@ describe('Editor.vue', () => {
     expect(wrapper.vm.$data.logList).toEqual([]);
   });
 
-  it('Receive server code then emit enter room with roomId', (done) => {
+  it('Receive server code then emit enter room with projectId', (done) => {
     getWrapper();
-    socket.socketClient.on('clientEnterRoom', (res) => {
-      expect(res).toBe('TEST_ROOM');
+    socket.socketClient.on('clientEnterProject', (res) => {
+      expect(res.projectId).toBe('TEST_ROOM');
       done();
     });
-    socket.socketClient.emit('serverCodeSync', { code: 'TEST_CODE_FROM_MOCK_SERVER', roomId: 'TEST_ROOM' });
+    socket.socketClient.emit('serverProjectInfoSync', { code: 'TEST_CODE_FROM_MOCK_SERVER', projectId: 'TEST_ROOM' });
   });
 
   it('Receive server code then show code in editor', (done) => {
     const wrapper = getWrapper('TEST_ROOM_2');
-    socket.on('serverCodeSync', async () => {
+    socket.on('serverProjectInfoSync', async () => {
       const code = await wrapper.vm.getCode();
       expect(code).toBe('TEST_CODE_FROM_MOCK_SERVER_2');
       done();
     });
-    socket.socketClient.emit('serverCodeSync', { code: 'TEST_CODE_FROM_MOCK_SERVER_2', roomId: 'TEST_ROOM_2' });
+    socket.socketClient.emit('serverProjectInfoSync', {
+      code: 'TEST_CODE_FROM_MOCK_SERVER_2',
+      projectId: 'TEST_ROOM_2',
+    });
   });
 
-  it('Connect socket server then enter room with roomId in url after', (done) => {
+  it('Connect socket server then enter room with projectId in url after', (done) => {
     getWrapper('TEST_ROOM_3');
-    socket.socketClient.on('clientEnterRoom', (res) => {
+    socket.socketClient.on('clientEnterProject', (res) => {
       expect(res).toBe('TEST_ROOM_3');
       done();
     });
