@@ -1,6 +1,41 @@
 <template>
   <v-app-bar app color="primary">
-    <v-toolbar-title class="white--text">正大集团</v-toolbar-title>
+    <v-toolbar-title class="white--text mr-5">正大集团</v-toolbar-title>
+    <v-menu
+      offset-y
+      min-height
+      min-width="100%"
+      :close-on-content-click="false"
+      content-class="elevation-0 projects-menu"
+      v-model="projectMenu"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <h4 class="white--text" v-bind="attrs" v-on="on">
+          Project Name <v-icon v-if="projectMenu" color="white" class="mb-1">mdi-chevron-up</v-icon>
+          <v-icon v-else color="white" class="mb-1">mdi-chevron-down</v-icon>
+        </h4>
+      </template>
+      <div class="projects-container">
+        <v-row>
+          <v-col cols="3">
+            <div class="project"></div>
+            <p>Project 1</p>
+          </v-col>
+
+          <v-col cols="3">
+            <div class="project"></div>
+            <p>Project 2</p>
+          </v-col>
+
+          <v-col cols="3">
+            <div class="new-project">
+              <v-icon class="plus-icon" color="greyBtn">mdi-plus-box</v-icon>
+            </div>
+          </v-col>
+        </v-row>
+      </div>
+    </v-menu>
+
     <v-spacer></v-spacer>
     <div class="user-status">
       <div class="user-num">
@@ -28,10 +63,17 @@
       </div>
     </div>
 
-    <v-menu offset-y :close-on-content-click="false" max-height="auto" max-width="400" nudge-bottom="10">
+    <v-menu
+      offset-y
+      :close-on-content-click="false"
+      max-height="auto"
+      max-width="400"
+      nudge-bottom="10"
+      content-class="share-menu"
+    >
       <template v-slot:activator="{ on, attrs }">
         <v-btn class="white--text ml-5 mr-5" color="blueBtn" v-bind="attrs" v-on="on">
-          <v-icon>mdi-share</v-icon>Share
+          <v-icon>mdi-share</v-icon>{{ $t('header.share.name') }}
         </v-btn>
       </template>
       <div>
@@ -39,8 +81,8 @@
 
         <v-container class="share-container white--text">
           <v-row>
-            <v-col cols="2">
-              <h3 class="mr-5">Share</h3>
+            <v-col cols="3">
+              <h3 class="mr-5">{{ $t('header.share.name') }}</h3>
             </v-col>
 
             <v-col>
@@ -71,7 +113,7 @@
                 style="border-radius: 12px"
                 @click="copyURL"
               >
-                <v-icon small class="mr-2">mdi-content-copy</v-icon>Copy
+                <v-icon small class="mr-2">mdi-content-copy</v-icon>{{ $t('header.share.copy') }}
               </v-btn>
               <v-btn
                 v-else
@@ -82,13 +124,13 @@
                 style="border-radius: 12px"
                 @click="copyURL"
               >
-                <v-icon small class="mr-2">mdi-content-copy</v-icon>Copied
+                <v-icon small class="mr-2">mdi-content-copy</v-icon>{{ $t('header.share.copied') }}
               </v-btn>
             </v-col>
           </v-row>
 
           <v-row>
-            <p class="hint mx-auto">Use keyboard short cut Ctrl+V / ⌘+V to paste on your favorite way to share link.</p>
+            <p class="hint mx-auto">{{ $t('header.share.hint') }}</p>
           </v-row>
         </v-container>
       </div>
@@ -104,6 +146,7 @@ export default {
     UserStatus,
   },
   data: () => ({
+    projectMenu: false,
     users: [
       { id: '02', userName: 'Mark', userAvatar: 'avatar2', isOnline: true, isEditing: false },
       { id: '03', userName: 'Jack', userAvatar: 'avatar1', isOnline: true, isEditing: true },
@@ -158,6 +201,49 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.projects-menu {
+  top: 64px !important;
+}
+
+.projects-container {
+  padding: 30px 30px 10px 30px;
+  background-color: #24303c;
+  color: white;
+  border-top: 1px solid white;
+  overflow: hidden;
+
+  .project {
+    height: 150px;
+    width: 200px;
+    background-color: #2c333b;
+    margin-bottom: 10px;
+    border: 1px solid white;
+    cursor: pointer;
+
+    &:hover {
+      border: 1px solid #537cd6;
+    }
+  }
+
+  .new-project {
+    display: flex;
+    justify-content: center;
+    height: 150px;
+    width: 200px;
+    background-color: #1f2933;
+    margin-bottom: 10px;
+    cursor: pointer;
+
+    .plus-icon {
+      font-size: 72px;
+    }
+
+    &:hover {
+      border: 1px solid #537cd6;
+    }
+  }
+}
+
 .user-status {
   display: flex;
   align-items: center;
@@ -179,7 +265,11 @@ export default {
   }
 }
 
-.v-menu__content {
+.user-info {
+  color: white;
+}
+
+.share-menu {
   border-radius: 26px;
   box-shadow: 0px 14px 0px -4px #343f48;
 }
@@ -188,6 +278,7 @@ export default {
   display: grid;
   height: 100%;
   width: 100%;
+  min-width: 400px;
   background: #3d4b56;
   padding: 8%;
   border-radius: 26px;

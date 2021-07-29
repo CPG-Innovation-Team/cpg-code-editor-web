@@ -1,6 +1,6 @@
 <template>
   <div outlined class="white--text container">
-    <h4 class="mb-5">User Profile</h4>
+    <h4 class="mb-5">{{ $t('tools.profile.userProfile') }}</h4>
     <WelcomeWindow
       v-bind="$attrs"
       v-on="$listeners"
@@ -14,14 +14,14 @@
         <v-icon v-else>mdi-account-circle</v-icon>
       </v-avatar>
       <v-btn class="white--text" color="rgb(33, 48, 61)" small @click="changeIsClicked = true">
-        <v-icon left dark> mdi-image </v-icon> Change
+        <v-icon left dark> mdi-image </v-icon> {{ $t('tools.profile.change') }}
       </v-btn>
       <v-btn class="white--text" color="rgb(33, 48, 61)" small icon>
         <v-icon dark> mdi-delete </v-icon>
       </v-btn>
     </div>
     <div class="user-info">
-      <div>Name</div>
+      <div>{{ $t('tools.profile.name') }}</div>
       <div>
         <v-text-field
           class="mt-1"
@@ -32,7 +32,7 @@
           disabled
         ></v-text-field>
       </div>
-      <div>Email</div>
+      <div>{{ $t('tools.profile.email') }}</div>
       <div>
         <v-text-field
           class="mt-1"
@@ -45,8 +45,17 @@
       </div>
     </div>
     <div>
-      <div>Language</div>
-      <v-select class="mt-1" :items="languages" dark label="Language"></v-select>
+      <div>{{ $t('tools.profile.language') }}</div>
+      <v-select
+        v-model="selected"
+        class="mt-1"
+        :items="languages"
+        item-text="text"
+        item-value="locale"
+        dark
+        label="Language"
+        @change="changeLang(selected)"
+      ></v-select>
     </div>
   </div>
 </template>
@@ -66,7 +75,11 @@ export default {
       userName: '',
       userAvatar: '',
       userEmail: 'example@example.com',
-      languages: ['简体中文', 'English'],
+      selected: { text: 'English', locale: 'en-US' },
+      languages: [
+        { text: '简体中文', locale: 'zh-CN' },
+        { text: 'English', locale: 'en-US' },
+      ],
       changeIsClicked: false,
     };
   },
@@ -77,6 +90,9 @@ export default {
     getUserInfo(userName, userAvatar) {
       this.userName = userName;
       this.userAvatar = userAvatar;
+    },
+    changeLang(locale) {
+      this.$i18n.locale = locale;
     },
   },
   created() {
