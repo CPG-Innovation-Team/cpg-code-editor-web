@@ -24,7 +24,6 @@
   },
   "tools": {
     "setting": {
-      "": "设置",
       "name": "设置",
       "title": "文件名",
       "syntax": "语言",

@@ -25,6 +25,8 @@
           outlined
           dense
           color="blueBtn"
+          background-color="primary lighten-1"
+          item-color="blueBtn"
           :menu-props="{ bottom: true, offsetY: true }"
         ></v-select>
       </div>
@@ -37,6 +39,7 @@
           outlined
           dense
           color="blueBtn"
+          background-color="primary lighten-1"
           :menu-props="{ bottom: true, offsetY: true }"
         ></v-select>
       </div>
@@ -66,5 +69,10 @@ export default {
   background-color: #161e27;
   min-width: 240px;
   max-width: 400px;
+}
+
+.v-list {
+  /* background: #2C333B;
+  color: white; */
 }
 </style>
