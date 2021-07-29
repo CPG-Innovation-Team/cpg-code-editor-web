@@ -124,7 +124,7 @@
               <span>Language</span>
             </v-tooltip>
           </template>
-          <Setting />
+          <Profile />
         </v-menu>
 
         <v-list-item>

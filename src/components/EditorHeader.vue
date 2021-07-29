@@ -1,6 +1,41 @@
 <template>
   <v-app-bar app color="primary">
-    <v-toolbar-title class="white--text">正大集团</v-toolbar-title>
+    <v-toolbar-title class="white--text mr-5">正大集团</v-toolbar-title>
+    <v-menu
+      offset-y
+      min-height
+      min-width="100%"
+      :close-on-content-click="false"
+      content-class="elevation-0 projects-menu"
+      v-model="projectMenu"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <h4 class="white--text" v-bind="attrs" v-on="on">
+          Project Name <v-icon v-if="projectMenu" color="white" class="mb-1">mdi-chevron-up</v-icon>
+          <v-icon v-else color="white" class="mb-1">mdi-chevron-down</v-icon>
+        </h4>
+      </template>
+      <div class="projects-container">
+        <v-row>
+          <v-col cols="3">
+            <div class="project"></div>
+            <p>Project 1</p>
+          </v-col>
+
+          <v-col cols="3">
+            <div class="project"></div>
+            <p>Project 2</p>
+          </v-col>
+
+          <v-col cols="3">
+            <div class="new-project">
+              <v-icon class="plus-icon" color="greyBtn">mdi-plus-box</v-icon>
+            </div>
+          </v-col>
+        </v-row>
+      </div>
+    </v-menu>
+
     <v-spacer></v-spacer>
     <div class="user-status">
       <div class="user-num">
@@ -12,37 +47,43 @@
           )
         }}
       </div>
-      <div v-for="(user, index) in users" :key="index">
-        <v-tooltip bottom>
+      <UserStatus :usersList="users.slice(0, index)" />
+
+      <div>
+        <v-menu content-class="user-menu" offset-y dark>
           <template v-slot:activator="{ on, attrs }">
-            <v-avatar rounded>
-              <img
-                class="user-avatar ml-1 mr-1"
-                outlined
-                :src="require(`../assets/img-${user.userAvatar}.png`)"
-                v-bind="attrs"
-                v-on="on"
-                :style="{
-                  'border-color': getColor(user),
-                  filter: user.isOnline ? 'saturate(100%)' : 'saturate(10%)',
-                  opacity: user.isOnline ? 1 : 0.5,
-                }"
-              />
-              <div
-                v-if="user.isOnline"
-                class="user-editing-status"
-                :style="{ 'background-color': user.isEditing ? 'rgb(221, 115, 55)' : 'rgb(107, 189, 115)' }"
-              ></div>
-            </v-avatar>
+            <v-btn
+              v-if="users.length >= index"
+              class="mx-2"
+              v-bind="attrs"
+              v-on="on"
+              fab
+              dark
+              depressed
+              small
+              color="indigo"
+            >
+              <v-icon dark> ... </v-icon>
+            </v-btn>
           </template>
-          <span>{{ user.userName }}</span>
-        </v-tooltip>
+          <v-list class="user-list">
+            <UserStatus :usersList="users.slice(index)" />
+          </v-list>
+        </v-menu>
       </div>
     </div>
-    <v-menu offset-y :close-on-content-click="false" max-height="auto" max-width="400" nudge-bottom="10">
+
+    <v-menu
+      offset-y
+      :close-on-content-click="false"
+      max-height="auto"
+      max-width="400"
+      nudge-bottom="10"
+      content-class="share-menu"
+    >
       <template v-slot:activator="{ on, attrs }">
         <v-btn class="white--text ml-5 mr-5" color="blueBtn" v-bind="attrs" v-on="on">
-          <v-icon>mdi-share</v-icon>Share
+          <v-icon>mdi-share</v-icon>{{ $t('header.share.name') }}
         </v-btn>
       </template>
       <div>
@@ -50,8 +91,8 @@
 
         <v-container class="share-container white--text">
           <v-row>
-            <v-col cols="2">
-              <h3 class="mr-5">Share</h3>
+            <v-col cols="3">
+              <h3 class="mr-5">{{ $t('header.share.name') }}</h3>
             </v-col>
 
             <v-col>
@@ -82,7 +123,7 @@
                 style="border-radius: 12px"
                 @click="copyURL"
               >
-                <v-icon small class="mr-2">mdi-content-copy</v-icon>Copy
+                <v-icon small class="mr-2">mdi-content-copy</v-icon>{{ $t('header.share.copy') }}
               </v-btn>
               <v-btn
                 v-else
@@ -93,13 +134,13 @@
                 style="border-radius: 12px"
                 @click="copyURL"
               >
-                <v-icon small class="mr-2">mdi-content-copy</v-icon>Copied
+                <v-icon small class="mr-2">mdi-content-copy</v-icon>{{ $t('header.share.copied') }}
               </v-btn>
             </v-col>
           </v-row>
 
           <v-row>
-            <p class="hint mx-auto">Use keyboard short cut Ctrl+V / ⌘+V to paste on your favorite way to share link.</p>
+            <p class="hint mx-auto">{{ $t('header.share.hint') }}</p>
           </v-row>
         </v-container>
       </div>
@@ -108,16 +149,33 @@
 </template>
 
 <script>
+import UserStatus from './UserStatus.vue';
+
 export default {
+  components: {
+    UserStatus,
+  },
   data: () => ({
+    projectMenu: false,
     users: [
-      { id: '01', userName: 'Kelly', userAvatar: 'avatar5', isOnline: false },
       { id: '02', userName: 'Mark', userAvatar: 'avatar2', isOnline: true, isEditing: false },
       { id: '03', userName: 'Jack', userAvatar: 'avatar1', isOnline: true, isEditing: true },
-      { id: '04', userName: 'Lucy', userAvatar: 'avatar4', isOnline: false },
       { id: '05', userName: 'Martin', userAvatar: 'avatar3', isOnline: true, isEditing: true },
       { id: '06', userName: 'Alice', userAvatar: 'avatar6', isOnline: true, isEditing: false },
+      { id: '08', userName: 'user2', userAvatar: 'avatar3', isOnline: true, isEditing: true },
+      { id: '09', userName: 'user3', userAvatar: 'avatar2', isOnline: true, isEditing: false },
+      { id: '14', userName: 'user8', userAvatar: 'avatar1', isOnline: true, isEditing: true },
+      { id: '15', userName: 'user9', userAvatar: 'avatar3', isOnline: true, isEditing: false },
+      { id: '11', userName: 'user5', userAvatar: 'avatar5', isOnline: true, isEditing: true },
+      { id: '12', userName: 'user6', userAvatar: 'avatar6', isOnline: true, isEditing: false },
+      { id: '13', userName: 'user7', userAvatar: 'avatar2', isOnline: false },
+      { id: '04', userName: 'Lucy', userAvatar: 'avatar4', isOnline: false },
+      { id: '01', userName: 'Kelly', userAvatar: 'avatar5', isOnline: false },
+      { id: '07', userName: 'user1', userAvatar: 'avatar1', isOnline: false },
+      { id: '10', userName: 'user4', userAvatar: 'avatar4', isOnline: false },
     ],
+    index: document.body.clientWidth / 320,
+    clientWidth: document.body.clientWidth,
     url: 'https://cgp.url',
     copied: false,
   }),
@@ -128,24 +186,6 @@ export default {
       }
       return `${length} members online`;
     },
-    getColor(user) {
-      if (user.userAvatar === 'avatar1') {
-        return 'rgb(198, 148, 48)';
-      }
-      if (user.userAvatar === 'avatar2') {
-        return 'rgb(198, 201, 131)';
-      }
-      if (user.userAvatar === 'avatar3') {
-        return 'rgb(135, 93, 69)';
-      }
-      if (user.userAvatar === 'avatar4') {
-        return 'rgb(71, 92, 147)';
-      }
-      if (user.userAvatar === 'avatar5') {
-        return 'rgb(123, 170, 164)';
-      }
-      return 'rgb(226, 109, 93)';
-    },
     copyURL() {
       navigator.clipboard.writeText(this.url);
       this.copied = true;
@@ -153,11 +193,67 @@ export default {
   },
   mounted() {
     this.url += this.$route.fullPath;
+    // watch the width of the window
+    const that = this;
+    window.onresize = () => {
+      return (() => {
+        window.clientWidth = document.body.clientWidth;
+        that.clientWidth = window.clientWidth;
+      })();
+    };
+  },
+  watch: {
+    clientWidth(newVal) {
+      this.index = newVal / 320;
+    },
   },
 };
 </script>
 
 <style scoped lang="scss">
+.projects-menu {
+  top: 64px !important;
+}
+
+.projects-container {
+  padding: 30px 30px 10px 30px;
+  background-color: #24303c;
+  color: white;
+  border-top: 1px solid white;
+  overflow: hidden;
+
+  .project {
+    height: 150px;
+    width: 200px;
+    background-color: #2c333b;
+    margin-bottom: 10px;
+    border: 1px solid white;
+    cursor: pointer;
+
+    &:hover {
+      border: 1px solid #537cd6;
+    }
+  }
+
+  .new-project {
+    display: flex;
+    justify-content: center;
+    height: 150px;
+    width: 200px;
+    background-color: #1f2933;
+    margin-bottom: 10px;
+    cursor: pointer;
+
+    .plus-icon {
+      font-size: 72px;
+    }
+
+    &:hover {
+      border: 1px solid #537cd6;
+    }
+  }
+}
+
 .user-status {
   display: flex;
   align-items: center;
@@ -165,24 +261,17 @@ export default {
   .user-num {
     margin-right: 5px;
     color: white;
-    font-size: 14px;
+    font-size: 12px;
   }
+}
 
-  .user-avatar {
-    height: 40px;
-    border: 2px solid;
-    border-radius: 50%;
-    padding: 3px;
-  }
+.user-menu {
+  margin-top: 20px;
 
-  .user-editing-status {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    border: 2px solid white;
-    border-radius: 50%;
-    top: 4px;
-    right: 4px;
+  .user-list {
+    width: 230px;
+    justify-content: center;
+    background-color: #3d4b56;
   }
 }
 
@@ -190,7 +279,7 @@ export default {
   color: white;
 }
 
-.v-menu__content {
+.share-menu {
   border-radius: 26px;
   box-shadow: 0px 14px 0px -4px #343f48;
 }
@@ -199,6 +288,7 @@ export default {
   display: grid;
   height: 100%;
   width: 100%;
+  min-width: 400px;
   background: #3d4b56;
   padding: 8%;
   border-radius: 26px;

@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import { storage } from '../util';
 import { CREATE_PROJECT } from '../query';
 
 export default {
@@ -76,7 +77,11 @@ export default {
       this.$apollo
         .mutate({
           mutation: CREATE_PROJECT,
-          variables: { projectName: this.projectName, syntax: this.projectSyntax, userId: '60ff6e1ce3280033d1b9dbdc' },
+          variables: {
+            projectName: this.projectName,
+            syntax: this.projectSyntax,
+            userId: storage.getUserInfo().userID,
+          },
         })
         .then((res) => {
           console.log(res);

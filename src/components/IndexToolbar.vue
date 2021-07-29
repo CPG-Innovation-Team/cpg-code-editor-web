@@ -63,7 +63,7 @@
                     v-on="on"
                   />
                 </template>
-                <span>{{ profileAvatar || getUserName || userName }}</span>
+                <span>{{ profileName || getUserName || userName }}</span>
               </v-tooltip>
             </v-avatar>
             <v-icon v-else>mdi-account-circle</v-icon>
