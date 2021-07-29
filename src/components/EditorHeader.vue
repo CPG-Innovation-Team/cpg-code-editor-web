@@ -17,7 +17,17 @@
       <div>
         <v-menu content-class="user-menu" offset-y dark>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn v-if="users.length >= 5" class="mx-2" v-bind="attrs" v-on="on" fab dark small color="indigo">
+            <v-btn
+              v-if="users.length >= index"
+              class="mx-2"
+              v-bind="attrs"
+              v-on="on"
+              fab
+              dark
+              depressed
+              small
+              color="indigo"
+            >
               <v-icon dark> ... </v-icon>
             </v-btn>
           </template>
