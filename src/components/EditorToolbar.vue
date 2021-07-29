@@ -46,7 +46,7 @@
                   </v-list-item-content>
                 </v-list-item>
               </template>
-              <span>{{ tool.tooltip }}</span>
+              <span>{{ $t(tool.tooltip) }}</span>
             </v-tooltip>
           </template>
           <div :is="tool.menu" />
@@ -71,7 +71,7 @@
                   </v-list-item-content>
                 </v-list-item>
               </template>
-              <span>Something</span>
+              <span>{{ $t('tools.video.name') }}</span>
             </v-tooltip>
           </template>
           <Setting />
@@ -98,7 +98,7 @@
                   </v-list-item-content>
                 </v-list-item>
               </template>
-              <span>Information</span>
+              <span>{{ $t('tools.information.name') }}</span>
             </v-tooltip>
           </template>
           <Setting />
@@ -171,15 +171,25 @@ export default {
   data() {
     return {
       tools: [
-        { icon: 'mdi-cog', tooltip: 'Settiing', menu: Setting },
-        { icon: 'mdi-magnify', tooltip: 'Search', menu: Setting },
-        { icon: 'mdi-history', tooltip: 'History', menu: History },
-        { icon: 'mdi-download', tooltip: 'Download', menu: Setting },
+        { icon: 'mdi-cog', tooltip: 'tools.setting.name', menu: Setting },
+        { icon: 'mdi-magnify', tooltip: 'tools.search.name', menu: Setting },
+        { icon: 'mdi-history', tooltip: 'tools.history.name', menu: History },
+        { icon: 'mdi-download', tooltip: 'tools.download.name', menu: Setting },
       ],
       userName: '',
       userAvatar: '',
     };
   },
+  // computed: {
+  //   tools() {
+  //     return [
+  //       { icon: 'mdi-cog', tooltip: this.$t('tools.setting.name'), menu: Setting },
+  //       { icon: 'mdi-magnify', tooltip: this.$t('tools.search.name'), menu: Setting },
+  //       { icon: 'mdi-history', tooltip: this.$t('tools.history.name'), menu: History },
+  //       { icon: 'mdi-download', tooltip: this.$t('tools.download.name'), menu: Setting },
+  //     ];
+  //   },
+  // },
   created() {
     this.userName = storage.getUserInfo().userName;
     this.userAvatar = storage.getUserInfo().userAvatar;

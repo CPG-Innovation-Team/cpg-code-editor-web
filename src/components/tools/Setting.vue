@@ -70,9 +70,4 @@ export default {
   min-width: 240px;
   max-width: 400px;
 }
-
-.v-list {
-  /* background: #2C333B;
-  color: white; */
-}
 </style>
