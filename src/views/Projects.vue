@@ -27,7 +27,12 @@
               <tbody>
                 <tr v-for="(item, index) in items" :key="index" class="table-row">
                   <td class="item-style">
-                    <v-checkbox small class="star-checkbox"></v-checkbox>
+                    <v-checkbox
+                      :on-icon="'mdi-star'"
+                      :off-icon="'mdi-star-outline'"
+                      small
+                      class="star-checkbox"
+                    ></v-checkbox>
                   </td>
                   <td class="item-style">
                     <router-link to="/001" class="project-title">{{ item.projectName }}</router-link>
@@ -60,7 +65,7 @@
                             text
                             @click="
                               dialog = false;
-                              removeProject(item._id);
+                              removeProject();
                             "
                           >
                             Yes
@@ -86,7 +91,7 @@
 import IndexToolbar from '../components/IndexToolbar.vue';
 import WelcomeWindow from './WelcomeWindow.vue';
 import { storage } from '../util';
-import { GET_PROJECT } from '../query';
+import { GET_PROJECT, REMOVE_PROJECT } from '../query';
 
 export default {
   name: 'Projects',
@@ -105,7 +110,7 @@ export default {
         { text: 'Syntax', value: 'syntax' }, //  change sorting to dropdown
         { text: 'Modified', value: 'modified' },
         { text: 'Created', value: 'createdTime' },
-        { text: 'URL', value: '_id', sortable: false },
+        { text: 'URL', value: 'hash', sortable: false },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       project: [],
@@ -122,6 +127,18 @@ export default {
     this.userID = storage.getUserInfo().userID;
   },
   methods: {
+    removeProject() {
+      this.$apollo
+        .mutate({
+          mutation: REMOVE_PROJECT,
+          variables: {
+            id: 1,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+        });
+    },
     copyURL(ProjectID) {
       const input = document.createElement('input');
       input.value = this.Projects[ProjectID].URL;
@@ -144,8 +161,18 @@ export default {
       return 'blue';
     },
     showTime(date) {
-      // add features later to display correct time
-      return Date(date);
+      // change to moment later
+      const inputDate = new Date(date);
+      // const currentTime = new Date();
+
+      return inputDate.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: false,
+      });
     },
   },
 };
@@ -217,8 +244,9 @@ td:first-child {
 }
 .project-title {
   color: rgb(83, 124, 213);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
+  text-decoration: none;
 }
 .table-row {
   color: rgb(190, 198, 201);
