@@ -46,6 +46,7 @@ import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
 import { formattedDateTime, storage } from '../util';
 import CODE_LANGUAGE_LIST from '../map';
 import EditorToolbar from '../components/EditorToolbar.vue';
+import { GET_USER_LIST, GET_PROJECT } from '../query';
 
 export default {
   name: 'Editor',
@@ -62,6 +63,8 @@ export default {
       codeUpdateEnable: true, // Debounce for real-time sync
       debounceTimeout: null,
       projectId: null,
+      projectName: '',
+      syntax: '',
       userId: storage.getUserInfo().userID,
       initStatus: true,
       selectedCodeLanguage: 'javascript',
@@ -117,6 +120,27 @@ export default {
           // Prevent remote code override local
           this.setCode(res.code);
         }
+        // retrive user list from server
+        this.$apollo
+          .mutate({
+            mutation: GET_USER_LIST,
+            variables: { _id: this.projectId },
+          })
+          .then((response) => {
+            this.users = response.data.project[0].editInfo;
+            this.$store.commit('syncUsers', this.users);
+          });
+        this.$apollo
+          .query({
+            query: GET_PROJECT,
+            variables: {
+              _id: this.projectId,
+            },
+          })
+          .then((response) => {
+            this.projectName = response.data.project[0].projectName;
+            this.syntax = response.data.project[0].syntax;
+          });
       });
     },
     editorEventHandler() {
@@ -131,7 +155,13 @@ export default {
         this.debounceTimeout = setTimeout(() => {
           console.original.log(e);
           const code = this.getCode();
-          this.socket.emit('clientUpdateProjectInfo', { code, projectId: this.projectId });
+          this.socket.emit('clientUpdateProjectInfo', {
+            code,
+            projectId: this.projectId,
+            projectName: this.projectName,
+            syntax: this.syntax,
+            userId: this.userId,
+          });
           updateCodeInLocalDb(code, this.projectId || 'localDefault');
           this.codeUpdateEnable = true;
         }, 1000);
@@ -193,6 +223,9 @@ export default {
         this.setCode(code);
       });
     },
+  },
+  created() {
+    this.userId = storage.getUserInfo().userID;
   },
   mounted() {
     this.initEditor();
