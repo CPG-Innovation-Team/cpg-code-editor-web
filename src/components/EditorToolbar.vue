@@ -124,7 +124,7 @@
               <span>Language</span>
             </v-tooltip>
           </template>
-          <Profile @passUserInfo="updateUserInfo" />
+          <Profile v-bind="$attrs" v-on="$listeners" @passUserInfo="updateUserInfo" />
         </v-menu>
 
         <v-list-item>

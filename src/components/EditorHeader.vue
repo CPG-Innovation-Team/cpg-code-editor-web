@@ -38,22 +38,22 @@
 
     <v-spacer></v-spacer>
     <div class="user-status">
-      <div class="user-num">
+      <div class="user-num" v-show="usersList.length > 0">
         {{
           pluralize(
-            users.filter((user) => {
+            usersList.filter((user) => {
               return user.isOnline;
             }).length
           )
         }}
       </div>
-      <UserStatus :usersList="users.slice(0, index)" />
+      <UserStatus :usersList="usersList.slice(0, index)" />
 
       <div>
         <v-menu content-class="user-menu" offset-y dark>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              v-if="users.length >= index"
+              v-show="usersList.length >= index"
               class="mx-2"
               v-bind="attrs"
               v-on="on"
@@ -67,7 +67,7 @@
             </v-btn>
           </template>
           <v-list class="user-list">
-            <UserStatus :usersList="users.slice(index)" />
+            <UserStatus :usersList="usersList.slice(index)" />
           </v-list>
         </v-menu>
       </div>
@@ -150,35 +150,30 @@
 
 <script>
 import UserStatus from './UserStatus.vue';
+import { GET_USER_LIST } from '../query';
 
 export default {
   components: {
     UserStatus,
   },
-  data: () => ({
-    projectMenu: false,
-    users: [
-      { id: '02', userName: 'Mark', userAvatar: 'avatar2', isOnline: true, isEditing: false },
-      { id: '03', userName: 'Jack', userAvatar: 'avatar1', isOnline: true, isEditing: true },
-      { id: '05', userName: 'Martin', userAvatar: 'avatar3', isOnline: true, isEditing: true },
-      { id: '06', userName: 'Alice', userAvatar: 'avatar6', isOnline: true, isEditing: false },
-      { id: '08', userName: 'user2', userAvatar: 'avatar3', isOnline: true, isEditing: true },
-      { id: '09', userName: 'user3', userAvatar: 'avatar2', isOnline: true, isEditing: false },
-      { id: '14', userName: 'user8', userAvatar: 'avatar1', isOnline: true, isEditing: true },
-      { id: '15', userName: 'user9', userAvatar: 'avatar3', isOnline: true, isEditing: false },
-      { id: '11', userName: 'user5', userAvatar: 'avatar5', isOnline: true, isEditing: true },
-      { id: '12', userName: 'user6', userAvatar: 'avatar6', isOnline: true, isEditing: false },
-      { id: '13', userName: 'user7', userAvatar: 'avatar2', isOnline: false },
-      { id: '04', userName: 'Lucy', userAvatar: 'avatar4', isOnline: false },
-      { id: '01', userName: 'Kelly', userAvatar: 'avatar5', isOnline: false },
-      { id: '07', userName: 'user1', userAvatar: 'avatar1', isOnline: false },
-      { id: '10', userName: 'user4', userAvatar: 'avatar4', isOnline: false },
-    ],
-    index: document.body.clientWidth / 320,
-    clientWidth: document.body.clientWidth,
-    url: 'https://cgp.url',
-    copied: false,
-  }),
+  props: {
+    changedUserInfo: {
+      userName: '',
+      userAvatar: '',
+    },
+    users: Array,
+  },
+
+  data() {
+    return {
+      projectMenu: false,
+      index: document.body.clientWidth / 320,
+      clientWidth: document.body.clientWidth,
+      url: 'https://cgp.url',
+      copied: false,
+      usersList: [],
+    };
+  },
   methods: {
     pluralize(length) {
       if (length === 1) {
@@ -205,6 +200,19 @@ export default {
   watch: {
     clientWidth(newVal) {
       this.index = newVal / 320;
+    },
+    users(newVal) {
+      this.usersList = newVal;
+    },
+    async changedUserInfo() {
+      await this.$apollo
+        .query({
+          query: GET_USER_LIST,
+          variables: { _id: this.$route.path.slice(1) },
+        })
+        .then((response) => {
+          this.usersList = response.data.project[0].editInfo;
+        });
     },
   },
 };

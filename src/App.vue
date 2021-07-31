@@ -1,10 +1,14 @@
 <template>
   <v-app>
     <IndexHeader v-if="this.$route.path === '/'" />
-    <EditorHeader v-else />
+    <EditorHeader v-else :users="users" :changedUserInfo="changedUserInfo" />
     <v-main>
       <!-- force refresh the page when at the same route -->
-      <router-view :key="$route.fullPath"></router-view>
+      <router-view
+        :key="$route.fullPath"
+        @passUserList="getUserList"
+        @passChangedUserInfo="getChangedUserInfo"
+      ></router-view>
     </v-main>
   </v-app>
 </template>
@@ -18,6 +22,21 @@ export default {
   components: {
     IndexHeader,
     EditorHeader,
+  },
+  data() {
+    return {
+      isUpdated: '',
+      users: [],
+      changedUserInfo: '',
+    };
+  },
+  methods: {
+    getChangedUserInfo(userInfo) {
+      this.changedUserInfo = userInfo;
+    },
+    getUserList(users) {
+      this.users = users;
+    },
   },
 };
 </script>

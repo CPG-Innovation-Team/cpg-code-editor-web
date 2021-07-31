@@ -25,6 +25,7 @@
                   }
                   if (userID) {
                     update(userName);
+                    passChangedUserInfo({ userName, userAvatar });
                   }
                   passUserInfo(userName, userAvatar || 'avatar1');
                   userInfoChanged(true);
@@ -50,6 +51,7 @@
                 }
                 if (userID) {
                   update(userName);
+                  passChangedUserInfo({ userName, userAvatar });
                 }
                 passUserInfo(userName, userAvatar || 'avatar1');
                 userInfoChanged(true);
@@ -102,6 +104,7 @@ export default {
       userAvatar: '',
       userID: '',
       avatars: [avatar1Selected, avatar2, avatar3, avatar4, avatar5, avatar6],
+      isUpdated: true,
     };
   },
   created() {
@@ -122,7 +125,6 @@ export default {
           variables: { userName: this.userName, avatar: this.userAvatar },
         })
         .then((res) => {
-          console.log(res);
           this.userName = userName.trim();
           this.userID = res.data.createUser.userId;
           storage.setUserInfo(this.userName, this.userAvatar || 'avatar1', this.userID);
@@ -134,8 +136,7 @@ export default {
           mutation: UPDATE_USER,
           variables: { id: this.userID, userName: this.userName, avatar: this.userAvatar },
         })
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           this.userName = userName.trim();
           storage.setUserInfo(this.userName, this.userAvatar || 'avatar1', this.userID);
         });
@@ -147,6 +148,9 @@ export default {
     },
     passUserInfo(userName, userAvatar) {
       this.$emit('passUserInfo', userName, userAvatar);
+    },
+    passChangedUserInfo(userInfo) {
+      this.$emit('passChangedUserInfo', userInfo);
     },
     userInfoChanged(bool) {
       this.$emit('getUserInfoChangeStatus', bool);
