@@ -34,7 +34,7 @@
     </v-col>
 
     <v-col cols="1" class="right">
-      <EditorToolbar />
+      <EditorToolbar v-bind="$attrs" v-on="$listeners" />
     </v-col>
   </v-row>
 </template>
@@ -120,27 +120,31 @@ export default {
           // Prevent remote code override local
           this.setCode(res.code);
         }
-        // retrive user list from server
-        this.$apollo
-          .mutate({
-            mutation: GET_USER_LIST,
-            variables: { _id: this.projectId },
-          })
-          .then((response) => {
-            this.users = response.data.project[0].editInfo;
-            this.$store.commit('syncUsers', this.users);
-          });
-        this.$apollo
-          .query({
-            query: GET_PROJECT,
-            variables: {
-              _id: this.projectId,
-            },
-          })
-          .then((response) => {
-            this.projectName = response.data.project[0].projectName;
-            this.syntax = response.data.project[0].syntax;
-          });
+        if (this.$apollo) {
+          // retrive user list from server
+          this.$apollo
+            .query({
+              query: GET_USER_LIST,
+              fetchPolicy: 'no-cache',
+              variables: { _id: this.projectId },
+            })
+            .then((response) => {
+              this.users = response.data.project[0].editInfo;
+              this.$emit('passUserList', this.users);
+            });
+          // retrive project info from server
+          this.$apollo
+            .query({
+              query: GET_PROJECT,
+              variables: {
+                _id: this.projectId,
+              },
+            })
+            .then((response) => {
+              this.projectName = response.data.project[0].projectName;
+              this.syntax = response.data.project[0].syntax;
+            });
+        }
       });
     },
     editorEventHandler() {
