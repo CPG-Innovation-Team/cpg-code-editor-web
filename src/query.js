@@ -54,6 +54,15 @@ export const REMOVE_PROJECT = gql`
   }
 `;
 
+export const GET_PROJECT_ID = gql`
+  query ($_id: String, $hash: String) {
+    project(_id: $_id, hash: $hash) {
+      _id
+      hash
+    }
+  }
+`;
+
 export const GET_USER_LIST = gql`
   query ($_id: String, $hash: String) {
     project(_id: $_id, hash: $hash) {
