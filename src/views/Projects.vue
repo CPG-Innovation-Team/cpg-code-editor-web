@@ -61,7 +61,7 @@
                     <v-dialog v-model="dialog" width="500" :retain-focus="false">
                       <v-card>
                         <v-card-title class="headline grey lighten-2">
-                          Are you sure to delete {{ ProjectName }}?
+                          Are you sure to delete {{ itemName }}?
                         </v-card-title>
 
                         <v-divider></v-divider>
@@ -73,7 +73,7 @@
                             text
                             @click="
                               dialog = false;
-                              removeProject(ProjectID);
+                              removeProject(itemID);
                             "
                           >
                             Yes
@@ -136,8 +136,8 @@ export default {
         userAvatar: '',
       },
       storage,
-      ProjectName: 'p',
-      ProjectID: '',
+      itemName: '',
+      itemID: '',
       userID: '',
     };
   },
@@ -148,10 +148,10 @@ export default {
     console.log(this.project);
   },
   methods: {
-    triggerDialog(aName, aID) {
+    triggerDialog(Name, ID) {
       this.dialog = true;
-      this.ProjectName = aName;
-      this.ProjectID = aID;
+      this.itemName = Name;
+      this.itemID = ID;
     },
     removeProject(ID) {
       this.$apollo
