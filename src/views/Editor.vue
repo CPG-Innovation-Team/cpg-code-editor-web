@@ -120,6 +120,7 @@ export default {
           // Prevent remote code override local
           this.setCode(res.code);
         }
+
         if (this.$apollo) {
           // retrive user list from server
           this.$apollo
