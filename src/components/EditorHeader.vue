@@ -208,6 +208,7 @@ export default {
       await this.$apollo
         .query({
           query: GET_USER_LIST,
+          fetchPolicy: 'no-cache',
           variables: { _id: this.$route.path.slice(1) },
         })
         .then((response) => {
