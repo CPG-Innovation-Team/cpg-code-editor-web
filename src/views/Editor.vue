@@ -46,7 +46,7 @@ import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
 import { formattedDateTime, storage } from '../util';
 import CODE_LANGUAGE_LIST from '../map';
 import EditorToolbar from '../components/EditorToolbar.vue';
-import { GET_USER_LIST, GET_PROJECT } from '../query';
+import { GET_USER_LIST, GET_PROJECT, GET_PROJECT_ID } from '../query';
 
 export default {
   name: 'Editor',
@@ -64,8 +64,9 @@ export default {
       debounceTimeout: null,
       projectId: null,
       projectName: '',
+      projectHash: '',
       syntax: '',
-      userId: storage.getUserInfo().userID,
+      userId: '',
       initStatus: true,
       selectedCodeLanguage: 'javascript',
       codeLanguageList: CODE_LANGUAGE_LIST,
@@ -97,7 +98,19 @@ export default {
 
       const socketUrl = process.env.NODE_ENV === 'test' ? '' : 'ws://localhost:3000';
       this.socket = io(socketUrl, { transports: ['websocket'] });
-      this.socket.on('connect', () => {
+      this.socket.on('connect', async () => {
+        if (this.$apollo) {
+          await this.$apollo
+            .query({
+              query: GET_PROJECT_ID,
+              fetchPolicy: 'no-cache',
+              variables: { hash: this.projectId },
+            })
+            .then((response) => {
+              // eslint-disable-next-line no-underscore-dangle
+              this.projectId = response.data.project[0]._id;
+            });
+        }
         if (this.projectId) {
           this.socket.emit('clientEnterProject', this.projectId, this.userId);
         }
@@ -120,7 +133,6 @@ export default {
           // Prevent remote code override local
           this.setCode(res.code);
         }
-
         if (this.$apollo) {
           // retrive user list from server
           this.$apollo
@@ -137,6 +149,7 @@ export default {
           this.$apollo
             .query({
               query: GET_PROJECT,
+              fetchPolicy: 'no-cache',
               variables: {
                 _id: this.projectId,
               },
