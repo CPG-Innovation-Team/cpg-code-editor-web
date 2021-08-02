@@ -104,7 +104,6 @@ export default {
       userAvatar: '',
       userID: '',
       avatars: [avatar1Selected, avatar2, avatar3, avatar4, avatar5, avatar6],
-      isUpdated: true,
     };
   },
   created() {
