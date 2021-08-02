@@ -1,5 +1,5 @@
 <template>
-  <v-row style="height: 88vh" no-gutters>
+  <v-row style="height: 100%" no-gutters>
     <v-col cols="11">
       <WelcomeWindow v-if="!userID" :userInfo="userInfo" @passUserInfo="getUserInfo" />
       <div class="project-list-container">
