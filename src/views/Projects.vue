@@ -25,7 +25,7 @@
 
             <template v-slot:body="{ items }">
               <tbody>
-                <tr v-for="(item, index) in items" :key="index" class="table-row">
+                <tr v-for="(item, index) in items" :key="item._id" class="table-row">
                   <td class="item-style">
                     <v-checkbox
                       :on-icon="'mdi-star'"
@@ -54,15 +54,14 @@
                       "
                       >mdi-share</v-icon
                     >
-
+                    <!-- <v-icon class="actions-icon" color="white" @click="removeProject(item._id)"> mdi-delete</v-icon> -->
+                    <v-icon class="actions-icon" color="white" @click.stop="triggerDialog(item.projectName, item._id)"
+                      >mdi-delete</v-icon
+                    >
                     <v-dialog v-model="dialog" width="500" :retain-focus="false">
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-icon class="actions-icon" color="white" v-bind="attrs" v-on="on">mdi-delete</v-icon>
-                      </template>
-
                       <v-card>
                         <v-card-title class="headline grey lighten-2">
-                          Are you sure to delete {{ item.projectName }}?
+                          Are you sure to delete {{ this.ProjectName }}?
                         </v-card-title>
 
                         <v-divider></v-divider>
@@ -74,7 +73,7 @@
                             text
                             @click="
                               dialog = false;
-                              removeProject(item._id);
+                              removeProject(this.ProjectID);
                             "
                           >
                             Yes
@@ -137,6 +136,8 @@ export default {
         userAvatar: '',
       },
       storage,
+      ProjectName: '',
+      ProjectID: '',
       userID: '',
     };
   },
@@ -147,6 +148,11 @@ export default {
     console.log(this.project);
   },
   methods: {
+    triggerDialog(Name, ID) {
+      this.dialog = true;
+      this.ProjectName = Name;
+      this.ProjectID = ID;
+    },
     removeProject(ID) {
       this.$apollo
         .mutate({
