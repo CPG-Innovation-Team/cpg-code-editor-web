@@ -148,27 +148,27 @@ export default {
     console.log(this.project);
   },
   methods: {
-    triggerDialog(Name, ID) {
+    triggerDialog(listItemName, listItemID) {
       this.dialog = true;
-      this.itemName = Name;
-      this.itemID = ID;
+      this.itemName = listItemName;
+      this.itemID = listItemID;
     },
-    removeProject(ID) {
+    removeProject(listItemID) {
       this.$apollo
         .mutate({
           mutation: REMOVE_PROJECT,
           variables: {
-            id: ID,
+            id: listItemID,
           },
         })
         .then((res) => {
           console.log(res);
         });
     },
-    copyURL(ProjectID) {
+    copyURL(listItemID) {
       const input = document.createElement('input');
       input.value = 'http://cpg.url/';
-      input.value += this.project[ProjectID].hash;
+      input.value += this.project[listItemID].hash;
       document.body.appendChild(input);
       input.select();
       document.execCommand('copy');
