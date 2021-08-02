@@ -30,6 +30,7 @@
                     <v-checkbox
                       :on-icon="'mdi-star'"
                       :off-icon="'mdi-star-outline'"
+                      color="yellow"
                       small
                       class="star-checkbox"
                     ></v-checkbox>
@@ -44,7 +45,15 @@
                   <td class="item-style">{{ showTime(item.createTime) }}</td>
                   <td class="item-style">http://cpg.url/{{ item.hash }}</td>
                   <td class="item-style">
-                    <v-icon class="actions-icon" color="white" @click="copyURL(index)">mdi-share</v-icon>
+                    <v-icon
+                      class="actions-icon"
+                      color="white"
+                      @click="
+                        copyURL(index);
+                        showShareBox();
+                      "
+                      >mdi-share</v-icon
+                    >
 
                     <v-dialog v-model="dialog" width="500" :retain-focus="false">
                       <template v-slot:activator="{ on, attrs }">
@@ -65,7 +74,7 @@
                             text
                             @click="
                               dialog = false;
-                              removeProject();
+                              removeProject(item._id);
                             "
                           >
                             Yes
@@ -78,6 +87,13 @@
               </tbody>
             </template>
           </v-data-table>
+          <v-card v-if="sharebox" class="share-box" elevation="15">
+            <v-icon color="white">mdi-share</v-icon>
+            <a style="color: white; font-size: 20px">Link Copied! </a>
+            <a style="font-size: 10px; color: gray">
+              Use keyboard short cut Ctrl+V/ +V to paste on your favorite way to share link</a
+            >
+          </v-card>
         </div>
       </div>
     </v-col>
@@ -115,6 +131,7 @@ export default {
       ],
       project: [],
       dialog: false,
+      sharebox: false,
       userInfo: {
         userName: '',
         userAvatar: '',
@@ -126,13 +143,16 @@ export default {
   created() {
     this.userID = storage.getUserInfo().userID;
   },
+  updated() {
+    console.log(this.project);
+  },
   methods: {
-    removeProject() {
+    removeProject(ID) {
       this.$apollo
         .mutate({
           mutation: REMOVE_PROJECT,
           variables: {
-            id: 1,
+            id: ID,
           },
         })
         .then((res) => {
@@ -141,7 +161,8 @@ export default {
     },
     copyURL(ProjectID) {
       const input = document.createElement('input');
-      input.value = this.Projects[ProjectID].URL;
+      input.value = 'http://cpg.url/';
+      input.value += this.project[ProjectID].hash;
       document.body.appendChild(input);
       input.select();
       document.execCommand('copy');
@@ -173,6 +194,13 @@ export default {
         minute: 'numeric',
         hour12: false,
       });
+    },
+    showShareBox() {
+      this.sharebox = true;
+
+      setTimeout(() => {
+        this.sharebox = false;
+      }, 2000);
     },
   },
 };
@@ -260,5 +288,14 @@ tbody {
   tr:hover {
     background-color: transparent !important;
   }
+}
+.share-box {
+  position: fixed;
+  bottom: 40px;
+  background-color: rgb(31, 41, 51);
+  border-radius: 10px;
+  width: 79%;
+  height: 30px;
+  text-align: center;
 }
 </style>
