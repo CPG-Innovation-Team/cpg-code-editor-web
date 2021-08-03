@@ -36,7 +36,7 @@
                     ></v-checkbox>
                   </td>
                   <td class="item-style">
-                    <router-link to="/001" class="project-title">{{ item.projectName }}</router-link>
+                    <router-link :to="item.hash" class="project-title">{{ item.projectName }}</router-link>
                   </td>
                   <td class="item-style">
                     <v-chip :color="getColor(item.syntax)" dark>{{ item.syntax }}</v-chip>

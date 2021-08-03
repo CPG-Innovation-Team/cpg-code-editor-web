@@ -47,6 +47,7 @@ import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
 import { formattedDateTime, storage } from '../util';
 import CODE_LANGUAGE_LIST from '../map';
 import EditorToolbar from '../components/EditorToolbar.vue';
+// import { GET_PROJECT } from '../query';
 
 export default {
   name: 'Editor',
@@ -69,6 +70,7 @@ export default {
       codeLanguageList: CODE_LANGUAGE_LIST,
       users: [],
       sectionWidth: 300,
+      // project: [],
     };
   },
   methods: {
@@ -88,7 +90,6 @@ export default {
         minimap: {
           enabled: false,
         },
-        automaticLayout: true,
       });
     },
     initSocketIO() {
@@ -227,9 +228,18 @@ export default {
     this.editorEventHandler();
 
     this.resizeBarController();
-  },
-  beforeDestroy() {
-    this.editor.dispose();
+
+    // fetch current project info using hash from url
+    // this.$apollo
+    //   .query({
+    //     query: GET_PROJECT,
+    //     variables: {
+    //       hash: this.$route.fullPath.replace('/', ''),
+    //     },
+    //   })
+    //   .then((res) => {
+    //     [this.project] = res.data.project;
+    //   });
   },
 };
 </script>

@@ -11,7 +11,7 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <h4 class="white--text" v-bind="attrs" v-on="on">
-          Project Name <v-icon v-if="projectMenu" color="white" class="mb-1">mdi-chevron-up</v-icon>
+          {{ project.projectName }} <v-icon v-if="projectMenu" color="white" class="mb-1">mdi-chevron-up</v-icon>
           <v-icon v-else color="white" class="mb-1">mdi-chevron-down</v-icon>
         </h4>
       </template>
@@ -150,12 +150,14 @@
 
 <script>
 import UserStatus from './UserStatus.vue';
+import { GET_PROJECT } from '../query';
 
 export default {
   components: {
     UserStatus,
   },
   data: () => ({
+    project: [],
     projectMenu: false,
     users: [
       { id: '02', userName: 'Mark', userAvatar: 'avatar2', isOnline: true, isEditing: false },
@@ -192,6 +194,18 @@ export default {
     },
   },
   mounted() {
+    // fetch current project info using hash from url
+    this.$apollo
+      .query({
+        query: GET_PROJECT,
+        variables: {
+          hash: this.$route.fullPath.replace('/', ''),
+        },
+      })
+      .then((res) => {
+        [this.project] = res.data.project;
+      });
+
     this.url += this.$route.fullPath;
     // watch the width of the window
     const that = this;
