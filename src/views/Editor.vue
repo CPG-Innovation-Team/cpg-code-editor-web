@@ -1,7 +1,8 @@
 <template>
-  <v-row no-gutters d-flex class="fill-height">
-    <v-col class="left"> </v-col>
-    <v-col cols="8" class="middle">
+  <div class="fill-height row-container">
+    <div class="left" v-bind:style="{ width: sectionWidth + 'px' }"></div>
+    <div class="resize-bar" ref="resizeBar"></div>
+    <div class="middle">
       <div class="editor-container">
         <div class="title-block">
           <div class="title-text">Editor</div>
@@ -31,12 +32,12 @@
           </p>
         </div>
       </div>
-    </v-col>
+    </div>
 
-    <v-col cols="1" class="right">
+    <div class="right">
       <EditorToolbar />
-    </v-col>
-  </v-row>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -67,6 +68,7 @@ export default {
       selectedCodeLanguage: 'javascript',
       codeLanguageList: CODE_LANGUAGE_LIST,
       users: [],
+      sectionWidth: 300,
     };
   },
   methods: {
@@ -193,12 +195,38 @@ export default {
         this.setCode(code);
       });
     },
+
+    resizeBarController() {
+      const resize = this.$refs.resizeBar;
+      resize.onmousedown = (e) => {
+        // Color change reminder
+        resize.style.background = '#818181';
+        let startX = e.clientX;
+        resize.left = resize.offsetLeft;
+        document.onmousemove = (ex) => {
+          // Calculate and apply displacement
+          const endX = ex.clientX;
+          const moveLen = endX - startX;
+          startX = endX;
+          this.sectionWidth += moveLen;
+        };
+        document.onmouseup = () => {
+          // color restoration
+          resize.style.background = '';
+          document.onmousemove = null;
+          document.onmouseup = null;
+        };
+        return false;
+      };
+    },
   },
   mounted() {
     this.initEditor();
     this.initSocketIO();
     this.consoleHandler();
     this.editorEventHandler();
+
+    this.resizeBarController();
   },
   beforeDestroy() {
     this.editor.dispose();
@@ -211,7 +239,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 88vh;
-  width: 100%;
+  width: inherit;
 }
 
 .title-block {
@@ -261,19 +289,37 @@ export default {
   }
 }
 
-.left {
-  border-top: 1px solid #eee;
-  background-color: #3d4b56;
-}
+.row-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  overflow: hidden;
+  position: relative;
+  .left {
+    max-width: 55%;
+    border-top: 1px solid #eee;
+    background-color: #3d4b56;
+    position: relative;
+  }
+  .resize-bar {
+    border-top: 1px solid #eee;
+    background-color: black;
+    height: 100%;
+    top: 0;
+    right: 0;
+    width: 5px;
+    cursor: col-resize;
+  }
+  .middle {
+    flex: 1 0 auto;
+    border-top: 1px solid #eee;
+    border-left: 1px solid #eee;
+    background-color: #2c333b;
+  }
 
-.middle {
-  border-top: 1px solid #eee;
-  border-left: 1px solid #eee;
-  background-color: #2c333b;
-}
-
-.right {
-  min-width: 75px;
-  max-width: 100px;
+  .right {
+    width: 75px;
+  }
 }
 </style>
