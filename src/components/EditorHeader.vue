@@ -209,7 +209,7 @@ export default {
         .query({
           query: GET_USER_LIST,
           fetchPolicy: 'no-cache',
-          variables: { _id: this.$route.path.slice(1) },
+          variables: { hash: this.$route.path.slice(1) },
         })
         .then((response) => {
           this.usersList = response.data.project[0].editInfo;
