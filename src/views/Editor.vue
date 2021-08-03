@@ -124,7 +124,7 @@ export default {
       });
 
       // Receive code from server
-      this.socket.on('serverProjectInfoSync', (res) => {
+      this.socket.on('serverProjectInfoSync', async (res) => {
         if (this.projectId !== res.projectId) {
           this.$router.push(`/${res.projectId}`);
           this.projectId = res.projectId;
@@ -135,7 +135,7 @@ export default {
         }
         if (this.$apollo) {
           // retrive user list from server
-          this.$apollo
+          await this.$apollo
             .query({
               query: GET_USER_LIST,
               fetchPolicy: 'no-cache',
@@ -146,7 +146,7 @@ export default {
               this.$emit('passUserList', this.users);
             });
           // retrive project info from server
-          this.$apollo
+          await this.$apollo
             .query({
               query: GET_PROJECT,
               fetchPolicy: 'no-cache',
