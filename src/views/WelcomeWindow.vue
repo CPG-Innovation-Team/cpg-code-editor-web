@@ -121,7 +121,7 @@ export default {
       this.$apollo
         .mutate({
           mutation: CREATE_USER,
-          variables: { userName: this.userName, avatar: this.userAvatar },
+          variables: { userName: this.userName, avatar: this.userAvatar || 'avatar1' },
         })
         .then((res) => {
           this.userName = userName.trim();
