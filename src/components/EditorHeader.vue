@@ -1,6 +1,8 @@
 <template>
   <v-app-bar app color="primary">
-    <v-toolbar-title class="white--text mr-5">正大集团</v-toolbar-title>
+    <v-toolbar-title class="mr-5">
+      <router-link to="/" class="white--text" style="text-decoration: none">正大集团</router-link>
+    </v-toolbar-title>
     <v-menu
       offset-y
       min-height
