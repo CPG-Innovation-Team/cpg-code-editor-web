@@ -50,6 +50,8 @@ import { storage } from '../util';
 import { CREATE_PROJECT } from '../query';
 
 export default {
+  name: 'IndexHeader',
+  props: ['projects'],
   data() {
     return {
       valid: false,
@@ -83,7 +85,9 @@ export default {
             userId: storage.getUserInfo().userID,
           },
         })
-        .then(() => {});
+        .then((res) => {
+          this.projects.push(res.data.createProject.data[0]);
+        });
     },
   },
 };

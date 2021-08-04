@@ -9,9 +9,9 @@
         <div class="table-container">
           <v-data-table
             hide-default-header
-            :hide-default-footer="project.length < 7"
+            :hide-default-footer="projects.length < 7"
             :headers="headers"
-            :items="project"
+            :items="projects"
             :items-per-page="7"
             class="project-list-table tableBackground"
           >
@@ -104,7 +104,7 @@
 import IndexToolbar from '../components/IndexToolbar.vue';
 import WelcomeWindow from './WelcomeWindow.vue';
 import { storage } from '../util';
-import { GET_PROJECT, REMOVE_PROJECT } from '../query';
+import { REMOVE_PROJECT } from '../query';
 
 export default {
   name: 'Projects',
@@ -112,9 +112,7 @@ export default {
     IndexToolbar,
     WelcomeWindow,
   },
-  apollo: {
-    project: GET_PROJECT,
-  },
+  props: ['projects'],
   data() {
     return {
       headers: [
@@ -126,7 +124,6 @@ export default {
         { text: 'URL', value: 'hash', sortable: false },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
-      project: [],
       dialog: false,
       sharebox: false,
       userInfo: {
@@ -140,9 +137,6 @@ export default {
   },
   created() {
     this.userID = storage.getUserInfo().userID;
-  },
-  updated() {
-    console.log(this.project);
   },
   methods: {
     triggerDialog(item) {
@@ -159,13 +153,13 @@ export default {
           },
         })
         .then(() => {});
-      const index = this.project.indexOf(item);
-      this.project.splice(index, 1);
+      const index = this.projects.indexOf(item);
+      this.projects.splice(index, 1);
     },
     copyURL(listItemID) {
       const input = document.createElement('input');
       input.value = 'http://cpg.url/';
-      input.value += this.project[listItemID].hash;
+      input.value += this.projects[listItemID].hash;
       document.body.appendChild(input);
       input.select();
       document.execCommand('copy');
