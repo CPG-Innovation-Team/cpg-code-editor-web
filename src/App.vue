@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <IndexHeader v-if="this.$route.path === '/'" v-bind:projects="project" />
-    <EditorHeader v-else />
+    <IndexHeader v-if="this.$route.path === '/'" :projects="project" />
+    <EditorHeader v-else :projects="project" />
     <v-main>
       <!-- force refresh the page when at the same route -->
       <router-view :key="$route.fullPath" :projects="project"></router-view>

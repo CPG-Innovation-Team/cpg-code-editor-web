@@ -17,14 +17,9 @@
       </template>
       <div class="projects-container">
         <v-row>
-          <v-col cols="3">
-            <div class="project"></div>
-            <p>Project 1</p>
-          </v-col>
-
-          <v-col cols="3">
-            <div class="project"></div>
-            <p>Project 2</p>
+          <v-col cols="3" v-for="(item, index) in projects" :key="index">
+            <a :href="item._id"><div class="project"></div> </a>
+            <p>{{ item.projectName }}</p>
           </v-col>
 
           <v-col cols="3">
@@ -156,6 +151,7 @@ export default {
   components: {
     UserStatus,
   },
+  props: ['projects'],
   data: () => ({
     project: [],
     projectMenu: false,
@@ -199,7 +195,7 @@ export default {
       .query({
         query: GET_PROJECT,
         variables: {
-          id: this.$route.fullPath.replace('/', ''),
+          _id: this.$route.fullPath.replace('/', ''),
         },
       })
       .then((res) => {

@@ -92,7 +92,6 @@ export default {
     },
     initSocketIO() {
       this.projectId = this.$route.params.projectId;
-      console.log(this.projectId);
 
       const socketUrl = process.env.NODE_ENV === 'test' ? '' : 'ws://localhost:3000';
       this.socket = io(socketUrl, { transports: ['websocket'] });
