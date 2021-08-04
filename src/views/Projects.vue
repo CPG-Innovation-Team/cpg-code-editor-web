@@ -54,14 +54,12 @@
                       "
                       >mdi-share</v-icon
                     >
-                    <!-- <v-icon class="actions-icon" color="white" @click="removeProject(item._id)"> mdi-delete</v-icon> -->
-                    <v-icon class="actions-icon" color="white" @click.stop="triggerDialog(item.projectName, item._id)"
-                      >mdi-delete</v-icon
-                    >
+
+                    <v-icon class="actions-icon" color="white" @click.stop="triggerDialog(item)"> mdi-delete </v-icon>
                     <v-dialog v-model="dialog" width="500" :retain-focus="false">
                       <v-card>
                         <v-card-title class="headline grey lighten-2">
-                          Are you sure to delete {{ itemName }}?
+                          Are you sure to delete {{ selectedItem.projectName }}?
                         </v-card-title>
 
                         <v-divider></v-divider>
@@ -73,7 +71,7 @@
                             text
                             @click="
                               dialog = false;
-                              removeProject(itemID);
+                              removeProject(selectedItem);
                             "
                           >
                             Yes
@@ -136,8 +134,7 @@ export default {
         userAvatar: '',
       },
       storage,
-      itemName: '',
-      itemID: '',
+      selectedItem: '',
       userID: '',
     };
   },
@@ -148,22 +145,22 @@ export default {
     console.log(this.project);
   },
   methods: {
-    triggerDialog(listItemName, listItemID) {
+    triggerDialog(item) {
+      this.selectedItem = item;
       this.dialog = true;
-      this.itemName = listItemName;
-      this.itemID = listItemID;
     },
-    removeProject(listItemID) {
+    removeProject(item) {
       this.$apollo
         .mutate({
           mutation: REMOVE_PROJECT,
           variables: {
-            id: listItemID,
+            /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }] */
+            id: item._id,
           },
         })
-        .then((res) => {
-          console.log(res);
-        });
+        .then(() => {});
+      const index = this.project.indexOf(item);
+      this.project.splice(index, 1);
     },
     copyURL(listItemID) {
       const input = document.createElement('input');

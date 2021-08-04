@@ -83,9 +83,7 @@ export default {
             userId: storage.getUserInfo().userID,
           },
         })
-        .then((res) => {
-          console.log(res);
-        });
+        .then(() => {});
     },
   },
 };

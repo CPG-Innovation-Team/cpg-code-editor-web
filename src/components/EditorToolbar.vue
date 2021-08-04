@@ -180,16 +180,6 @@ export default {
       userAvatar: '',
     };
   },
-  // computed: {
-  //   tools() {
-  //     return [
-  //       { icon: 'mdi-cog', tooltip: this.$t('tools.setting.name'), menu: Setting },
-  //       { icon: 'mdi-magnify', tooltip: this.$t('tools.search.name'), menu: Setting },
-  //       { icon: 'mdi-history', tooltip: this.$t('tools.history.name'), menu: History },
-  //       { icon: 'mdi-download', tooltip: this.$t('tools.download.name'), menu: Setting },
-  //     ];
-  //   },
-  // },
   created() {
     this.userName = storage.getUserInfo().userName;
     this.userAvatar = storage.getUserInfo().userAvatar;
