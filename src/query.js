@@ -24,13 +24,16 @@ export const CREATE_PROJECT = gql`
         _id
         hash
         projectName
-        code
-        createTime
-        updateTime
         syntax
-        createUser
-        lastModifiedUser
       }
+    }
+  }
+`;
+
+export const UPDATE_PROJECT = gql`
+  mutation ($id: String!, $isTop: Boolean) {
+    createProject(id: $id, isTop: $isTop) {
+      success
     }
   }
 `;
