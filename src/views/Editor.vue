@@ -47,7 +47,6 @@ import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
 import { formattedDateTime, storage } from '../util';
 import CODE_LANGUAGE_LIST from '../map';
 import EditorToolbar from '../components/EditorToolbar.vue';
-// import { GET_PROJECT } from '../query';
 
 export default {
   name: 'Editor',
@@ -70,7 +69,6 @@ export default {
       codeLanguageList: CODE_LANGUAGE_LIST,
       users: [],
       sectionWidth: 300,
-      // project: [],
     };
   },
   methods: {
@@ -94,6 +92,7 @@ export default {
     },
     initSocketIO() {
       this.projectId = this.$route.params.projectId;
+      console.log(this.projectId);
 
       const socketUrl = process.env.NODE_ENV === 'test' ? '' : 'ws://localhost:3000';
       this.socket = io(socketUrl, { transports: ['websocket'] });
@@ -228,18 +227,6 @@ export default {
     this.editorEventHandler();
 
     this.resizeBarController();
-
-    // fetch current project info using hash from url
-    // this.$apollo
-    //   .query({
-    //     query: GET_PROJECT,
-    //     variables: {
-    //       hash: this.$route.fullPath.replace('/', ''),
-    //     },
-    //   })
-    //   .then((res) => {
-    //     [this.project] = res.data.project;
-    //   });
   },
 };
 </script>
