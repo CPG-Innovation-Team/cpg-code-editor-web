@@ -192,7 +192,7 @@ export default {
     },
   },
   mounted() {
-    // fetch current project info using hash from url
+    // fetch current project info using _id from url
     this.$apollo
       .query({
         query: GET_PROJECT,
