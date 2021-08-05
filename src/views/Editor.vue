@@ -94,7 +94,8 @@ export default {
       });
     },
     initSocketIO() {
-      this.projectId = this.$route.params.projectId;
+      this.projectId = this.$route.params.projectHash;
+      this.projectHash = this.$route.params.projectHash;
 
       const socketUrl = process.env.NODE_ENV === 'test' ? '' : 'ws://localhost:3000';
       this.socket = io(socketUrl, { transports: ['websocket'] });
@@ -104,7 +105,7 @@ export default {
             .query({
               query: GET_PROJECT_ID,
               fetchPolicy: 'no-cache',
-              variables: { hash: this.projectId },
+              variables: { hash: this.projectHash },
             })
             .then((response) => {
               // eslint-disable-next-line no-underscore-dangle

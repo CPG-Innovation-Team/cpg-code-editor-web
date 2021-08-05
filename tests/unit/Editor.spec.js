@@ -32,11 +32,11 @@ describe('Editor.vue', () => {
     jest.restoreAllMocks();
   });
 
-  const getWrapper = (projectId = undefined) =>
+  const getWrapper = (projectHash = undefined) =>
     shallowMount(Editor, {
       mocks: {
         $route: {
-          params: { projectId },
+          params: { projectHash },
         },
         $router: {
           push: jest.fn(),
