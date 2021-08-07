@@ -227,6 +227,9 @@ export default {
 
     this.resizeBarController();
   },
+  beforeDestroy() {
+    this.editor.dispose();
+  },
 };
 </script>
 
