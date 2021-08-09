@@ -94,7 +94,6 @@ export default {
       });
     },
     initSocketIO() {
-      this.projectId = this.$route.params.projectHash;
       this.projectHash = this.$route.params.projectHash;
 
       const socketUrl = process.env.NODE_ENV === 'test' ? '' : 'ws://localhost:3000';
