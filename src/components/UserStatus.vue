@@ -7,7 +7,7 @@
             <img
               class="user-avatar"
               outlined
-              :src="require(`../assets/img-${user.userAvatar}.png`)"
+              :src="require(`../assets/img-${user.avatar}.png`)"
               v-bind="attrs"
               v-on="on"
               :style="{
@@ -44,19 +44,19 @@ export default {
   },
   methods: {
     getColor(user) {
-      if (user.userAvatar === 'avatar1') {
+      if (user.avatar === 'avatar1') {
         return 'rgb(198, 148, 48)';
       }
-      if (user.userAvatar === 'avatar2') {
+      if (user.avatar === 'avatar2') {
         return 'rgb(198, 201, 131)';
       }
-      if (user.userAvatar === 'avatar3') {
+      if (user.avatar === 'avatar3') {
         return 'rgb(135, 93, 69)';
       }
-      if (user.userAvatar === 'avatar4') {
+      if (user.avatar === 'avatar4') {
         return 'rgb(71, 92, 147)';
       }
-      if (user.userAvatar === 'avatar5') {
+      if (user.avatar === 'avatar5') {
         return 'rgb(123, 170, 164)';
       }
       return 'rgb(226, 109, 93)';
