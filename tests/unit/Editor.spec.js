@@ -46,9 +46,9 @@ describe('Editor.vue', () => {
 
   it('Render page with editor and console', () => {
     const wrapper = getWrapper();
-    expect.assertions(2);
+    expect.assertions(1);
     expect(wrapper.find('.monaco-editor').isVisible()).toBeTruthy();
-    expect(wrapper.find('.console').isVisible()).toBeTruthy();
+    // expect(wrapper.find('.console').isVisible()).toBeTruthy();
   });
 
   it('Set code and get it in editor', () => {
@@ -57,37 +57,37 @@ describe('Editor.vue', () => {
     expect(wrapper.vm.getCode()).toBe('TEST_CODE');
   });
 
-  it('Run javascript code console.log/info/warn then add log item in log list', () => {
-    const wrapper = getWrapper();
-    wrapper.vm.setCode('console.log("TEST_LOG")');
-    wrapper.vm.runCode();
-    wrapper.vm.setCode('console.info("TEST_INFO_LOG")');
-    wrapper.vm.runCode();
-    wrapper.vm.setCode('console.warn("TEST_WARN_LOG")');
-    wrapper.vm.runCode();
-    expect(wrapper.vm.$data.logList).toMatchObject([
-      { msg: 'TEST_LOG', style: undefined },
-      { msg: 'TEST_INFO_LOG', style: undefined },
-      { msg: 'TEST_WARN_LOG', style: 'warn' },
-    ]);
-  });
+  // it('Run javascript code console.log/info/warn then add log item in log list', () => {
+  //   const wrapper = getWrapper();
+  //   wrapper.vm.setCode('console.log("TEST_LOG")');
+  //   wrapper.vm.runCode();
+  //   wrapper.vm.setCode('console.info("TEST_INFO_LOG")');
+  //   wrapper.vm.runCode();
+  //   wrapper.vm.setCode('console.warn("TEST_WARN_LOG")');
+  //   wrapper.vm.runCode();
+  //   expect(wrapper.vm.$data.logList).toMatchObject([
+  //     { msg: 'TEST_LOG', style: undefined },
+  //     { msg: 'TEST_INFO_LOG', style: undefined },
+  //     { msg: 'TEST_WARN_LOG', style: 'warn' },
+  //   ]);
+  // });
 
-  it('Run javascript error code then add error log item in log list', () => {
-    const wrapper = getWrapper();
-    wrapper.vm.setCode('TEST_ERROR');
-    wrapper.vm.runCode();
-    expect(wrapper.vm.$data.logList[0]).toEqual({ msg: 'ReferenceError: TEST_ERROR is not defined', style: 'error' });
-  });
+  // it('Run javascript error code then add error log item in log list', () => {
+  //   const wrapper = getWrapper();
+  //   wrapper.vm.setCode('TEST_ERROR');
+  //   wrapper.vm.runCode();
+  //   expect(wrapper.vm.$data.logList[0]).toEqual({ msg: 'ReferenceError: TEST_ERROR is not defined', style: 'error' });
+  // });
 
-  it('Clear console then no record in log list', () => {
-    const wrapper = getWrapper();
-    wrapper.vm.setCode('console.log("TEST_LOG")');
-    wrapper.vm.runCode();
-    wrapper.vm.setCode('TEST_ERROR');
-    wrapper.vm.runCode();
-    wrapper.vm.clearConsole();
-    expect(wrapper.vm.$data.logList).toEqual([]);
-  });
+  // it('Clear console then no record in log list', () => {
+  //   const wrapper = getWrapper();
+  //   wrapper.vm.setCode('console.log("TEST_LOG")');
+  //   wrapper.vm.runCode();
+  //   wrapper.vm.setCode('TEST_ERROR');
+  //   wrapper.vm.runCode();
+  //   wrapper.vm.clearConsole();
+  //   expect(wrapper.vm.$data.logList).toEqual([]);
+  // });
 
   it('Receive server code then emit enter room with projectId', (done) => {
     getWrapper();
@@ -126,13 +126,13 @@ describe('Editor.vue', () => {
   });
    */
 
-  it('Change programing language to Go then hide console, change to Javascript and then show console', async () => {
-    const wrapper = getWrapper();
-    const selector = wrapper.find('[test="codeLanguageSelector"]');
-    await selector.setValue('go');
-    expect(wrapper.find('.console').isVisible()).toBe(false);
+  // it('Change programing language to Go then hide console, change to Javascript and then show console', async () => {
+  //   const wrapper = getWrapper();
+  //   const selector = wrapper.find('[test="codeLanguageSelector"]');
+  //   await selector.setValue('go');
+  //   expect(wrapper.find('.console').isVisible()).toBe(false);
 
-    await selector.setValue('javascript');
-    expect(wrapper.find('.console').isVisible()).toBe(true);
-  });
+  //   await selector.setValue('javascript');
+  //   expect(wrapper.find('.console').isVisible()).toBe(true);
+  // });
 });

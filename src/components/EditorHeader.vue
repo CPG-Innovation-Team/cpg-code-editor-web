@@ -20,7 +20,7 @@
       <div class="projects-container">
         <v-row>
           <v-col cols="3" v-for="(item, index) in projects" :key="index">
-            <a :href="item._id"><div class="project"></div> </a>
+            <a :href="item.hash"><div class="project"></div> </a>
             <p>{{ item.projectName }}</p>
           </v-col>
 

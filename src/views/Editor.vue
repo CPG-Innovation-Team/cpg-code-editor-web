@@ -2,7 +2,7 @@
   <div class="fill-height row-container">
     <div class="left" v-bind:style="{ width: sectionWidth + 'px' }"></div>
     <div class="resize-bar" ref="resizeBar"></div>
-    <div class="middle">
+    <div class="middle" v-bind:style="{ width: 'calc(100% - ' + sectionWidth + 'px - 75px)' }">
       <div class="editor-container">
         <div class="title-block">
           <div class="title-text">Editor</div>
@@ -17,7 +17,7 @@
           </div>
         </div>
         <div ref="editor" class="editor"></div>
-        <div v-show="consoleVisible" class="title-block">
+        <!-- <div v-show="consoleVisible" class="title-block">
           <div class="title-text">Console</div>
           <div class="button-block">
             <button class="title-button" @click="runCode">Run</button>
@@ -30,7 +30,7 @@
             {{ item.style === 'error' ? '&#215;' : '' }}
             {{ item.msg }}
           </p>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -92,6 +92,7 @@ export default {
         minimap: {
           enabled: false,
         },
+        automaticLayout: true,
       });
     },
     initSocketIO() {
@@ -256,6 +257,13 @@ export default {
           const moveLen = endX - startX;
           startX = endX;
           this.sectionWidth += moveLen;
+
+          if (this.sectionWidth < 0) {
+            this.sectionWidth = 0;
+          } else if (this.sectionWidth > window.innerWidth * 0.8) {
+            this.sectionWidth = window.innerWidth * 0.8;
+          }
+          console.log(this.sectionWidth);
         };
         document.onmouseup = () => {
           // color restoration
@@ -273,7 +281,7 @@ export default {
   mounted() {
     this.initEditor();
     this.initSocketIO();
-    this.consoleHandler();
+    // this.consoleHandler();
     this.editorEventHandler();
 
     this.resizeBarController();
@@ -289,7 +297,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 88vh;
-  width: inherit;
+  width: 100%;
 }
 
 .title-block {
@@ -347,7 +355,6 @@ export default {
   overflow: hidden;
   position: relative;
   .left {
-    max-width: 55%;
     border-top: 1px solid #eee;
     background-color: #3d4b56;
     position: relative;
@@ -362,7 +369,6 @@ export default {
     cursor: col-resize;
   }
   .middle {
-    flex: 1 0 auto;
     border-top: 1px solid #eee;
     border-left: 1px solid #eee;
     background-color: #2c333b;
