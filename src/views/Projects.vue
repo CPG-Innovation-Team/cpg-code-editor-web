@@ -33,6 +33,8 @@
                       color="yellow"
                       small
                       class="star-checkbox"
+                      v-model="item.isTop"
+                      @click="updateProject(item._id, !item.isTop)"
                     ></v-checkbox>
                   </td>
                   <td class="item-style">
@@ -106,7 +108,7 @@
 import IndexToolbar from '../components/IndexToolbar.vue';
 import WelcomeWindow from './WelcomeWindow.vue';
 import { storage } from '../util';
-import { GET_PROJECT, REMOVE_PROJECT } from '../query';
+import { GET_PROJECT, REMOVE_PROJECT, UPDATE_PROJECT } from '../query';
 
 export default {
   name: 'Projects',
@@ -152,6 +154,19 @@ export default {
       this.dialog = true;
       this.itemName = listItemName;
       this.itemID = listItemID;
+    },
+    updateProject(listItemID, listItemTop) {
+      this.$apollo
+        .mutate({
+          mutation: UPDATE_PROJECT,
+          variables: {
+            id: listItemID,
+            isTop: listItemTop,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+        });
     },
     removeProject(listItemID) {
       this.$apollo
