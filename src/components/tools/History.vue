@@ -102,7 +102,6 @@
         </div>
       </div>
     </div>
-    <div style="width: 100px; height: 100px; background-color: black; position: fixed; left: 0px">1</div>
   </div>
 </template>
 
