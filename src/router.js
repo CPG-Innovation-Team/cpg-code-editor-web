@@ -12,7 +12,7 @@ const routes = [
     component: Projects,
   },
   {
-    path: '/:projectId',
+    path: '/:projectHash',
     name: 'Editor',
     component: Editor,
   },

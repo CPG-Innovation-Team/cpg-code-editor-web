@@ -41,7 +41,7 @@
     </v-col>
 
     <v-col cols="1" class="right">
-      <EditorToolbar />
+      <EditorToolbar v-bind="$attrs" v-on="$listeners" />
     </v-col>
   </v-row>
 </template>
@@ -53,6 +53,7 @@ import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
 import { formattedDateTime, storage } from '../util';
 import CODE_LANGUAGE_LIST from '../map';
 import EditorToolbar from '../components/EditorToolbar.vue';
+import { GET_USER_LIST, GET_PROJECT, GET_PROJECT_ID } from '../query';
 
 export default {
   name: 'Editor',
@@ -69,7 +70,10 @@ export default {
       codeUpdateEnable: true, // Debounce for real-time sync
       debounceTimeout: null,
       projectId: null,
-      userId: storage.getUserInfo().userID,
+      projectName: '',
+      projectHash: '',
+      syntax: '',
+      userId: '',
       initStatus: true,
       selectedCodeLanguage: 'javascript',
       codeLanguageList: CODE_LANGUAGE_LIST,
@@ -121,11 +125,23 @@ export default {
       });
     },
     initSocketIO() {
-      this.projectId = this.$route.params.projectId;
+      this.projectHash = this.$route.params.projectHash;
 
       const socketUrl = process.env.NODE_ENV === 'test' ? '' : 'ws://localhost:3000';
       this.socket = io(socketUrl, { transports: ['websocket'] });
-      this.socket.on('connect', () => {
+      this.socket.on('connect', async () => {
+        if (this.$apollo) {
+          await this.$apollo
+            .query({
+              query: GET_PROJECT_ID,
+              fetchPolicy: 'no-cache',
+              variables: { hash: this.projectHash },
+            })
+            .then((response) => {
+              // eslint-disable-next-line no-underscore-dangle
+              this.projectId = response.data.project[0]._id;
+            });
+        }
         if (this.projectId) {
           this.socket.emit('clientEnterProject', this.projectId, this.userId);
         }
@@ -139,7 +155,7 @@ export default {
       });
 
       // Receive code from server
-      this.socket.on('serverProjectInfoSync', (res) => {
+      this.socket.on('serverProjectInfoSync', async (res) => {
         if (this.projectId !== res.projectId) {
           this.$router.push(`/${res.projectId}`);
           this.projectId = res.projectId;
@@ -147,6 +163,32 @@ export default {
         } else if (res.code !== this.getCode() && this.codeUpdateEnable) {
           // Prevent remote code override local
           this.setCode(res.code);
+        }
+        if (this.$apollo) {
+          // retrive user list from server
+          await this.$apollo
+            .query({
+              query: GET_USER_LIST,
+              fetchPolicy: 'no-cache',
+              variables: { _id: this.projectId },
+            })
+            .then((response) => {
+              this.users = response.data.project[0].editInfo;
+              this.$emit('passUserList', this.users);
+            });
+          // retrive project info from server
+          await this.$apollo
+            .query({
+              query: GET_PROJECT,
+              fetchPolicy: 'no-cache',
+              variables: {
+                _id: this.projectId,
+              },
+            })
+            .then((response) => {
+              this.projectName = response.data.project[0].projectName;
+              this.syntax = response.data.project[0].syntax;
+            });
         }
       });
     },
@@ -162,7 +204,13 @@ export default {
         this.debounceTimeout = setTimeout(() => {
           console.original.log(e);
           const code = this.getCode();
-          this.socket.emit('clientUpdateProjectInfo', { code, projectId: this.projectId });
+          this.socket.emit('clientUpdateProjectInfo', {
+            code,
+            projectId: this.projectId,
+            projectName: this.projectName,
+            syntax: this.syntax,
+            userId: this.userId,
+          });
           updateCodeInLocalDb(code, this.projectId || 'localDefault');
           this.codeUpdateEnable = true;
         }, 1000);
@@ -224,6 +272,9 @@ export default {
         this.setCode(code);
       });
     },
+  },
+  created() {
+    this.userId = storage.getUserInfo().userID;
   },
   mounted() {
     this.initEditor();
