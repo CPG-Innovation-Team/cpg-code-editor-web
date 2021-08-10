@@ -59,18 +59,6 @@ export const UPDATE_PROJECT = gql`
   mutation ($id: String!, $isTop: Boolean) {
     updateProject(id: $id, isTop: $isTop) {
       success
-      data {
-        _id
-        hash
-        projectName
-        code
-        createTime
-        updateTime
-        syntax
-        createUser
-        lastModifiedUser
-        isTop
-      }
     }
   }
 `;
