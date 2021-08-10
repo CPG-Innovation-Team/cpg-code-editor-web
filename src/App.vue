@@ -1,10 +1,15 @@
 <template>
   <v-app>
     <IndexHeader v-if="this.$route.path === '/'" :projects="project" />
-    <EditorHeader v-else :projects="project" />
+    <EditorHeader v-else :users="users" :changedUserInfo="changedUserInfo" :projects="project" />
     <v-main>
       <!-- force refresh the page when at the same route -->
-      <router-view :key="$route.fullPath" :projects="project"></router-view>
+      <router-view
+        :key="$route.fullPath"
+        :projects="project"
+        @passUserList="getUserList"
+        @passChangedUserInfo="getChangedUserInfo"
+      ></router-view>
     </v-main>
   </v-app>
 </template>
@@ -16,17 +21,30 @@ import { GET_PROJECT } from './query';
 
 export default {
   name: 'App',
-  data() {
-    return {
-      project: [],
-    };
-  },
   apollo: {
     project: GET_PROJECT,
   },
   components: {
     IndexHeader,
     EditorHeader,
+  },
+  data() {
+    return {
+      project: [],
+      users: [],
+      changedUserInfo: '',
+    };
+  },
+  methods: {
+    getChangedUserInfo(userInfo) {
+      this.changedUserInfo = userInfo;
+    },
+    getUserList(users) {
+      this.users = users;
+    },
+  },
+  mounted() {
+    console.log(this.project);
   },
 };
 </script>

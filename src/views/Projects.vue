@@ -9,7 +9,6 @@
         <div class="table-container">
           <v-data-table
             hide-default-header
-            :hide-default-footer="projects.length < 7"
             :headers="headers"
             :items="projects"
             :items-per-page="7"
@@ -112,7 +111,7 @@ export default {
     IndexToolbar,
     WelcomeWindow,
   },
-  props: ['projects'],
+  props: { projects: Array },
   data() {
     return {
       headers: [
@@ -164,6 +163,7 @@ export default {
       input.select();
       document.execCommand('copy');
       document.body.removeChild(input);
+      console.log(this.projects);
     },
     getUserInfo(userName, userAvatar) {
       this.userInfo.userName = userName;
