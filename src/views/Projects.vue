@@ -34,7 +34,7 @@
                       small
                       class="star-checkbox"
                       v-model="item.isTop"
-                      @click="updateProject(item._id, !item.isTop)"
+                      @click="updateProject(item._id, item.isTop)"
                     ></v-checkbox>
                   </td>
                   <td class="item-style">
@@ -222,6 +222,9 @@ export default {
       setTimeout(() => {
         this.sharebox = false;
       }, 2000);
+    },
+    reverse(topStatus) {
+      return !topStatus;
     },
   },
 };

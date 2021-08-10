@@ -69,6 +69,7 @@ export const UPDATE_PROJECT = gql`
         syntax
         createUser
         lastModifiedUser
+        isTop
       }
     }
   }
