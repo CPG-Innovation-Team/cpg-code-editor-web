@@ -1,8 +1,8 @@
 <template>
   <div class="fill-height row-container">
-    <div class="left" v-bind:style="{ width: sectionWidth + 'px' }"></div>
+    <div class="history-section" v-bind:style="{ width: sectionWidth + 'px' }"></div>
     <div class="resize-bar" ref="resizeBar"></div>
-    <div class="middle" v-bind:style="{ width: 'calc(100% - ' + sectionWidth + 'px - 75px)' }">
+    <div class="editor-section" v-bind:style="{ width: 'calc(100% - ' + sectionWidth + 'px - 75px)' }">
       <div class="editor-container">
         <div class="title-block">
           <div class="title-text">Editor</div>
@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <div class="right">
+    <div class="toolbar-section">
       <EditorToolbar v-bind="$attrs" v-on="$listeners" />
     </div>
   </div>
@@ -354,7 +354,7 @@ export default {
   align-items: stretch;
   overflow: hidden;
   position: relative;
-  .left {
+  .history-section {
     border-top: 1px solid #eee;
     background-color: #3d4b56;
     position: relative;
@@ -368,13 +368,13 @@ export default {
     width: 5px;
     cursor: col-resize;
   }
-  .middle {
+  .editor-section {
     border-top: 1px solid #eee;
     border-left: 1px solid #eee;
     background-color: #2c333b;
   }
 
-  .right {
+  .toolbar-section {
     width: 75px;
   }
 }
