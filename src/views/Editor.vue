@@ -2,9 +2,9 @@
   <v-row no-gutters d-flex class="fill-height">
     <v-col class="left">
       <div v-for="(user, index) in editHistory" :key="index">
-        <div class="highlight-bar" :style="{ height: user.editNumber + 'px' }">
-          <a style="color: rgb(190, 198, 201)">Yesterday 10:20</a>
-          <a style="margin-left: 130px; color: rgb(27, 186, 205)"> Able </a>
+        <div class="highlight-bar" :style="{ height: user.editLinesStart * 10 + 'px' }">
+          <a style="color: rgb(190, 198, 201)">{{ user.editTime }}</a>
+          <a style="margin-left: 130px; color: rgb(27, 186, 205)"> {{ user.name }} </a>
         </div>
       </div>
     </v-col>
@@ -85,22 +85,8 @@ export default {
           editTime: '15:20',
           editNumber: 200,
           editLinesStart: 10,
-          editLineEnd: 12,
-          newMemberMessage: false,
-          isOnline: true,
-          isEditing: true,
+          editLinesEnd: 12,
         }, // edit Content later
-        {
-          name: 'Able',
-          userAvatar: 'avatar3',
-          editTime: '10:30',
-          editNumber: 54,
-          editLinesStart: 2,
-          editLinesEnd: 5,
-          newMemberMessage: false,
-          isOnline: true,
-          isEditing: true,
-        },
       ],
     };
   },
