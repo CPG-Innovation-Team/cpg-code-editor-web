@@ -191,7 +191,7 @@ export default {
       .query({
         query: GET_PROJECT,
         variables: {
-          _id: this.$route.fullPath.replace('/', ''),
+          hash: this.$route.fullPath.replace('/', ''),
         },
       })
       .then((res) => {
