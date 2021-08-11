@@ -20,7 +20,8 @@
       <div class="projects-container">
         <v-row>
           <v-col cols="3" v-for="(item, index) in projects" :key="index">
-            <a :href="sanitizeURL(item.hash)"><div class="project"></div></a>
+            <!-- {{ sanitize(item.hash) }} -->
+            <a :href="$sanitize(item.hash)"><div class="project"></div></a>
             <p>{{ item.projectName }}</p>
           </v-col>
 
@@ -182,9 +183,6 @@ export default {
     copyURL() {
       navigator.clipboard.writeText(this.url);
       this.copied = true;
-    },
-    sanitizeURL(url) {
-      return this.$sanitize(url);
     },
   },
   mounted() {
