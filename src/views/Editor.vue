@@ -35,7 +35,7 @@
     </div>
 
     <div class="toolbar-section">
-      <EditorToolbar v-bind="$attrs" v-on="$listeners" />
+      <EditorToolbar v-bind="$attrs" v-on="$listeners" @download="downloadCode" />
     </div>
   </div>
 </template>

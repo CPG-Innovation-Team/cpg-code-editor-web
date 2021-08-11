@@ -52,6 +52,17 @@
           <div :is="tool.menu" />
         </v-menu>
 
+        <v-tooltip nudge-right="10" left>
+          <template v-slot:activator="{ on, tooltip }">
+            <v-list-item v-bind="tooltip" v-on="on" @click="$emit('download')">
+              <v-list-item-content>
+                <v-icon color="greyBtn">mdi-download</v-icon>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+          <span>{{ $t('tools.download.name') }}</span>
+        </v-tooltip>
+
         <v-divider color="#737d81" class="toolbar-divider"></v-divider>
 
         <v-menu
@@ -168,6 +179,7 @@ export default {
       userAvatar: '',
     },
     projects: Array,
+    downloadCode: { type: Function },
   },
   data() {
     return {
@@ -175,7 +187,6 @@ export default {
         { icon: 'mdi-cog', tooltip: 'tools.setting.name', menu: Setting },
         { icon: 'mdi-magnify', tooltip: 'tools.search.name', menu: Setting },
         { icon: 'mdi-history', tooltip: 'tools.history.name', menu: History },
-        { icon: 'mdi-download', tooltip: 'tools.download.name', menu: Setting },
       ],
       userName: '',
       userAvatar: '',
@@ -192,6 +203,7 @@ export default {
   created() {
     this.userName = storage.getUserInfo().userName;
     this.userAvatar = storage.getUserInfo().userAvatar;
+    this.$emit('download');
   },
   computed: {
     getUserAvatar() {
