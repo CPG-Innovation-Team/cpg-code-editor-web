@@ -167,6 +167,7 @@ export default {
       userName: '',
       userAvatar: '',
     },
+    projects: Array,
   },
   data() {
     return {

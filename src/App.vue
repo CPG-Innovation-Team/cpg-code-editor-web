@@ -43,9 +43,6 @@ export default {
       this.users = users;
     },
   },
-  mounted() {
-    console.log(this.project);
-  },
 };
 </script>
 

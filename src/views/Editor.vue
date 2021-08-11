@@ -263,7 +263,6 @@ export default {
           } else if (this.sectionWidth > window.innerWidth * 0.8) {
             this.sectionWidth = window.innerWidth * 0.8;
           }
-          console.log(this.sectionWidth);
         };
         document.onmouseup = () => {
           // color restoration
