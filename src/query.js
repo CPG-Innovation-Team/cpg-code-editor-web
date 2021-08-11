@@ -12,6 +12,7 @@ export const GET_PROJECT = gql`
       syntax
       createUser
       lastModifiedUser
+      isTop
     }
   }
 `;
@@ -50,6 +51,14 @@ export const REMOVE_PROJECT = gql`
         createUser
         lastModifiedUser
       }
+    }
+  }
+`;
+
+export const UPDATE_PROJECT = gql`
+  mutation ($id: String!, $isTop: Boolean) {
+    updateProject(id: $id, isTop: $isTop) {
+      success
     }
   }
 `;
