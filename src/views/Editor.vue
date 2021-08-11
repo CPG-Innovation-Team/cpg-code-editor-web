@@ -43,7 +43,7 @@
 import * as monaco from 'monaco-editor';
 import { io } from 'socket.io-client';
 import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
-import { formattedDateTime, storage } from '../util';
+import { formattedDateTime, storage, getAvatarColor } from '../util';
 import CODE_LANGUAGE_LIST from '../map';
 import EditorToolbar from '../components/EditorToolbar.vue';
 import { GET_USER_LIST, GET_PROJECT, GET_PROJECT_ID } from '../query';
@@ -71,6 +71,11 @@ export default {
       selectedCodeLanguage: 'javascript',
       codeLanguageList: CODE_LANGUAGE_LIST,
       users: [],
+      color: '',
+      cursors: [],
+      line: 0,
+      column: 0,
+      testline: 0,
     };
   },
   methods: {
@@ -80,6 +85,7 @@ export default {
         inherit: true,
         colors: {
           'editor.background': '#2C333B',
+          'editorCursor.foreground': this.color,
         },
         rules: [],
       };
@@ -162,7 +168,166 @@ export default {
       });
     },
     editorEventHandler() {
+      // user click event
+
+      this.editor.onMouseDown((e) => {
+        // console.log('mouse is down');
+
+        if (e.target.position) {
+          // console.log(e.target.position.lineNumber);
+          // console.log(e.target.position.column);
+        }
+      });
+
       this.editor.onDidChangeModelContent((e) => {
+        if (e.changes[0].text === '\n' || e.changes[0].text.slice(0, 1) === '\n') {
+          // console.log('换行');
+          for (let i = 0; i < this.cursors.length; i += 1) {
+            if (
+              e.changes[0].range.startLineNumber === this.cursors[i].startLineNumber &&
+              e.changes[0].range.startColumn <= this.cursors[i].startColumn
+            ) {
+              //  console.log(`${i}行内换行`);
+              this.cursors[i].startLineNumber += 1;
+              this.cursors[i].endLineNumber += 1;
+              if (e.changes[0].range.startColumn !== 1) {
+                //  console.log(`${i}不在开头`);
+                this.cursors[i].startColumn = this.cursors[i].startColumn - e.changes[0].range.startColumn + 1;
+                this.cursors[i].endColumn = this.cursors[i].endColumn - e.changes[0].range.endColumn + 1;
+              }
+            } else if (e.changes[0].range.startLineNumber < this.cursors[i].startLineNumber) {
+              // console.log(`${i}前面换行`);
+              this.cursors[i].startLineNumber += 1;
+              this.cursors[i].endLineNumber += 1;
+            }
+          }
+        } else if (e.changes[0].text === '') {
+          // console.log('删除');
+          for (let i = 0; i < this.cursors.length; i += 1) {
+            if (
+              e.changes[0].range.startLineNumber < this.cursors[i].startLineNumber &&
+              e.changes[0].range.endLineNumber - e.changes[0].range.startLineNumber === 1
+            ) {
+              //  console.log('前面删除换行');
+              this.cursors[i].startLineNumber -= 1;
+              this.cursors[i].endLineNumber -= 1;
+              if (e.changes[0].range.endLineNumber - this.cursors[i].startLineNumber === 1) {
+                //  console.log('上一行有内容，拼接');
+                this.cursors[i].startColumn += e.changes[0].range.startColumn - 1;
+                this.cursors[i].endColumn = this.cursors[i].startColumn + 1;
+              }
+            } else if (
+              e.changes[0].range.startLineNumber === this.cursors[i].startLineNumber &&
+              e.changes[0].range.startColumn < this.cursors[i].startColumn &&
+              e.changes[0].range.endLineNumber - e.changes[0].range.startLineNumber === 0
+            ) {
+              // console.log('行内删除');
+              if (
+                e.changes[0].range.startColumn < this.cursors[i].startColumn &&
+                e.changes[0].range.endColumn > this.cursors[i].endColumn
+              ) {
+                //  console.log('选中光标部分删除');
+                this.cursors[i].startColumn = e.changes[0].range.startColumn;
+                this.cursors[i].endColumn = e.changes[0].range.startColumn + 1;
+              } else {
+                //  console.log('普通行内删除');
+                this.cursors[i].startColumn -= e.changes[0].range.endColumn - e.changes[0].range.startColumn;
+                this.cursors[i].endColumn -= e.changes[0].range.endColumn - e.changes[0].range.startColumn;
+              }
+            } else if (
+              e.changes[0].range.startLineNumber <= this.cursors[i].startLineNumber &&
+              e.changes[0].range.endLineNumber > this.cursors[i].endLineNumber &&
+              e.changes[0].range.startColumn < this.cursors[i].startColumn
+            ) {
+              //  console.log('选中区块删除');
+              this.cursors[i].startLineNumber = e.changes[0].range.startLineNumber;
+              this.cursors[i].endLineNumber = e.changes[0].range.startLineNumber;
+              this.cursors[i].startColumn = e.changes[0].range.startColumn;
+              this.cursors[i].endColumn = e.changes[0].range.startColumn + 1;
+            }
+          }
+        } else if (e.changes[0].text !== '\n' && e.versionId !== 2) {
+          //  console.log('增加');
+          for (let i = 0; i < this.cursors.length; i += 1) {
+            if (e.changes[0].text.includes('\n') === true) {
+              // const count = (e.changes[0].text.match(/\n/g) || []).length;
+              // console.log(`length is ${count}`);
+              //  console.log('区块增加');
+              // this.cursors[i].startLineNumber += count;
+              // this.cursors[i].endLineNumber += count;
+            } else if (
+              e.changes[0].range.startLineNumber === this.cursors[i].startLineNumber &&
+              e.changes[0].range.startColumn < this.cursors[i].startColumn
+            ) {
+              //   console.log('行内增加');
+              this.cursors[i].startColumn += e.changes[0].text.length;
+              this.cursors[i].endColumn += e.changes[0].text.length;
+            }
+          }
+        }
+
+        // user isTyping widget
+
+        const contentWidgets = [];
+
+        for (let i = 0; i < this.cursors.length; i += 1) {
+          const lineNumber = this.cursors[i].startLineNumber;
+          const column = this.cursors[i].startColumn;
+          const { id } = this.cursors[i];
+          const color = getAvatarColor(this.cursors[i].avatar);
+          contentWidgets.push({
+            domNode: null,
+            getId() {
+              return `content.${id}`;
+            },
+            getDomNode() {
+              if (!this.domNode) {
+                this.domNode = document.createElement('div');
+                this.domNode.innerHTML = 'is typing...';
+                this.domNode.style.color = 'white';
+                this.domNode.style.opacity = 0.9;
+                this.domNode.style.background = color;
+                this.domNode.style['font-size'] = '10px';
+                this.domNode.style.width = 'max-content';
+              }
+              return this.domNode;
+            },
+            getPosition() {
+              return {
+                position: {
+                  lineNumber,
+                  column,
+                },
+                preference: [
+                  monaco.editor.ContentWidgetPositionPreference.ABOVE,
+                  monaco.editor.ContentWidgetPositionPreference.BELOW,
+                ],
+              };
+            },
+          });
+        }
+
+        for (let i = 0; i < contentWidgets.length; i += 1) {
+          this.editor.removeContentWidget(contentWidgets[i]);
+          this.editor.addContentWidget(contentWidgets[i]);
+        }
+
+        const decorations = [];
+
+        for (let i = 0; i < this.cursors.length; i += 1) {
+          decorations.push({
+            range: new monaco.Range(
+              this.cursors[i].startLineNumber,
+              this.cursors[i].startColumn,
+              this.cursors[i].endLineNumber,
+              this.cursors[i].endColumn
+            ),
+            options: { className: this.cursors[i].avatar, stickiness: 1 },
+          });
+        }
+
+        this.editor.deltaDecorations([], decorations);
+
         this.initStatus = false;
         if (!this.codeUpdateEnable) {
           clearTimeout(this.debounceTimeout);
@@ -239,11 +404,34 @@ export default {
         this.editor.dispose();
         this.initEditor();
         this.setCode(code);
+
+        const decorations = [];
+
+        for (let i = 0; i < this.cursors.length; i += 1) {
+          decorations.push({
+            range: new monaco.Range(
+              this.cursors[i].startLineNumber,
+              this.cursors[i].startColumn,
+              this.cursors[i].endLineNumber,
+              this.cursors[i].endColumn
+            ),
+            options: { className: this.cursors[i].avatar, stickiness: 1 },
+          });
+        }
+
+        this.editor.deltaDecorations([], decorations);
       });
     },
   },
   created() {
     this.userId = storage.getUserInfo().userID;
+    this.color = getAvatarColor(storage.getUserInfo().userAvatar);
+    this.cursors = [
+      { id: '01', avatar: 'avatar1', startLineNumber: 2, startColumn: 10, endLineNumber: 2, endColumn: 11 },
+      // { id: '02', avatar: 'avatar2', startLineNumber: 1, startColumn: 8, endLineNumber: 1, endColumn: 9 },
+      // { id: '03', avatar: 'avatar3', startLineNumber: 4, startColumn: 7, endLineNumber: 4, endColumn: 8 },
+      // { id: '04', avatar: 'avatar2', startLineNumber: 8, startColumn: 1, endLineNumber: 8, endColumn: 2 },
+    ];
   },
   mounted() {
     this.initEditor();
@@ -257,7 +445,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .editor-container {
   display: flex;
   flex-direction: column;
@@ -326,5 +514,20 @@ export default {
 .right {
   min-width: 75px;
   max-width: 100px;
+}
+
+.avatar1 {
+  background: #c69430;
+  width: 2px !important;
+}
+
+.avatar2 {
+  background: #c6c983;
+  width: 2px !important;
+}
+
+.avatar3 {
+  background: #875d45;
+  width: 2px !important;
 }
 </style>
