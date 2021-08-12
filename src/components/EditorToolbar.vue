@@ -22,10 +22,33 @@
               <span>Help</span>
             </v-tooltip>
           </template>
-          <Setting />
+          <!-- help component here -->
         </v-menu>
 
         <v-divider color="#737d81" class="toolbar-divider"></v-divider>
+
+        <v-menu
+          left
+          offset-x
+          :close-on-content-click="false"
+          content-class="elevation-0 tool-menu"
+          z-index="1"
+          rounded="0"
+        >
+          <template v-slot:activator="{ on: menu, attrs }" class="tool-menu">
+            <v-tooltip nudge-right="10" left>
+              <template v-slot:activator="{ on: tooltip }">
+                <v-list-item v-bind="attrs" v-on="{ ...tooltip, ...menu }">
+                  <v-list-item-content>
+                    <v-icon color="greyBtn">mdi-cog</v-icon>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              <span>Setting</span>
+            </v-tooltip>
+          </template>
+          <Setting v-on="$listeners" />
+        </v-menu>
 
         <v-menu
           v-for="tool in tools"
@@ -85,7 +108,7 @@
               <span>{{ $t('tools.video.name') }}</span>
             </v-tooltip>
           </template>
-          <Setting />
+          <!-- video component here -->
         </v-menu>
       </div>
 
@@ -112,7 +135,7 @@
               <span>{{ $t('tools.information.name') }}</span>
             </v-tooltip>
           </template>
-          <Setting />
+          <!-- information component here -->
         </v-menu>
 
         <v-menu
@@ -184,7 +207,6 @@ export default {
   data() {
     return {
       tools: [
-        { icon: 'mdi-cog', tooltip: 'tools.setting.name', menu: Setting },
         { icon: 'mdi-magnify', tooltip: 'tools.search.name', menu: Setting },
         { icon: 'mdi-history', tooltip: 'tools.history.name', menu: History },
       ],

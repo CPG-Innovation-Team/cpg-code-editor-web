@@ -18,16 +18,19 @@
       <div>
         <h5>Syntax</h5>
         <v-select
+          v-model="selectedLanguage"
           :items="codeLanguageList"
           item-text="langName"
-          item-langValue="abbr"
+          item-value="langValue"
           dark
           outlined
           dense
+          return-object
           color="blueBtn"
           background-color="primary lighten-1"
           item-color="blueBtn"
           :menu-props="{ bottom: true, offsetY: true }"
+          @change="$emit('changeLanguage', `${selectedLanguage.langValue}`)"
         ></v-select>
       </div>
 
@@ -54,6 +57,7 @@ export default {
   name: 'Setting',
   data() {
     return {
+      selectedLanguage: '',
       codeLanguageList: CODE_LANGUAGE_LIST,
       tabSize: [2, 4, 6],
     };

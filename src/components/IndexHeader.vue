@@ -28,7 +28,6 @@
                   item-text="langName"
                   :rules="syntaxRules"
                 ></v-select>
-                <!-- <v-text-field v-model="projectSyntax" label="Project syntax" :rules="nameRules" required></v-text-field> -->
               </v-col>
             </v-row>
           </v-container>

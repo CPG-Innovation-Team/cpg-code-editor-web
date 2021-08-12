@@ -35,7 +35,12 @@
     </div>
 
     <div class="toolbar-section">
-      <EditorToolbar v-bind="$attrs" v-on="$listeners" @download="downloadCode" />
+      <EditorToolbar
+        v-bind="$attrs"
+        v-on="$listeners"
+        @download="downloadCode"
+        @changeLanguage="onCodeLanguageChange"
+      />
     </div>
   </div>
 </template>
@@ -230,12 +235,14 @@ export default {
       downloadElement.download = `code-${formattedDateTime(new Date())}`;
       downloadElement.click();
     },
-    onCodeLanguageChange() {
+    onCodeLanguageChange(value) {
       if (this.selectedCodeLanguage === 'javascript') {
         this.consoleVisible = true;
       } else {
         this.consoleVisible = false;
       }
+      this.selectedCodeLanguage = value;
+      console.log(this.selectedCodeLanguage);
       this.$nextTick(() => {
         const code = this.getCode();
         this.editor.dispose();
@@ -243,7 +250,6 @@ export default {
         this.setCode(code);
       });
     },
-
     resizeBarController() {
       const resize = this.$refs.resizeBar;
       resize.onmousedown = (e) => {
