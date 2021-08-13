@@ -1,6 +1,8 @@
 <template>
   <v-app-bar app color="primary">
-    <v-toolbar-title class="white--text mr-5">正大集团</v-toolbar-title>
+    <v-toolbar-title class="mr-5">
+      <router-link to="/" class="white--text" style="text-decoration: none">正大集团</router-link>
+    </v-toolbar-title>
     <v-menu
       offset-y
       min-height
@@ -11,20 +13,15 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <h4 class="white--text" v-bind="attrs" v-on="on">
-          Project Name <v-icon v-if="projectMenu" color="white" class="mb-1">mdi-chevron-up</v-icon>
+          {{ project.projectName }} <v-icon v-if="projectMenu" color="white" class="mb-1">mdi-chevron-up</v-icon>
           <v-icon v-else color="white" class="mb-1">mdi-chevron-down</v-icon>
         </h4>
       </template>
       <div class="projects-container">
         <v-row>
-          <v-col cols="3">
-            <div class="project"></div>
-            <p>Project 1</p>
-          </v-col>
-
-          <v-col cols="3">
-            <div class="project"></div>
-            <p>Project 2</p>
+          <v-col cols="3" v-for="(item, index) in projects" :key="index">
+            <a :href="$sanitize(item.hash)"><div class="project"></div></a>
+            <p>{{ item.projectName }}</p>
           </v-col>
 
           <v-col cols="3">
@@ -150,7 +147,7 @@
 
 <script>
 import UserStatus from './UserStatus.vue';
-import { GET_USER_LIST } from '../query';
+import { GET_PROJECT, GET_USER_LIST } from '../query';
 
 export default {
   components: {
@@ -162,10 +159,11 @@ export default {
       userAvatar: '',
     },
     users: Array,
+    projects: Array,
   },
-
   data() {
     return {
+      project: [],
       projectMenu: false,
       index: document.body.clientWidth / 320,
       clientWidth: document.body.clientWidth,
@@ -187,6 +185,18 @@ export default {
     },
   },
   mounted() {
+    // fetch current project info using _id from url
+    this.$apollo
+      .query({
+        query: GET_PROJECT,
+        variables: {
+          hash: this.$route.fullPath.replace('/', ''),
+        },
+      })
+      .then((res) => {
+        [this.project] = res.data.project;
+      });
+
     this.url += this.$route.fullPath;
     // watch the width of the window
     const that = this;

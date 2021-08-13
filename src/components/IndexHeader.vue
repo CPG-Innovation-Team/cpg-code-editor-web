@@ -21,7 +21,13 @@
               </v-col>
 
               <v-col cols="12" md="4">
-                <v-text-field v-model="projectSyntax" label="Project syntax" :rules="nameRules" required></v-text-field>
+                <v-select
+                  v-model="projectSyntax"
+                  :items="codeLanguageList"
+                  label="Project syntax"
+                  item-text="langName"
+                  :rules="syntaxRules"
+                ></v-select>
               </v-col>
             </v-row>
           </v-container>
@@ -46,17 +52,22 @@
 </template>
 
 <script>
+import CODE_LANGUAGE_LIST from '../map';
 import { storage } from '../util';
 import { CREATE_PROJECT } from '../query';
 
 export default {
+  name: 'IndexHeader',
+  props: ['projects'],
   data() {
     return {
       valid: false,
       projectName: '',
       nameRules: [(v) => !!v || 'Name is required'],
+      syntaxRules: [(v) => !!v || 'Syntax is required'],
       projectSyntax: '',
       dialog: false,
+      codeLanguageList: CODE_LANGUAGE_LIST,
     };
   },
   methods: {
@@ -84,7 +95,7 @@ export default {
           },
         })
         .then((res) => {
-          console.log(res);
+          this.projects.push(res.data.createProject.data[0]);
         });
     },
   },

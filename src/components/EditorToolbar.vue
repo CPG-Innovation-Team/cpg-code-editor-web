@@ -22,10 +22,33 @@
               <span>Help</span>
             </v-tooltip>
           </template>
-          <Setting />
+          <!-- help component here -->
         </v-menu>
 
         <v-divider color="#737d81" class="toolbar-divider"></v-divider>
+
+        <v-menu
+          left
+          offset-x
+          :close-on-content-click="false"
+          content-class="elevation-0 tool-menu"
+          z-index="1"
+          rounded="0"
+        >
+          <template v-slot:activator="{ on: menu, attrs }" class="tool-menu">
+            <v-tooltip nudge-right="10" left>
+              <template v-slot:activator="{ on: tooltip }">
+                <v-list-item v-bind="attrs" v-on="{ ...tooltip, ...menu }">
+                  <v-list-item-content>
+                    <v-icon color="greyBtn">mdi-cog</v-icon>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              <span>Setting</span>
+            </v-tooltip>
+          </template>
+          <Setting v-on="$listeners" :projectName="projectName" :syntax="syntax" />
+        </v-menu>
 
         <v-menu
           v-for="tool in tools"
@@ -46,11 +69,22 @@
                   </v-list-item-content>
                 </v-list-item>
               </template>
-              <span>{{ tool.tooltip }}</span>
+              <span>{{ $t(tool.tooltip) }}</span>
             </v-tooltip>
           </template>
           <div :is="tool.menu" />
         </v-menu>
+
+        <v-tooltip nudge-right="10" left>
+          <template v-slot:activator="{ on, tooltip }">
+            <v-list-item v-bind="tooltip" v-on="on" @click="$emit('download')">
+              <v-list-item-content>
+                <v-icon color="greyBtn">mdi-download</v-icon>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+          <span>{{ $t('tools.download.name') }}</span>
+        </v-tooltip>
 
         <v-divider color="#737d81" class="toolbar-divider"></v-divider>
 
@@ -71,10 +105,10 @@
                   </v-list-item-content>
                 </v-list-item>
               </template>
-              <span>Something</span>
+              <span>{{ $t('tools.video.name') }}</span>
             </v-tooltip>
           </template>
-          <Setting />
+          <!-- video component here -->
         </v-menu>
       </div>
 
@@ -98,10 +132,10 @@
                   </v-list-item-content>
                 </v-list-item>
               </template>
-              <span>Information</span>
+              <span>{{ $t('tools.information.name') }}</span>
             </v-tooltip>
           </template>
-          <Setting />
+          <!-- information component here -->
         </v-menu>
 
         <v-menu
@@ -167,14 +201,15 @@ export default {
       userName: '',
       userAvatar: '',
     },
+    projectName: { type: String },
+    syntax: { type: String },
+    downloadCode: { type: Function },
   },
   data() {
     return {
       tools: [
-        { icon: 'mdi-cog', tooltip: 'Settiing', menu: Setting },
-        { icon: 'mdi-magnify', tooltip: 'Search', menu: Setting },
-        { icon: 'mdi-history', tooltip: 'History', menu: History },
-        { icon: 'mdi-download', tooltip: 'Download', menu: Setting },
+        { icon: 'mdi-magnify', tooltip: 'tools.search.name', menu: Setting },
+        { icon: 'mdi-history', tooltip: 'tools.history.name', menu: History },
       ],
       userName: '',
       userAvatar: '',
@@ -191,6 +226,7 @@ export default {
   created() {
     this.userName = storage.getUserInfo().userName;
     this.userAvatar = storage.getUserInfo().userAvatar;
+    this.$emit('download');
   },
   computed: {
     getUserAvatar() {
