@@ -17,20 +17,6 @@
           </div>
         </div>
         <div ref="editor" class="editor"></div>
-        <!-- <div v-show="consoleVisible" class="title-block">
-          <div class="title-text">Console</div>
-          <div class="button-block">
-            <button class="title-button" @click="runCode">Run</button>
-            <button class="title-button" @click="clearConsole">Clear</button>
-          </div>
-        </div>
-        <div v-show="consoleVisible" class="console">
-          <p v-for="item in logList" class="log-item" :key="item.index" :class="item.style">
-            {{ item.style === 'warn' ? '&#9888;' : '' }}
-            {{ item.style === 'error' ? '&#215;' : '' }}
-            {{ item.msg }}
-          </p>
-        </div> -->
       </div>
     </div>
 
@@ -65,7 +51,6 @@ export default {
     return {
       editor: null,
       socket: null,
-      consoleVisible: true,
       logStyle: '',
       logList: [],
       codeUpdateEnable: true, // Debounce for real-time sync
@@ -194,40 +179,14 @@ export default {
         }, 1000);
       });
     },
-    consoleHandler() {
-      console.original = { ...console };
-      console.log = (msg) => {
-        this.addLog(msg);
-      };
-      console.info = (msg) => {
-        this.addLog(msg);
-      };
-      console.warn = (msg) => {
-        this.addLog(msg, 'warn');
-      };
-      console.error = (msg) => {
-        this.addLog(msg, 'error');
-      };
-    },
     setCode(code) {
       this.editor.setValue(code);
     },
     getCode() {
       return this.editor.getValue();
     },
-    runCode() {
-      try {
-        // eslint-disable-next-line no-new-func
-        Function(this.getCode())();
-      } catch (err) {
-        console.error(err.toString());
-      }
-    },
     addLog(msg, style) {
       this.logList.push({ msg, style });
-    },
-    clearConsole() {
-      this.logList = [];
     },
     downloadCode() {
       const blob = new Blob([this.getCode()], { type: 'text' });
@@ -238,11 +197,6 @@ export default {
       downloadElement.click();
     },
     onCodeLanguageChange(value) {
-      // if (this.selectedCodeLanguage === 'javascript') {
-      //   this.consoleVisible = true;
-      // } else {
-      //   this.consoleVisible = false;
-      // }
       this.syntax = value;
       this.selectedCodeLanguage = value;
       this.$nextTick(() => {
@@ -288,9 +242,7 @@ export default {
   mounted() {
     this.initEditor();
     this.initSocketIO();
-    // this.consoleHandler();
     this.editorEventHandler();
-
     this.resizeBarController();
   },
   beforeDestroy() {

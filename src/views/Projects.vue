@@ -172,7 +172,7 @@ export default {
     },
     copyURL(listItemID) {
       const input = document.createElement('input');
-      input.value = 'http://cpg.url/';
+      input.value = 'https://cpg.url/';
       input.value += this.projects[listItemID].hash;
       document.body.appendChild(input);
       input.select();
