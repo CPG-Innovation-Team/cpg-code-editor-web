@@ -32,6 +32,8 @@
                       color="yellow"
                       small
                       class="star-checkbox"
+                      v-model="item.isTop"
+                      @click="updateProject(item._id, item.isTop)"
                     ></v-checkbox>
                   </td>
                   <td class="item-style">
@@ -103,7 +105,7 @@
 import IndexToolbar from '../components/IndexToolbar.vue';
 import WelcomeWindow from './WelcomeWindow.vue';
 import { storage } from '../util';
-import { REMOVE_PROJECT } from '../query';
+import { REMOVE_PROJECT, UPDATE_PROJECT } from '../query';
 
 export default {
   name: 'Projects',
@@ -141,6 +143,19 @@ export default {
     triggerDialog(item) {
       this.selectedItem = item;
       this.dialog = true;
+    },
+    updateProject(listItemID, listItemTop) {
+      this.$apollo
+        .mutate({
+          mutation: UPDATE_PROJECT,
+          variables: {
+            id: listItemID,
+            isTop: listItemTop,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+        });
     },
     removeProject(item) {
       this.$apollo
@@ -198,6 +213,9 @@ export default {
       setTimeout(() => {
         this.sharebox = false;
       }, 2000);
+    },
+    reverse(topStatus) {
+      return !topStatus;
     },
   },
 };
@@ -276,8 +294,7 @@ td:first-child {
 .table-row {
   color: rgb(190, 198, 201);
 }
-.table-row:nth-child(even) > .item-style {
-}
+
 .table-row:nth-child(odd) > .item-style {
   background-color: rgb(53, 66, 77);
 }

@@ -47,7 +47,7 @@
               <span>Setting</span>
             </v-tooltip>
           </template>
-          <Setting v-on="$listeners" />
+          <Setting v-on="$listeners" :projectName="projectName" :syntax="syntax" />
         </v-menu>
 
         <v-menu
@@ -201,7 +201,8 @@ export default {
       userName: '',
       userAvatar: '',
     },
-    projects: Array,
+    projectName: { type: String },
+    syntax: { type: String },
     downloadCode: { type: Function },
   },
   data() {

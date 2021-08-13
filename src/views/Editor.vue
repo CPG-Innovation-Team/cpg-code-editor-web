@@ -38,6 +38,8 @@
       <EditorToolbar
         v-bind="$attrs"
         v-on="$listeners"
+        :projectName="projectName"
+        :syntax="syntax"
         @download="downloadCode"
         @changeLanguage="onCodeLanguageChange"
       />
@@ -92,7 +94,7 @@ export default {
       };
       monaco.editor.defineTheme('my-dark', theme);
       this.editor = monaco.editor.create(this.$refs.editor, {
-        language: this.selectedCodeLanguage,
+        language: this.syntax,
         theme: 'my-dark',
         minimap: {
           enabled: false,
@@ -236,13 +238,13 @@ export default {
       downloadElement.click();
     },
     onCodeLanguageChange(value) {
-      if (this.selectedCodeLanguage === 'javascript') {
-        this.consoleVisible = true;
-      } else {
-        this.consoleVisible = false;
-      }
+      // if (this.selectedCodeLanguage === 'javascript') {
+      //   this.consoleVisible = true;
+      // } else {
+      //   this.consoleVisible = false;
+      // }
+      this.syntax = value;
       this.selectedCodeLanguage = value;
-      console.log(this.selectedCodeLanguage);
       this.$nextTick(() => {
         const code = this.getCode();
         this.editor.dispose();
