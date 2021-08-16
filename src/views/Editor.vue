@@ -2,9 +2,17 @@
   <v-row no-gutters d-flex class="fill-height">
     <v-col class="left">
       <div v-for="(user, index) in editHistory" :key="index">
-        <div class="highlight-bar" :style="{ height: user.editLinesStart * 10 + 'px' }">
+        <div
+          @click="moveEditor(user.editLinesStart)"
+          class="highlight-bar"
+          :style="{
+            'margin-top': user.editLinesStart * 20 - editorScroll + 'px',
+            height: user.editLinesEnd + 'px',
+            'border-right': 'solid 5px ' + user.color,
+          }"
+        >
           <a style="color: rgb(190, 198, 201)">{{ user.editTime }}</a>
-          <a style="margin-left: 130px; color: rgb(27, 186, 205)"> {{ user.name }} </a>
+          <a :style="{ 'margin-left': 130 + 'px', color: user.color }"> {{ user.name }} </a>
         </div>
       </div>
     </v-col>
@@ -77,16 +85,27 @@ export default {
       initStatus: true,
       selectedCodeLanguage: 'javascript',
       codeLanguageList: CODE_LANGUAGE_LIST,
+      editorScroll: 20,
       users: [],
       editHistory: [
         {
           name: 'Jessie',
           userAvatar: 'avatar2',
+          color: 'rgb(27, 186, 205)',
           editTime: '15:20',
-          editNumber: 200,
+          editNumber: 10,
           editLinesStart: 10,
-          editLinesEnd: 12,
-        }, // edit Content later
+          editLinesEnd: 120,
+        },
+        {
+          name: 'Allen',
+          userAvatar: 'avatar2',
+          color: 'rgb(232, 98, 34)',
+          editTime: '12:20',
+          editNumber: 25,
+          editLinesStart: 25,
+          editLinesEnd: 80,
+        },
       ],
     };
   },
@@ -179,6 +198,11 @@ export default {
       });
     },
     editorEventHandler() {
+      this.editor.onDidScrollChange((e) => {
+        console.original.log(e);
+        this.editorScroll = this.editor.getScrollTop();
+      });
+
       this.editor.onDidChangeModelContent((e) => {
         this.initStatus = false;
         if (!this.codeUpdateEnable) {
@@ -230,6 +254,10 @@ export default {
       } catch (err) {
         console.error(err.toString());
       }
+    },
+    moveEditor(lineNumber) {
+      this.editor.setScrollPosition({ scrollTop: 400 });
+      this.editor.revealLineInCenter(lineNumber);
     },
     addLog(msg, style) {
       this.logList.push({ msg, style });
@@ -330,14 +358,13 @@ export default {
 }
 
 .left {
+  overflow: hidden;
   border-top: 1px solid #eee;
   background-color: #3d4b56;
   position: relative;
   .highlight-bar {
     padding-left: 20px;
-    margin-top: 150px;
-
-    border-right: solid 5px rgb(27, 186, 205);
+    height: 120px;
     position: absolute;
     width: 100%;
   }
