@@ -5,7 +5,7 @@
       <div>
         <h5>Title</h5>
         <v-text-field
-          label="Project name"
+          v-model="projectName"
           background-color="primary lighten-1"
           color="blueBtn"
           dense
@@ -18,16 +18,19 @@
       <div>
         <h5>Syntax</h5>
         <v-select
+          v-model="syntax"
           :items="codeLanguageList"
           item-text="langName"
-          item-langValue="abbr"
+          item-value="langValue"
           dark
           outlined
           dense
+          return-object
           color="blueBtn"
           background-color="primary lighten-1"
           item-color="blueBtn"
           :menu-props="{ bottom: true, offsetY: true }"
+          @change="$emit('changeLanguage', `${selectedLanguage.langValue}`)"
         ></v-select>
       </div>
 
@@ -54,10 +57,25 @@ export default {
   name: 'Setting',
   data() {
     return {
+      selectedLanguage: '',
       codeLanguageList: CODE_LANGUAGE_LIST,
       tabSize: [2, 4, 6],
+      socket: null,
     };
   },
+  props: { projectName: { type: String }, syntax: { type: String } },
+  // methods: {
+  //   initSocketIo() {
+  //     const socketUrl = process.env.NODE_ENV === 'test' ? '' : 'ws://localhost:3000';
+  //     this.socket = io(socketUrl, { transports: ['websocket'] });
+  //     this.socket.on('connection', () => {
+  //       console.log(this.socket.id);
+  //     });
+  //   },
+  // },
+  // mounted() {
+  //   initSocketIo();
+  // },
 };
 </script>
 
@@ -69,10 +87,5 @@ export default {
   background-color: #161e27;
   min-width: 240px;
   max-width: 400px;
-}
-
-.v-list {
-  /* background: #2C333B;
-  color: white; */
 }
 </style>

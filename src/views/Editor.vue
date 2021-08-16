@@ -1,6 +1,6 @@
 <template>
-  <v-row no-gutters d-flex class="fill-height">
-    <v-col class="left">
+  <div class="fill-height row-container">
+    <div class="history-section" v-bind:style="{ width: sectionWidth + 'px' }">
       <div v-for="(user, index) in editHistory" :key="index">
         <div
           @click="moveEditor(user.editLinesStart)"
@@ -15,8 +15,9 @@
           <a :style="{ 'margin-left': 130 + 'px', color: user.color }"> {{ user.name }} </a>
         </div>
       </div>
-    </v-col>
-    <v-col cols="8" class="middle">
+    </div>
+    <div class="resize-bar" ref="resizeBar"></div>
+    <div class="editor-section" v-bind:style="{ width: 'calc(100% - ' + sectionWidth + 'px - 75px)' }">
       <div class="editor-container">
         <div class="title-block">
           <div class="title-text">Editor</div>
@@ -31,27 +32,20 @@
           </div>
         </div>
         <div ref="editor" class="editor"></div>
-        <div v-show="consoleVisible" class="title-block">
-          <div class="title-text">Console</div>
-          <div class="button-block">
-            <button class="title-button" @click="runCode">Run</button>
-            <button class="title-button" @click="clearConsole">Clear</button>
-          </div>
-        </div>
-        <div v-show="consoleVisible" class="console">
-          <p v-for="item in logList" class="log-item" :key="item.index" :class="item.style">
-            {{ item.style === 'warn' ? '&#9888;' : '' }}
-            {{ item.style === 'error' ? '&#215;' : '' }}
-            {{ item.msg }}
-          </p>
-        </div>
       </div>
-    </v-col>
+    </div>
 
-    <v-col cols="1" class="right">
-      <EditorToolbar v-bind="$attrs" v-on="$listeners" />
-    </v-col>
-  </v-row>
+    <div class="toolbar-section">
+      <EditorToolbar
+        v-bind="$attrs"
+        v-on="$listeners"
+        :projectName="projectName"
+        :syntax="syntax"
+        @download="downloadCode"
+        @changeLanguage="onCodeLanguageChange"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -72,7 +66,6 @@ export default {
     return {
       editor: null,
       socket: null,
-      consoleVisible: true,
       logStyle: '',
       logList: [],
       codeUpdateEnable: true, // Debounce for real-time sync
@@ -107,6 +100,7 @@ export default {
           editLinesEnd: 80,
         },
       ],
+      sectionWidth: 300,
     };
   },
   methods: {
@@ -121,7 +115,7 @@ export default {
       };
       monaco.editor.defineTheme('my-dark', theme);
       this.editor = monaco.editor.create(this.$refs.editor, {
-        language: this.selectedCodeLanguage,
+        language: this.syntax,
         theme: 'my-dark',
         minimap: {
           enabled: false,
@@ -226,21 +220,6 @@ export default {
         }, 1000);
       });
     },
-    consoleHandler() {
-      console.original = { ...console };
-      console.log = (msg) => {
-        this.addLog(msg);
-      };
-      console.info = (msg) => {
-        this.addLog(msg);
-      };
-      console.warn = (msg) => {
-        this.addLog(msg, 'warn');
-      };
-      console.error = (msg) => {
-        this.addLog(msg, 'error');
-      };
-    },
     setCode(code) {
       this.editor.setValue(code);
     },
@@ -262,9 +241,6 @@ export default {
     addLog(msg, style) {
       this.logList.push({ msg, style });
     },
-    clearConsole() {
-      this.logList = [];
-    },
     downloadCode() {
       const blob = new Blob([this.getCode()], { type: 'text' });
       const URL = window.URL || window.webkitURL;
@@ -273,18 +249,44 @@ export default {
       downloadElement.download = `code-${formattedDateTime(new Date())}`;
       downloadElement.click();
     },
-    onCodeLanguageChange() {
-      if (this.selectedCodeLanguage === 'javascript') {
-        this.consoleVisible = true;
-      } else {
-        this.consoleVisible = false;
-      }
+    onCodeLanguageChange(value) {
+      this.syntax = value;
+      this.selectedCodeLanguage = value;
       this.$nextTick(() => {
         const code = this.getCode();
         this.editor.dispose();
         this.initEditor();
         this.setCode(code);
       });
+    },
+    resizeBarController() {
+      const resize = this.$refs.resizeBar;
+      resize.onmousedown = (e) => {
+        // Color change reminder
+        resize.style.background = '#818181';
+        let startX = e.clientX;
+        resize.left = resize.offsetLeft;
+        document.onmousemove = (ex) => {
+          // Calculate and apply displacement
+          const endX = ex.clientX;
+          const moveLen = endX - startX;
+          startX = endX;
+          this.sectionWidth += moveLen;
+
+          if (this.sectionWidth < 0) {
+            this.sectionWidth = 0;
+          } else if (this.sectionWidth > window.innerWidth * 0.8) {
+            this.sectionWidth = window.innerWidth * 0.8;
+          }
+        };
+        document.onmouseup = () => {
+          // color restoration
+          resize.style.background = '';
+          document.onmousemove = null;
+          document.onmouseup = null;
+        };
+        return false;
+      };
     },
   },
   created() {
@@ -293,8 +295,8 @@ export default {
   mounted() {
     this.initEditor();
     this.initSocketIO();
-    this.consoleHandler();
     this.editorEventHandler();
+    this.resizeBarController();
   },
   beforeDestroy() {
     this.editor.dispose();
@@ -357,27 +359,43 @@ export default {
   }
 }
 
-.left {
+.row-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
   overflow: hidden;
-  border-top: 1px solid #eee;
-  background-color: #3d4b56;
   position: relative;
-  .highlight-bar {
-    padding-left: 20px;
-    height: 120px;
-    position: absolute;
-    width: 100%;
+  .history-section {
+    border-top: 1px solid #eee;
+    background-color: #3d4b56;
+    position: relative;
   }
-}
+  .resize-bar {
+    border-top: 1px solid #eee;
+    background-color: black;
+    height: 100%;
+    top: 0;
+    right: 0;
+    width: 5px;
+    cursor: col-resize;
+  }
+  .editor-section {
+    border-top: 1px solid #eee;
+    border-left: 1px solid #eee;
+    background-color: #2c333b;
+    overflow: hidden;
+    position: relative;
+    .highlight-bar {
+      padding-left: 20px;
+      height: 120px;
+      position: absolute;
+      width: 100%;
+    }
+  }
 
-.middle {
-  border-top: 1px solid #eee;
-  border-left: 1px solid #eee;
-  background-color: #2c333b;
-}
-
-.right {
-  min-width: 75px;
-  max-width: 100px;
+  .toolbar-section {
+    width: 75px;
+  }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-row style="height: 88vh" no-gutters>
+  <v-row style="height: 100%" no-gutters>
     <v-col cols="11">
       <WelcomeWindow v-if="!userID" :userInfo="userInfo" @passUserInfo="getUserInfo" />
       <div class="project-list-container">
@@ -9,9 +9,8 @@
         <div class="table-container">
           <v-data-table
             hide-default-header
-            :hide-default-footer="project.length < 7"
             :headers="headers"
-            :items="project"
+            :items="projects"
             :items-per-page="7"
             class="project-list-table tableBackground"
           >
@@ -38,7 +37,7 @@
                     ></v-checkbox>
                   </td>
                   <td class="item-style">
-                    <router-link to="/001" class="project-title">{{ item.projectName }}</router-link>
+                    <router-link :to="item.hash" class="project-title">{{ item.projectName }}</router-link>
                   </td>
                   <td class="item-style">
                     <v-chip :color="getColor(item.syntax)" dark>{{ item.syntax }}</v-chip>
@@ -56,14 +55,12 @@
                       "
                       >mdi-share</v-icon
                     >
-                    <!-- <v-icon class="actions-icon" color="white" @click="removeProject(item._id)"> mdi-delete</v-icon> -->
-                    <v-icon class="actions-icon" color="white" @click.stop="triggerDialog(item.projectName, item._id)"
-                      >mdi-delete</v-icon
-                    >
+
+                    <v-icon class="actions-icon" color="white" @click.stop="triggerDialog(item)"> mdi-delete </v-icon>
                     <v-dialog v-model="dialog" width="500" :retain-focus="false">
                       <v-card>
                         <v-card-title class="headline grey lighten-2">
-                          Are you sure to delete {{ itemName }}?
+                          Are you sure to delete {{ selectedItem.projectName }}?
                         </v-card-title>
 
                         <v-divider></v-divider>
@@ -75,7 +72,7 @@
                             text
                             @click="
                               dialog = false;
-                              removeProject(itemID);
+                              removeProject(selectedItem);
                             "
                           >
                             Yes
@@ -108,7 +105,7 @@
 import IndexToolbar from '../components/IndexToolbar.vue';
 import WelcomeWindow from './WelcomeWindow.vue';
 import { storage } from '../util';
-import { GET_PROJECT, REMOVE_PROJECT, UPDATE_PROJECT } from '../query';
+import { REMOVE_PROJECT, UPDATE_PROJECT } from '../query';
 
 export default {
   name: 'Projects',
@@ -116,9 +113,7 @@ export default {
     IndexToolbar,
     WelcomeWindow,
   },
-  apollo: {
-    project: GET_PROJECT,
-  },
+  props: { projects: Array },
   data() {
     return {
       headers: [
@@ -130,7 +125,6 @@ export default {
         { text: 'URL', value: 'hash', sortable: false },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
-      project: [],
       dialog: false,
       sharebox: false,
       userInfo: {
@@ -138,22 +132,17 @@ export default {
         userAvatar: '',
       },
       storage,
-      itemName: '',
-      itemID: '',
+      selectedItem: '',
       userID: '',
     };
   },
   created() {
     this.userID = storage.getUserInfo().userID;
   },
-  updated() {
-    console.log(this.project);
-  },
   methods: {
-    triggerDialog(listItemName, listItemID) {
+    triggerDialog(item) {
+      this.selectedItem = item;
       this.dialog = true;
-      this.itemName = listItemName;
-      this.itemID = listItemID;
     },
     updateProject(listItemID, listItemTop) {
       this.$apollo
@@ -168,26 +157,28 @@ export default {
           console.log(res);
         });
     },
-    removeProject(listItemID) {
+    removeProject(item) {
       this.$apollo
         .mutate({
           mutation: REMOVE_PROJECT,
           variables: {
-            id: listItemID,
+            /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }] */
+            id: item._id,
           },
         })
-        .then((res) => {
-          console.log(res);
-        });
+        .then(() => {});
+      const index = this.projects.indexOf(item);
+      this.projects.splice(index, 1);
     },
     copyURL(listItemID) {
       const input = document.createElement('input');
-      input.value = 'http://cpg.url/';
-      input.value += this.project[listItemID].hash;
+      input.value = 'https://cpg.url/';
+      input.value += this.projects[listItemID].hash;
       document.body.appendChild(input);
       input.select();
       document.execCommand('copy');
       document.body.removeChild(input);
+      console.log(this.projects);
     },
     getUserInfo(userName, userAvatar) {
       this.userInfo.userName = userName;
@@ -303,8 +294,7 @@ td:first-child {
 .table-row {
   color: rgb(190, 198, 201);
 }
-.table-row:nth-child(even) > .item-style {
-}
+
 .table-row:nth-child(odd) > .item-style {
   background-color: rgb(53, 66, 77);
 }

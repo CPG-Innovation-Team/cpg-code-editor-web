@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import ApolloClient from 'apollo-boost';
 import VueApollo from 'vue-apollo';
+import VueSanitize from 'vue-sanitize';
 import App from './App.vue';
 import './registerServiceWorker';
 import router from './router';
@@ -16,6 +17,7 @@ const apolloProvider = new VueApollo({
 });
 
 Vue.use(VueApollo);
+Vue.use(VueSanitize);
 
 new Vue({
   router,

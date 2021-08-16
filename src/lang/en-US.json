@@ -29,6 +29,21 @@
       "syntax": "Syntax",
       "tabSize": "Tab Size"
     },
+    "search": {
+      "name": "Search"
+    },
+    "history": {
+      "name": "History"
+    },
+    "download": {
+      "name": "Download"
+    },
+    "information": {
+      "name": "Information"
+    },
+    "video": {
+      "name": "Video"
+    },
     "profile": {
       "userProfile": "User Profile",
       "change": "change",
