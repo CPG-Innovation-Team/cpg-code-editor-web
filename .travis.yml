@@ -12,7 +12,7 @@ deploy:
     secure: ${AWS_KEY_SECRET}
   bucket: casualbill-aws-test-bucket
   local_dir: dist
-  region: cn-north-1
+  region: us-west-1
   acl: public_read
   on:
     repo: CPG-Innovation-Team/cpg-code-editor-web
