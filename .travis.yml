@@ -7,15 +7,15 @@ script:
 - npm run build
 deploy:
   provider: s3
-  access_key_id: AKIAYAXKG7IIGEUB3UUQ
+  access_key_id: ${AWS_KEY_ID}
   secret_access_key:
-    secure: rBhkqaw/LLkeUMAJZ/GATOerToo4m+G1lK1KyXCgndeq7LXbFNbQhOvQuDZvyzNAsylO1WhP3VilQH0KkxnxKZUdkTqaA6osqkftEjZUwn8vPgTuzpw0fmTzf/nyHsNMscarfixVHf9IjnLE23mO/VwV+cfGlIBigd9Ie5NU9SCVw5chIFe+GMXxKLWkYKQZNGXE3ZtWHRhWw+KqAJpZpuffaA7eAj03hwB62S5LhS2bTlFzhGgtmro4CqFHarsCg9fVzDS8EXWkKmE5sZkJ/PlpmE8w1tYCJak/fPJ573eIY4UFT14+yfO6MVvyvp3Nt6hB3x2ZvK8nVi3ffirbPrO1Li/f3Qi5AEThioaQTZJ6nA0JXJgJgPAzRDa+3wnkL0egCayxaX6Duw7LAnN5U8F7lgbmFTdfb8z6bErsHi4xe2fd1d+kQWj83UpdO1P29LvGnhCVXl9ktA9Pvk2fYV9GELLnQz8PI4ZOymHpzwqkiieNp3x9OnwnUGn0F3VSkLfH8jPH4pYAHogJqLEzkeMdpqpOfDyJlcuzOl0hGoxw3vccZ0acBlgVrrr2hLH4xCxZMx5PWSDcXx8vyVYwuVZeREOd2zr1C6UypRJU7UgxjzoVEDpZTZ99EZgJAVgeqmY2phtuLTb2eUV+rstMjRc+u57CoZga8jxBzUu2zCc=
-  bucket: cpg-code-editor-web
+    secure: ${AWS_KEY_SECRET}
+  bucket: casualbill-aws-test-bucket
   local_dir: dist
   region: cn-north-1
   acl: public_read
   on:
-    repo: casualbill/cpg-code-editor-web
+    repo: CPG-Innovation-Team/cpg-code-editor-web
   skip_cleanup: 'true'
 notifications:
   webhooks: https://open.feishu.cn/officialapp/notify/c4a1011904c5dc2efb332f1f80d817a88c8d829a2976d8c2c6f8bc4230c6e715
