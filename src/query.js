@@ -25,12 +25,9 @@ export const CREATE_PROJECT = gql`
         _id
         hash
         projectName
-        code
+        syntax
         createTime
         updateTime
-        syntax
-        createUser
-        lastModifiedUser
       }
     }
   }

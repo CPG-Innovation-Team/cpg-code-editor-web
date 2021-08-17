@@ -29,6 +29,21 @@
       "syntax": "语言",
       "tabSize": "tab长度"
     },
+    "search": {
+      "name": "搜索"
+    },
+    "history": {
+      "name": "历史"
+    },
+    "download": {
+      "name": "下载"
+    },
+    "information": {
+      "name": "信息"
+    },
+    "video": {
+      "name": "视频"
+    },
     "profile": {
       "userProfile": "个人信息",
       "change": "上传",

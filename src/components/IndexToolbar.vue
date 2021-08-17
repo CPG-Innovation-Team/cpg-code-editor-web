@@ -21,7 +21,7 @@
                   </v-list-item-content>
                 </v-list-item>
               </template>
-              <span>Information</span>
+              <span>{{ $t('tools.information.name') }}</span>
             </v-tooltip>
           </template>
           <Setting />
