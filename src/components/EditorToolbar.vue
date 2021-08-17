@@ -77,7 +77,7 @@
 
         <v-tooltip nudge-right="10" left>
           <template v-slot:activator="{ on, tooltip }">
-            <v-list-item v-bind="tooltip" v-on="on" @click="$emit('download')">
+            <v-list-item v-bind="tooltip" v-on="on" @click="$emit('downloadCode')">
               <v-list-item-content>
                 <v-icon color="greyBtn">mdi-download</v-icon>
               </v-list-item-content>
@@ -203,7 +203,6 @@ export default {
     },
     projectName: { type: String },
     syntax: { type: String },
-    downloadCode: { type: Function },
   },
   data() {
     return {
@@ -241,6 +240,10 @@ export default {
       }
       return this.userName;
     },
+  },
+  mounted() {
+    console.log(this.projectName);
+    console.log(this.syntax);
   },
 };
 </script>

@@ -7,7 +7,7 @@
         <div class="title-block">
           <div class="title-text">Editor</div>
           <div class="button-block">
-            <select v-model="selectedCodeLanguage" @change="onCodeLanguageChange" test="codeLanguageSelector">
+            <select v-model="syntax" @change="onCodeLanguageChange" test="codeLanguageSelector">
               <option v-for="option in codeLanguageList" :key="option.langValue" v-bind:value="option.langValue">
                 {{ option.langName }}
               </option>
@@ -26,7 +26,7 @@
         v-on="$listeners"
         :projectName="projectName"
         :syntax="syntax"
-        @download="downloadCode"
+        @downloadCode="downloadCode"
         @changeLanguage="onCodeLanguageChange"
       />
     </div>
@@ -61,7 +61,6 @@ export default {
       syntax: '',
       userId: '',
       initStatus: true,
-      selectedCodeLanguage: 'javascript',
       codeLanguageList: CODE_LANGUAGE_LIST,
       users: [],
       sectionWidth: 300,
@@ -153,6 +152,8 @@ export default {
               this.syntax = response.data.project[0].syntax;
             });
         }
+        this.initEditor();
+        console.log(this.syntax);
       });
     },
     editorEventHandler() {
@@ -198,7 +199,6 @@ export default {
     },
     onCodeLanguageChange(value) {
       this.syntax = value;
-      this.selectedCodeLanguage = value;
       this.$nextTick(() => {
         const code = this.getCode();
         this.editor.dispose();
@@ -240,10 +240,14 @@ export default {
     this.userId = storage.getUserInfo().userID;
   },
   mounted() {
-    this.initEditor();
     this.initSocketIO();
+    this.initEditor();
     this.editorEventHandler();
     this.resizeBarController();
+
+    console.log('hh');
+    console.log(this.editor);
+    console.log(this.syntax);
   },
   beforeDestroy() {
     this.editor.dispose();
