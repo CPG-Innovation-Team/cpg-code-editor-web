@@ -193,7 +193,7 @@ export default {
     },
     editorEventHandler() {
       this.editor.onDidScrollChange((e) => {
-        console.original.log(e);
+        console.log(e);
         this.editorScroll = this.editor.getScrollTop();
       });
 
@@ -206,7 +206,7 @@ export default {
 
         // Send code to server after no operation for 1 seconds
         this.debounceTimeout = setTimeout(() => {
-          console.original.log(e);
+          console.log(e);
           const code = this.getCode();
           this.socket.emit('clientUpdateProjectInfo', {
             code,
