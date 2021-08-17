@@ -51,8 +51,6 @@ export default {
     return {
       editor: null,
       socket: null,
-      logStyle: '',
-      logList: [],
       codeUpdateEnable: true, // Debounce for real-time sync
       debounceTimeout: null,
       projectId: null,
@@ -165,7 +163,7 @@ export default {
 
         // Send code to server after no operation for 1 seconds
         this.debounceTimeout = setTimeout(() => {
-          console.original.log(e);
+          console.log(e);
           const code = this.getCode();
           this.socket.emit('clientUpdateProjectInfo', {
             code,
@@ -184,9 +182,6 @@ export default {
     },
     getCode() {
       return this.editor.getValue();
-    },
-    addLog(msg, style) {
-      this.logList.push({ msg, style });
     },
     downloadCode() {
       const blob = new Blob([this.getCode()], { type: 'text' });
@@ -290,20 +285,6 @@ export default {
   flex: 1;
   width: 100%;
   overflow-y: auto;
-
-  .log-item {
-    color: white;
-    margin: 0;
-    padding: 5px 8px;
-    border-bottom: 1px solid #eee;
-
-    &.warn {
-      color: #990;
-    }
-    &.error {
-      color: #c00;
-    }
-  }
 }
 
 .row-container {
