@@ -185,15 +185,6 @@ export default {
       this.userInfo.userName = userName;
       this.userInfo.userAvatar = userAvatar;
     },
-    getColor(syntax) {
-      if (syntax === 'JS') {
-        return 'yellow';
-      }
-      if (syntax === 'SQL') {
-        return 'green';
-      }
-      return 'blue';
-    },
     showTime(date) {
       // change to moment later
       const inputDate = new Date(date);
@@ -217,6 +208,10 @@ export default {
     },
     reverse(topStatus) {
       return !topStatus;
+    },
+    getColor(syntax) {
+      const object = CODE_LANGUAGE_LIST.filter((item) => item.langValue === syntax);
+      return object[0].langColor;
     },
     getLangName(value) {
       const object = CODE_LANGUAGE_LIST.filter((item) => item.langValue === value);
