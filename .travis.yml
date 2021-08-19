@@ -9,7 +9,7 @@ deploy:
   provider: s3
   access_key_id: $AWS_KEY_ID
   secret_access_key: $AWS_KEY_SECRET
-  bucket: casualbill-aws-test-bucket
+  bucket: cpg-code-editor
   local_dir: dist
   region: us-west-1
   acl: public_read
