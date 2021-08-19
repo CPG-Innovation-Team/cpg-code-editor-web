@@ -7,11 +7,11 @@
         <div class="title-block">
           <div class="title-text">Editor</div>
           <div class="button-block">
-            <select v-model="syntax" @change="onCodeLanguageChange" test="codeLanguageSelector">
+            <!-- <select v-model="syntax" @change="onCodeLanguageChange" test="codeLanguageSelector">
               <option v-for="option in codeLanguageList" :key="option.langValue" v-bind:value="option.langValue">
                 {{ option.langName }}
               </option>
-            </select>
+            </select> -->
             <button class="title-button" @click="downloadCode">Download</button>
             <a ref="downloadElement" v-show="false" target="_blank" />
           </div>
@@ -28,6 +28,7 @@
         :syntax="syntax"
         @downloadCode="downloadCode"
         @changeLanguage="onCodeLanguageChange"
+        @changeName="onProjectNameChange"
       />
     </div>
   </div>
@@ -38,7 +39,6 @@ import * as monaco from 'monaco-editor';
 import { io } from 'socket.io-client';
 import { getCodeInLocalDb, updateCodeInLocalDb } from '../indexedDb';
 import { formattedDateTime, storage } from '../util';
-import CODE_LANGUAGE_LIST from '../map';
 import EditorToolbar from '../components/EditorToolbar.vue';
 import { GET_USER_LIST, GET_PROJECT, GET_PROJECT_ID } from '../query';
 
@@ -61,7 +61,6 @@ export default {
       syntax: '',
       userId: '',
       initStatus: true,
-      codeLanguageList: CODE_LANGUAGE_LIST,
       users: [],
       sectionWidth: 300,
     };
@@ -118,14 +117,20 @@ export default {
 
       // Receive code from server
       this.socket.on('serverProjectInfoSync', async (res) => {
+        console.log(this.projectName);
         if (this.projectId !== res.projectId) {
           this.$router.push(`/${res.projectId}`);
           this.projectId = res.projectId;
           this.socket.emit('clientEnterProject', { projectId: this.projectId, userId: this.userId });
         } else if (res.code !== this.getCode() && this.codeUpdateEnable) {
+          console.log(res.code);
           // Prevent remote code override local
           this.setCode(res.code);
         }
+        // else if (res.projectName !== this.projectName) {
+        //   console.log(this.projectName);
+        //   res.projectName = this.projectName;
+        // }
         if (this.$apollo) {
           // retrive user list from server
           await this.$apollo
@@ -152,8 +157,6 @@ export default {
               this.syntax = response.data.project[0].syntax;
             });
         }
-        this.initEditor();
-        console.log(this.syntax);
       });
     },
     editorEventHandler() {
@@ -198,6 +201,7 @@ export default {
       downloadElement.click();
     },
     onCodeLanguageChange(value) {
+      console.log(value);
       this.syntax = value;
       this.$nextTick(() => {
         const code = this.getCode();
@@ -205,6 +209,10 @@ export default {
         this.initEditor();
         this.setCode(code);
       });
+    },
+    onProjectNameChange(value) {
+      this.projectName = value;
+      console.log(this.projectName);
     },
     resizeBarController() {
       const resize = this.$refs.resizeBar;
@@ -240,8 +248,8 @@ export default {
     this.userId = storage.getUserInfo().userID;
   },
   mounted() {
-    this.initSocketIO();
     this.initEditor();
+    this.initSocketIO();
     this.editorEventHandler();
     this.resizeBarController();
 

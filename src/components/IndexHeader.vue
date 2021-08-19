@@ -26,6 +26,7 @@
                   :items="codeLanguageList"
                   label="Project syntax"
                   item-text="langName"
+                  item-value="langValue"
                   :rules="syntaxRules"
                 ></v-select>
               </v-col>

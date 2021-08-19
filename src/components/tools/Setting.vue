@@ -5,20 +5,21 @@
       <div>
         <h5>Title</h5>
         <v-text-field
-          v-model="projectName"
+          v-model="name"
           background-color="primary lighten-1"
           color="blueBtn"
           dense
           single-line
           outlined
           dark
+          @change="$emit('changeName', `${name}`)"
         ></v-text-field>
       </div>
 
       <div>
         <h5>Syntax</h5>
         <v-select
-          v-model="syntax"
+          v-model="selectedLanguage"
           :items="codeLanguageList"
           item-text="langName"
           item-value="langValue"
@@ -57,25 +58,14 @@ export default {
   name: 'Setting',
   data() {
     return {
-      selectedLanguage: '',
+      selectedLanguage: { langValue: this.syntax },
       codeLanguageList: CODE_LANGUAGE_LIST,
       tabSize: [2, 4, 6],
       socket: null,
+      name: this.projectName,
     };
   },
   props: { projectName: { type: String }, syntax: { type: String } },
-  // methods: {
-  //   initSocketIo() {
-  //     const socketUrl = process.env.NODE_ENV === 'test' ? '' : 'ws://localhost:3000';
-  //     this.socket = io(socketUrl, { transports: ['websocket'] });
-  //     this.socket.on('connection', () => {
-  //       console.log(this.socket.id);
-  //     });
-  //   },
-  // },
-  // mounted() {
-  //   initSocketIo();
-  // },
 };
 </script>
 
