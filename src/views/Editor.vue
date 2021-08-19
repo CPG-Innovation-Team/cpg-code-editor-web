@@ -12,7 +12,7 @@
                 {{ option.langName }}
               </option>
             </select> -->
-            <button class="title-button" @click="downloadCode">Download</button>
+            <button class="title-button" @click="searchText">Download</button>
             <a ref="downloadElement" v-show="false" target="_blank" />
           </div>
         </div>
@@ -29,6 +29,7 @@
         @downloadCode="downloadCode"
         @changeLanguage="onCodeLanguageChange"
         @changeName="onProjectNameChange"
+        @searchText="searchText"
       />
     </div>
   </div>
@@ -66,6 +67,9 @@ export default {
     };
   },
   methods: {
+    searchText() {
+      this.editor.getAction('actions.find').run('123');
+    },
     initEditor() {
       const theme = {
         base: 'vs-dark',
