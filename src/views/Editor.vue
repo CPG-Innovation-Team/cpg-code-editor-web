@@ -117,20 +117,15 @@ export default {
 
       // Receive code from server
       this.socket.on('serverProjectInfoSync', async (res) => {
-        console.log(this.projectName);
         if (this.projectId !== res.projectId) {
           this.$router.push(`/${res.projectId}`);
           this.projectId = res.projectId;
           this.socket.emit('clientEnterProject', { projectId: this.projectId, userId: this.userId });
         } else if (res.code !== this.getCode() && this.codeUpdateEnable) {
-          console.log(res.code);
           // Prevent remote code override local
           this.setCode(res.code);
         }
-        // else if (res.projectName !== this.projectName) {
-        //   console.log(this.projectName);
-        //   res.projectName = this.projectName;
-        // }
+
         if (this.$apollo) {
           // retrive user list from server
           await this.$apollo
@@ -154,6 +149,7 @@ export default {
             })
             .then((response) => {
               this.projectName = response.data.project[0].projectName;
+              this.$emit('changeProjectName', this.projectName);
               this.syntax = response.data.project[0].syntax;
             });
         }
@@ -169,8 +165,10 @@ export default {
 
         // Send code to server after no operation for 1 seconds
         this.debounceTimeout = setTimeout(() => {
-          console.original.log(e);
+          // console.original.log(e);
           const code = this.getCode();
+          console.log(e);
+          console.log('send');
           this.socket.emit('clientUpdateProjectInfo', {
             code,
             projectId: this.projectId,
@@ -209,10 +207,27 @@ export default {
         this.initEditor();
         this.setCode(code);
       });
+      const code = this.getCode();
+      this.socket.emit('clientUpdateProjectInfo', {
+        code,
+        projectId: this.projectId,
+        projectName: this.projectName,
+        syntax: this.syntax,
+        userId: this.userId,
+      });
     },
     onProjectNameChange(value) {
       this.projectName = value;
-      console.log(this.projectName);
+      this.$emit('changeProjectName', this.projectName);
+      console.log('this: ', this.projectName);
+      const code = this.getCode();
+      this.socket.emit('clientUpdateProjectInfo', {
+        code,
+        projectId: this.projectId,
+        projectName: this.projectName,
+        syntax: this.syntax,
+        userId: this.userId,
+      });
     },
     resizeBarController() {
       const resize = this.$refs.resizeBar;

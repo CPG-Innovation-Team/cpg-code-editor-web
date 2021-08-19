@@ -241,10 +241,6 @@ export default {
       return this.userName;
     },
   },
-  mounted() {
-    console.log(this.projectName);
-    console.log(this.syntax);
-  },
 };
 </script>
 
