@@ -57,4 +57,34 @@ body {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
+
+.cursor-avatar1 {
+  background: #c69430;
+  width: 2px !important;
+}
+
+.cursor-avatar2 {
+  background: #c6c983;
+  width: 2px !important;
+}
+
+.cursor-avatar3 {
+  background: #875d45;
+  width: 2px !important;
+}
+
+.cursor-avatar4 {
+  background: #475c93;
+  width: 2px !important;
+}
+
+.cursor-avatar5 {
+  background: #7baaa4;
+  width: 2px !important;
+}
+
+.cursor-avatar6 {
+  background: #e26d5d;
+  width: 2px !important;
+}
 </style>
