@@ -66,8 +66,6 @@ export default {
     return {
       editor: null,
       socket: null,
-      logStyle: '',
-      logList: [],
       codeUpdateEnable: true, // Debounce for real-time sync
       debounceTimeout: null,
       projectId: null,
@@ -226,21 +224,6 @@ export default {
     getCode() {
       return this.editor.getValue();
     },
-    runCode() {
-      try {
-        // eslint-disable-next-line no-new-func
-        Function(this.getCode())();
-      } catch (err) {
-        console.error(err.toString());
-      }
-    },
-    moveEditor(lineNumber) {
-      this.editor.setScrollPosition({ scrollTop: 400 });
-      this.editor.revealLineInCenter(lineNumber);
-    },
-    addLog(msg, style) {
-      this.logList.push({ msg, style });
-    },
     downloadCode() {
       const blob = new Blob([this.getCode()], { type: 'text' });
       const URL = window.URL || window.webkitURL;
@@ -343,20 +326,6 @@ export default {
   flex: 1;
   width: 100%;
   overflow-y: auto;
-
-  .log-item {
-    color: white;
-    margin: 0;
-    padding: 5px 8px;
-    border-bottom: 1px solid #eee;
-
-    &.warn {
-      color: #990;
-    }
-    &.error {
-      color: #c00;
-    }
-  }
 }
 
 .row-container {
