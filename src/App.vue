@@ -15,7 +15,7 @@
         :projects="project"
         @passUserList="getUserList"
         @passChangedUserInfo="getChangedUserInfo"
-        @changeProjectName="getProjectName"
+        @changeProjectName="changeProjectName"
       ></router-view>
     </v-main>
   </v-app>
@@ -50,8 +50,7 @@ export default {
     getUserList(users) {
       this.users = users;
     },
-    getProjectName(value) {
-      console.log(value);
+    changeProjectName(value) {
       this.projectName = value;
     },
   },

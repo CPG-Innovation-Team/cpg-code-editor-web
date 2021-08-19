@@ -6,14 +6,14 @@
     <v-dialog v-model="dialog" width="500">
       <template v-slot:activator="{ on, attrs }">
         <v-btn class="white--text ml-2" color="blueBtn" v-bind="attrs" v-on="on">
-          <v-icon>mdi-plus-box</v-icon>Create</v-btn
-        >
+          <v-icon>mdi-plus-box</v-icon>Create
+        </v-btn>
       </template>
 
       <v-card @keyup.enter="validate()">
         <v-card-title class="headline grey lighten-2">Create Project</v-card-title>
 
-        <v-form v-model="valid" ref="form">
+        <v-form v-model="formValid" ref="form">
           <v-container>
             <v-row>
               <v-col cols="12" md="4">
@@ -62,7 +62,7 @@ export default {
   props: ['projects'],
   data() {
     return {
-      valid: false,
+      formValid: false,
       projectName: '',
       nameRules: [(v) => !!v || 'Name is required'],
       syntaxRules: [(v) => !!v || 'Syntax is required'],
@@ -102,5 +102,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="scss"></style>

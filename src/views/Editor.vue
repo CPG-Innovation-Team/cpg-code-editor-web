@@ -66,6 +66,7 @@ export default {
       sectionWidth: 300,
     };
   },
+  props: { projects: Array },
   methods: {
     searchText() {
       this.editor.getAction('actions.find').run('123');
@@ -221,6 +222,9 @@ export default {
       });
     },
     onProjectNameChange(value) {
+      const oldProjectName = this.projectName;
+      const index = this.projects.findIndex((project) => project.projectName === oldProjectName);
+      this.projects[index].projectName = value;
       this.projectName = value;
       this.$emit('changeProjectName', this.projectName);
       console.log('this: ', this.projectName);
@@ -271,10 +275,6 @@ export default {
     this.initSocketIO();
     this.editorEventHandler();
     this.resizeBarController();
-
-    console.log('hh');
-    console.log(this.editor);
-    console.log(this.syntax);
   },
   beforeDestroy() {
     this.editor.dispose();
