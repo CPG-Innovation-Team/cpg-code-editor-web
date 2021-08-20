@@ -27,7 +27,6 @@ jobs:
       - aws-s3/copy:
           from: dist/
           to: s3://cpg-code-editor
-          overwrite: true
 
 workflows:
   default:
