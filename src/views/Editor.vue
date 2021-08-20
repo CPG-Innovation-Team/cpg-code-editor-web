@@ -4,6 +4,7 @@
     <div class="resize-bar" ref="resizeBar"></div>
     <div class="editor-section" v-bind:style="{ width: 'calc(100% - ' + sectionWidth + 'px - 75px)' }">
       <div class="editor-container">
+        <a ref="downloadElement" v-show="false" target="_blank" />
         <div ref="editor" class="editor"></div>
       </div>
     </div>
