@@ -4,18 +4,6 @@
     <div class="resize-bar" ref="resizeBar"></div>
     <div class="editor-section" v-bind:style="{ width: 'calc(100% - ' + sectionWidth + 'px - 75px)' }">
       <div class="editor-container">
-        <div class="title-block">
-          <div class="title-text">Editor</div>
-          <div class="button-block">
-            <!-- <select v-model="syntax" @change="onCodeLanguageChange" test="codeLanguageSelector">
-              <option v-for="option in codeLanguageList" :key="option.langValue" v-bind:value="option.langValue">
-                {{ option.langName }}
-              </option>
-            </select> -->
-            <button class="title-button" @click="searchText">Download</button>
-            <a ref="downloadElement" v-show="false" target="_blank" />
-          </div>
-        </div>
         <div ref="editor" class="editor"></div>
       </div>
     </div>
@@ -161,7 +149,7 @@ export default {
       });
     },
     editorEventHandler() {
-      this.editor.onDidChangeModelContent((e) => {
+      this.editor.onDidChangeModelContent(() => {
         this.initStatus = false;
         if (!this.codeUpdateEnable) {
           clearTimeout(this.debounceTimeout);
@@ -170,10 +158,7 @@ export default {
 
         // Send code to server after no operation for 1 seconds
         this.debounceTimeout = setTimeout(() => {
-          // console.original.log(e);
           const code = this.getCode();
-          console.log(e);
-          console.log('send');
           this.socket.emit('clientUpdateProjectInfo', {
             code,
             projectId: this.projectId,
@@ -204,7 +189,6 @@ export default {
       downloadElement.click();
     },
     onCodeLanguageChange(value) {
-      console.log(value);
       this.syntax = value;
       this.$nextTick(() => {
         const code = this.getCode();
@@ -227,7 +211,6 @@ export default {
       this.projects[index].projectName = value;
       this.projectName = value;
       this.$emit('changeProjectName', this.projectName);
-      console.log('this: ', this.projectName);
       const code = this.getCode();
       this.socket.emit('clientUpdateProjectInfo', {
         code,
@@ -290,51 +273,10 @@ export default {
   width: 100%;
 }
 
-.title-block {
-  display: flex;
-  justify-content: space-between;
-  height: 30px;
-  line-height: 30px;
-  background-color: #ddd;
-
-  .title-text {
-    margin-left: 8px;
-  }
-
-  .button-block {
-    text-align: right;
-    margin-right: 8px;
-
-    .title-button {
-      margin-left: 8px;
-    }
-  }
-}
-
 .editor {
   flex: 2;
   padding-top: 20px;
   height: 100%;
-}
-
-.console {
-  flex: 1;
-  width: 100%;
-  overflow-y: auto;
-
-  .log-item {
-    color: white;
-    margin: 0;
-    padding: 5px 8px;
-    border-bottom: 1px solid #eee;
-
-    &.warn {
-      color: #990;
-    }
-    &.error {
-      color: #c00;
-    }
-  }
 }
 
 .row-container {
