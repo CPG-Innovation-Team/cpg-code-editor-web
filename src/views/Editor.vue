@@ -41,8 +41,6 @@ export default {
     return {
       editor: null,
       socket: null,
-      logStyle: '',
-      logList: [],
       codeUpdateEnable: true, // Debounce for real-time sync
       debounceTimeout: null,
       projectId: null,
@@ -58,7 +56,7 @@ export default {
   props: { projects: Array },
   methods: {
     searchText() {
-      this.editor.getAction('actions.find').run('123');
+      this.editor.getAction('actions.find').run('');
     },
     initEditor() {
       const theme = {
@@ -177,9 +175,6 @@ export default {
     },
     getCode() {
       return this.editor.getValue();
-    },
-    addLog(msg, style) {
-      this.logList.push({ msg, style });
     },
     downloadCode() {
       const blob = new Blob([this.getCode()], { type: 'text' });
