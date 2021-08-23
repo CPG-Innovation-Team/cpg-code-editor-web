@@ -1,0 +1,35 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@4.1
+  aws-s3: circleci/aws-s3@2.0
+
+jobs:
+  lint-and-test:
+    docker:
+      - image: cimg/node:14.17
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: lint
+          command: npm run lint
+      - run:
+          name: test
+          command: npm run test:unit
+  build-and-deploy:
+    docker:
+      - image: cimg/node:14.17
+    steps:
+      - run:
+          name: build
+          command: npm run build
+      - aws-s3/copy:
+          from: dist/
+          to: s3://cpg-code-editor
+
+workflows:
+  default:
+    jobs:
+      - lint-and-test
+      - build-and-deploy
