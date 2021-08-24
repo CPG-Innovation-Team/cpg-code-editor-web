@@ -26,7 +26,7 @@ jobs:
       - run:
           name: build
           command: npm run build
-      - aws-s3/copy:
+      - aws-s3/sync:
           from: dist/
           to: s3://cpg-code-editor
 
