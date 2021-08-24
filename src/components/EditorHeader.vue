@@ -19,7 +19,7 @@
       </template>
       <div class="projects-container">
         <v-row>
-          <v-col cols="3" v-for="(item, index) in projects" :key="index">
+          <v-col cols="6" lg="2" md="3" sm="4" xs="6" v-for="(item, index) in projects" :key="index">
             <a :href="$sanitize(item.hash)">
               <div class="project">
                 <div class="code">
@@ -32,7 +32,7 @@
 
           <v-dialog v-model="dialog" width="500">
             <template v-slot:activator="{ on, attrs }">
-              <v-col cols="3">
+              <v-col cols="6" lg="2" md="3" sm="4" xs="6">
                 <div class="new-project" v-bind="attrs" v-on="on">
                   <v-icon class="plus-icon" color="greyBtn">mdi-plus-box</v-icon>
                 </div>
