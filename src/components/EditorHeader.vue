@@ -20,7 +20,13 @@
       <div class="projects-container">
         <v-row>
           <v-col cols="3" v-for="(item, index) in projects" :key="index">
-            <a :href="$sanitize(item.hash)"><div class="project"></div></a>
+            <a :href="$sanitize(item.hash)">
+              <div class="project">
+                <div class="code">
+                  {{ item.code }}
+                </div>
+              </div>
+            </a>
             <p>{{ item.projectName }}</p>
           </v-col>
 
@@ -312,7 +318,6 @@ export default {
   color: white;
   border-top: 1px solid white;
   overflow: hidden;
-
   .project {
     height: 150px;
     width: 200px;
@@ -320,7 +325,13 @@ export default {
     margin-bottom: 10px;
     border: 1px solid white;
     cursor: pointer;
-
+    text-overflow: ellipsis;
+    overflow: hidden;
+    .code {
+      color: white;
+      font-size: 0.3rem;
+      white-space: pre-wrap;
+    }
     &:hover {
       border: 1px solid #537cd6;
     }

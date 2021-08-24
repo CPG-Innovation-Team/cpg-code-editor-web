@@ -45,7 +45,7 @@ export default {
       debounceTimeout: null,
       projectId: null,
       projectName: '',
-      projectHash: '',
+      projectHash: this.$route.params.projectHash,
       syntax: '',
       userId: '',
       initStatus: true,
@@ -59,6 +59,7 @@ export default {
       this.editor.getAction('actions.find').run('');
     },
     initEditor() {
+      console.log(this.syntax);
       const theme = {
         base: 'vs-dark',
         inherit: true,
@@ -78,8 +79,6 @@ export default {
       });
     },
     initSocketIO() {
-      this.projectHash = this.$route.params.projectHash;
-
       const socketUrl = process.env.NODE_ENV === 'test' ? '' : 'ws://localhost:3000';
       this.socket = io(socketUrl, { transports: ['websocket'] });
       this.socket.on('connect', async () => {
@@ -116,6 +115,7 @@ export default {
         } else if (res.code !== this.getCode() && this.codeUpdateEnable) {
           // Prevent remote code override local
           this.setCode(res.code);
+          console.log(res.code);
         }
 
         if (this.$apollo) {
@@ -124,7 +124,9 @@ export default {
             .query({
               query: GET_USER_LIST,
               fetchPolicy: 'no-cache',
-              variables: { _id: this.projectId },
+              variables: {
+                _id: this.projectId,
+              },
             })
             .then((response) => {
               this.users = response.data.project[0].editInfo;
