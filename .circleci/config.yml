@@ -32,4 +32,6 @@ workflows:
   default:
     jobs:
       - lint-and-test
-      - build-and-deploy
+      - build-and-deploy:
+          requires:
+            - lint-and-test
