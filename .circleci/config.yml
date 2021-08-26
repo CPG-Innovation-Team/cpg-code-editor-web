@@ -17,7 +17,7 @@ jobs:
       - run:
           name: test
           command: npm run test:unit
-  build-and-deploy-dev:
+  build-and-deploy-staging:
     docker:
       - image: cimg/node:14.17
     steps:
@@ -28,7 +28,7 @@ jobs:
           command: npm run build
       - aws-s3/sync:
           from: dist/
-          to: s3://cpg-code-editor/${CIRCLE_BRANCH}
+          to: s3://cpg-code-editor-staging
   build-and-deploy-prod:
     docker:
       - image: cimg/node:14.17
@@ -46,12 +46,12 @@ workflows:
   default:
     jobs:
       - lint-and-test
-      - build-and-deploy-dev:
+      - build-and-deploy-staging:
           requires:
             - lint-and-test
           filters:
             branches:
-              ignore: master
+              only: staging
       - build-and-deploy-prod:
           requires:
             - lint-and-test
