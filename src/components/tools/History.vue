@@ -25,6 +25,7 @@
               filter: user.isOnline ? 'saturate(100%)' : 'saturate(10%)',
               opacity: user.isOnline ? 1 : 0.5,
             }"
+            alt="icon"
           />
           <div
             v-if="user.isOnline"
@@ -67,6 +68,7 @@
               filter: user.isOnline ? 'saturate(100%)' : 'saturate(10%)',
               opacity: user.isOnline ? 1 : 0.5,
             }"
+            alt="icon"
           />
           <div
             v-if="user.isOnline"
@@ -93,6 +95,7 @@
                 filter: 'saturate(100%)',
                 opacity: 1,
               }"
+              alt="icon"
             />
           </v-avatar>
           <div style="display: inline-block">
