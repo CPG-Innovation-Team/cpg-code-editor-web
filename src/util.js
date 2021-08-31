@@ -31,3 +31,22 @@ export const storage = {
     localStorage.clear();
   },
 };
+
+export const getAvatarColor = (avatar) => {
+  if (avatar === 'avatar1') {
+    return '#C69430';
+  }
+  if (avatar === 'avatar2') {
+    return '#C6C983';
+  }
+  if (avatar === 'avatar3') {
+    return '#875D45';
+  }
+  if (avatar === 'avatar4') {
+    return '#475C93';
+  }
+  if (avatar === 'avatar5') {
+    return '#7BAAA4';
+  }
+  return '#E26D5D';
+};
