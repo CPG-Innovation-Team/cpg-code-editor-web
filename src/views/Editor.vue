@@ -67,6 +67,9 @@ export default {
       lineNumber: 1,
       column: 1,
       sectionWidth: 300,
+      editingUser: '',
+      contentWidgets: [],
+      decorations: [],
     };
   },
   methods: {
@@ -128,53 +131,51 @@ export default {
           this.socket.emit('clientEnterProject', { projectId: this.projectId, userId: this.userId });
         } else if (res.code !== this.getCode() && this.codeUpdateEnable) {
           // Prevent remote code override local
-          if (res.code) this.setCode(res.code);
+          if (res.code) {
+            // remove widget after the user has finished typing
+            this.contentWidgets.forEach((contentWidget) => this.editor.removeContentWidget(contentWidget));
+            this.setCode(res.code);
+          }
         }
-
+        // save user cursors in local
         if (res.currentCursor) {
-          let flag = false;
-          let index = -1;
-          for (let i = 0; i < this.cursors.length; i += 1) {
-            if (this.cursors[i].id === res.userId) {
-              flag = true;
-              index = i;
+          let isUserExisted = false;
+          let existedUserIndex = -1;
+          this.editingUser = res.userId;
+          // check if the editing user is already saved in local
+          this.cursors.forEach((cursor, i) => {
+            if (cursor.id === res.userId) {
+              isUserExisted = true;
+              existedUserIndex = i;
             }
-          }
+          });
           let avatar = '';
-          for (let i = 0; i < this.users.length; i += 1) {
-            if (this.users[i].userId === res.userId) {
-              avatar = this.users[i].avatar;
+          let name = '';
+          // search for the name and avatar for the editing user
+          this.users.forEach((user) => {
+            if (user.userId === res.userId) {
+              avatar = user.avatar;
+              name = user.userName;
             }
+          });
+          // if the user is not saved in local, add it, otherwise, overwrite it
+          if (isUserExisted === false) {
+            this.cursors.push({ id: res.userId, cursor: res.currentCursor, avatar, isEditing: res.isEditing, name });
+          } else {
+            this.cursors[existedUserIndex].cursor = res.currentCursor;
           }
-          if (flag === false) {
-            this.cursors.push({ id: res.userId, cursor: res.currentCursor, avatar });
-          }
-          if (flag === true) {
-            this.cursors[index].cursor = res.currentCursor;
-          }
-
-          console.log(this.cursors);
-
-          const decorations = [];
-
-          for (let i = 0; i < this.cursors.length; i += 1) {
-            if (this.cursors[i].id !== storage.getUserInfo().userID) {
-              decorations.push({
-                range: new monaco.Range(
-                  this.cursors[i].cursor.lineNumber,
-                  this.cursors[i].cursor.column,
-                  this.cursors[i].cursor.lineNumber,
-                  this.cursors[i].cursor.column + 1
-                ),
-                options: { className: `cursor-${this.cursors[i].avatar}`, stickiness: 1 },
-              });
-            }
-          }
-
-          console.log(decorations);
-
-          this.editor.deltaDecorations([], decorations);
         }
+
+        // add cursor decorations on the editor
+        this.editor.deltaDecorations([], this.decorations);
+
+        // add isTyping widget on the editor
+        this.contentWidgets.forEach((contentWidget, i) => {
+          // check if the user is editing and ensure it is not the user-self
+          if (res.isEditing === true && this.cursors[i].id !== storage.getUserInfo().userID) {
+            this.editor.addContentWidget(contentWidget);
+          }
+        });
 
         if (this.$apollo) {
           // retrive user list from server
@@ -206,17 +207,16 @@ export default {
     },
     editorEventHandler() {
       // user click event
-
       const that = this;
       this.editor.onMouseDown((e) => {
         if (e.target.position) {
+          // listen to user mouse click and save the cursor location to socket
           that.lineNumber = e.target.position.lineNumber;
           that.column = e.target.position.column;
           that.socket.emit('clientUpdateProjectInfo', {
             projectId: that.projectId,
             userId: that.userId,
             isOnline: true,
-            isEditing: true,
             currentCursor: {
               lineNumber: that.lineNumber,
               column: that.column,
@@ -226,6 +226,151 @@ export default {
       });
 
       this.editor.onDidChangeModelContent((e) => {
+        // check if the editing user is the current user-self, and save it to socket
+        if (storage.getUserInfo().userID === this.editingUser) {
+          this.socket.emit('clientUpdateProjectInfo', {
+            projectId: that.projectId,
+            userId: that.userId,
+            isOnline: true,
+            isEditing: true,
+          });
+        }
+
+        // branches to analyze the user editing event and calculate corresponding cursor position for all users
+        if (e.changes[0].text === '\n' || e.changes[0].text.slice(0, 1) === '\n') {
+          for (let i = 0; i < this.cursors.length; i += 1) {
+            if (
+              e.changes[0].range.startLineNumber === this.cursors[i].cursor.lineNumber &&
+              e.changes[0].range.startColumn <= this.cursors[i].cursor.column
+            ) {
+              this.cursors[i].cursor.lineNumber += 1;
+              this.lineNumber += 1;
+              if (e.changes[0].range.startColumn !== 1) {
+                this.cursors[i].cursor.column =
+                  this.cursors[i].cursor.column - e.changes[0].range.startColumn + e.changes[0].text.length;
+                this.column = this.column - e.changes[0].range.startColumn + e.changes[0].text.length;
+              }
+              this.updateProjectInfo();
+            } else if (e.changes[0].range.startLineNumber < this.cursors[i].cursor.column) {
+              this.cursors[i].cursor.lineNumber += 1;
+              this.lineNumber += 1;
+              this.updateProjectInfo();
+            }
+          }
+        } else if (e.changes[0].text === '') {
+          for (let i = 0; i < this.cursors.length; i += 1) {
+            if (
+              e.changes[0].range.startLineNumber < this.cursors[i].cursor.lineNumber &&
+              e.changes[0].range.endLineNumber - e.changes[0].range.startLineNumber === 1
+            ) {
+              this.cursors[i].cursor.lineNumber -= 1;
+              this.lineNumber -= 1;
+              if (e.changes[0].range.endLineNumber - this.cursors[i].cursor.lineNumber === 1) {
+                this.cursors[i].cursor.column += e.changes[0].range.startColumn - 1;
+                this.column += e.changes[0].range.startColumn - 1;
+              }
+              this.updateProjectInfo();
+            } else if (
+              e.changes[0].range.startLineNumber === this.cursors[i].cursor.lineNumber &&
+              e.changes[0].range.startColumn < this.cursors[i].cursor.column &&
+              e.changes[0].range.endLineNumber - e.changes[0].range.startLineNumber === 0
+            ) {
+              if (
+                e.changes[0].range.startColumn < this.cursors[i].cursor.column &&
+                e.changes[0].range.endColumn > this.cursors[i].cursor.column
+              ) {
+                this.cursors[i].cursor.column = e.changes[0].range.startColumn;
+                this.column = e.changes[0].range.startColumn;
+              } else {
+                this.cursors[i].cursor.column -= e.changes[0].range.endColumn - e.changes[0].range.startColumn;
+                this.column -= e.changes[0].range.endColumn - e.changes[0].range.startColumn;
+              }
+              this.updateProjectInfo();
+            } else if (
+              e.changes[0].range.startLineNumber <= this.cursors[i].cursor.lineNumber &&
+              e.changes[0].range.endLineNumber > this.cursors[i].cursor.lineNumber &&
+              e.changes[0].range.startColumn < this.cursors[i].cursor.column
+            ) {
+              this.cursors[i].cursor.lineNumber = e.changes[0].range.startLineNumber;
+              this.cursors[i].cursor.column = e.changes[0].range.startColumn;
+              this.lineNumber = e.changes[0].range.startLineNumber;
+              this.column = e.changes[0].range.startColumn;
+              this.updateProjectInfo();
+            }
+          }
+        } else if (e.changes[0].text !== '\n' && e.versionId !== 2) {
+          console.log('增加');
+          for (let i = 0; i < this.cursors.length; i += 1) {
+            if (
+              e.changes[0].range.startLineNumber === this.cursors[i].cursor.lineNumber &&
+              e.changes[0].range.startColumn <= this.cursors[i].cursor.column
+            ) {
+              console.log('行内增加');
+              this.cursors[i].cursor.column += e.changes[0].text.length;
+              this.column += e.changes[0].text.length;
+              this.updateProjectInfo();
+            }
+          }
+        }
+
+        // create isTyping widget for each user corresponding to their cursor location
+        this.contentWidgets = [];
+
+        this.cursors.forEach((cursor) => {
+          const line = cursor.cursor.lineNumber;
+          const col = cursor.cursor.column;
+          const { id } = cursor.id;
+          const username = cursor.name;
+          const color = getAvatarColor(cursor.avatar);
+          this.contentWidgets.push({
+            domNode: null,
+            getId() {
+              return `${id}`;
+            },
+            getDomNode() {
+              if (!this.domNode) {
+                this.domNode = document.createElement('div');
+                this.domNode.innerHTML = `${username} is editing...`;
+                this.domNode.style.color = 'white';
+                this.domNode.style.opacity = 0.9;
+                this.domNode.style.background = color;
+                this.domNode.style['font-size'] = '10px';
+                this.domNode.style.width = 'max-content';
+              }
+              return this.domNode;
+            },
+            getPosition() {
+              return {
+                position: {
+                  lineNumber: line,
+                  column: col,
+                },
+                preference: [
+                  monaco.editor.ContentWidgetPositionPreference.ABOVE,
+                  monaco.editor.ContentWidgetPositionPreference.BELOW,
+                ],
+              };
+            },
+          });
+        });
+
+        // create user cursor corresponding to their cursor location
+        this.decorations = [];
+
+        this.cursors.forEach((cursor) => {
+          if (cursor.id !== storage.getUserInfo().userID) {
+            this.decorations.push({
+              range: new monaco.Range(
+                cursor.cursor.lineNumber,
+                cursor.cursor.column,
+                cursor.cursor.lineNumber,
+                cursor.cursor.column + 1
+              ),
+              options: { className: `cursor-${cursor.avatar}`, stickiness: 1 },
+            });
+          }
+        });
+
         this.initStatus = false;
         if (!this.codeUpdateEnable) {
           clearTimeout(this.debounceTimeout);
@@ -246,6 +391,17 @@ export default {
           updateCodeInLocalDb(code, this.projectId || 'localDefault');
           this.codeUpdateEnable = true;
         }, 1000);
+      });
+    },
+    updateProjectInfo() {
+      this.socket.emit('clientUpdateProjectInfo', {
+        projectId: this.projectId,
+        userId: this.userId,
+        isOnline: true,
+        currentCursor: {
+          lineNumber: this.lineNumber,
+          column: this.column,
+        },
       });
     },
     setCode(code) {
