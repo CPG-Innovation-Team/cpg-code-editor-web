@@ -299,13 +299,11 @@ export default {
             }
           }
         } else if (e.changes[0].text !== '\n' && e.versionId !== 2) {
-          console.log('增加');
           for (let i = 0; i < this.cursors.length; i += 1) {
             if (
               e.changes[0].range.startLineNumber === this.cursors[i].cursor.lineNumber &&
               e.changes[0].range.startColumn <= this.cursors[i].cursor.column
             ) {
-              console.log('行内增加');
               this.cursors[i].cursor.column += e.changes[0].text.length;
               this.column += e.changes[0].text.length;
               this.updateProjectInfo();
@@ -314,62 +312,10 @@ export default {
         }
 
         // create isTyping widget for each user corresponding to their cursor location
-        this.contentWidgets = [];
-
-        this.cursors.forEach((cursor) => {
-          const line = cursor.cursor.lineNumber;
-          const col = cursor.cursor.column;
-          const { id } = cursor.id;
-          const username = cursor.name;
-          const color = getAvatarColor(cursor.avatar);
-          this.contentWidgets.push({
-            domNode: null,
-            getId() {
-              return `${id}`;
-            },
-            getDomNode() {
-              if (!this.domNode) {
-                this.domNode = document.createElement('div');
-                this.domNode.innerHTML = `${username} is editing...`;
-                this.domNode.style.color = 'white';
-                this.domNode.style.opacity = 0.9;
-                this.domNode.style.background = color;
-                this.domNode.style['font-size'] = '10px';
-                this.domNode.style.width = 'max-content';
-              }
-              return this.domNode;
-            },
-            getPosition() {
-              return {
-                position: {
-                  lineNumber: line,
-                  column: col,
-                },
-                preference: [
-                  monaco.editor.ContentWidgetPositionPreference.ABOVE,
-                  monaco.editor.ContentWidgetPositionPreference.BELOW,
-                ],
-              };
-            },
-          });
-        });
+        this.addContentWidgets();
 
         // create user cursor corresponding to their cursor location
-        this.decorations = [];
-
-        this.cursors.forEach((cursor) => {
-          if (cursor.id !== storage.getUserInfo().userID) {
-            this.decorations.push({
-              range: new monaco.Range(
-                cursor.cursor.lineNumber,
-                cursor.cursor.column,
-                cursor.cursor.lineNumber,
-                cursor.cursor.column + 1
-              ),
-              options: { className: `cursor-${cursor.avatar}`, stickiness: 1 },
-            });
-          }
-        });
+        this.addCursorDecorations();
 
         this.initStatus = false;
         if (!this.codeUpdateEnable) {
@@ -456,6 +402,64 @@ export default {
         };
         return false;
       };
+    },
+    addCursorDecorations() {
+      this.decorations = [];
+
+      this.cursors.forEach((cursor) => {
+        if (cursor.id !== storage.getUserInfo().userID) {
+          this.decorations.push({
+            range: new monaco.Range(
+              cursor.cursor.lineNumber,
+              cursor.cursor.column,
+              cursor.cursor.lineNumber,
+              cursor.cursor.column + 1
+            ),
+            options: { className: `cursor-${cursor.avatar}`, stickiness: 1 },
+          });
+        }
+      });
+    },
+    addContentWidgets() {
+      this.contentWidgets = [];
+
+      this.cursors.forEach((cursor) => {
+        const line = cursor.cursor.lineNumber;
+        const col = cursor.cursor.column;
+        const { id } = cursor.id;
+        const username = cursor.name;
+        const color = getAvatarColor(cursor.avatar);
+        this.contentWidgets.push({
+          domNode: null,
+          getId() {
+            return `${id}`;
+          },
+          getDomNode() {
+            if (!this.domNode) {
+              this.domNode = document.createElement('div');
+              this.domNode.innerHTML = `${username} is editing...`;
+              this.domNode.style.color = 'white';
+              this.domNode.style.opacity = 0.9;
+              this.domNode.style.background = color;
+              this.domNode.style['font-size'] = '10px';
+              this.domNode.style.width = 'max-content';
+            }
+            return this.domNode;
+          },
+          getPosition() {
+            return {
+              position: {
+                lineNumber: line,
+                column: col,
+              },
+              preference: [
+                monaco.editor.ContentWidgetPositionPreference.ABOVE,
+                monaco.editor.ContentWidgetPositionPreference.BELOW,
+              ],
+            };
+          },
+        });
+      });
     },
   },
   created() {
