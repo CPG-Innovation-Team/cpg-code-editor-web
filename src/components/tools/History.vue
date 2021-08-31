@@ -14,14 +14,14 @@
       Today
     </h5>
     <div v-for="(user, index) in editHistory" :key="index">
-      <div class="historyUnit">
+      <div class="history-unit">
         <v-avatar rounded>
           <img
             class="user-avatar"
             outlined
             :src="require(`../../assets/img-${user.userAvatar}.png`)"
             :style="{
-              'border-color': getColor(user),
+              'border-color': getAvatarColor(user.userAvatar),
               filter: user.isOnline ? 'saturate(100%)' : 'saturate(10%)',
               opacity: user.isOnline ? 1 : 0.5,
             }"
@@ -57,14 +57,14 @@
       Yesterday
     </h5>
     <div v-for="user in editHistory1" :key="user.editTime">
-      <div class="historyUnit">
+      <div class="history-unit">
         <v-avatar rounded>
           <img
             class="user-avatar"
             outlined
             :src="require(`../../assets/img-${user.userAvatar}.png`)"
             :style="{
-              'border-color': getColor(user),
+              'border-color': getAvatarColor(user.userAvatar),
               filter: user.isOnline ? 'saturate(100%)' : 'saturate(10%)',
               opacity: user.isOnline ? 1 : 0.5,
             }"
@@ -84,7 +84,7 @@
             {{ user.editTime }} by <a style="color: lightblue">{{ user.name }}</a>
           </div>
         </div>
-        <div class="historyUnit">
+        <div class="history-unit">
           <v-avatar rounded>
             <img
               class="user-avatar"
@@ -109,6 +109,8 @@
 </template>
 
 <script>
+import { getAvatarColor } from '../../util';
+
 export default {
   name: 'History',
   components: {},
@@ -155,24 +157,7 @@ export default {
     };
   },
   methods: {
-    getColor(user) {
-      if (user.userAvatar === 'avatar1') {
-        return 'rgb(198, 148, 48)';
-      }
-      if (user.userAvatar === 'avatar2') {
-        return 'rgb(198, 201, 131)';
-      }
-      if (user.userAvatar === 'avatar3') {
-        return 'rgb(135, 93, 69)';
-      }
-      if (user.userAvatar === 'avatar4') {
-        return 'rgb(71, 92, 147)';
-      }
-      if (user.userAvatar === 'avatar5') {
-        return 'rgb(123, 170, 164)';
-      }
-      return 'rgb(226, 109, 93)';
-    },
+    getAvatarColor,
   },
 };
 </script>
@@ -186,7 +171,7 @@ export default {
   min-width: 240px;
   max-width: 400px;
 }
-.historyUnit {
+.history-unit {
   display: flex;
   margin-bottom: 5px;
 }
