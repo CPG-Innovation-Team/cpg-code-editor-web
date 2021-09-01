@@ -170,9 +170,13 @@ export default {
         this.editor.deltaDecorations([], this.decorations);
 
         // add isTyping widget on the editor
-        this.contentWidgets.forEach((contentWidget, i) => {
+        this.contentWidgets.forEach((contentWidget) => {
           // check if the user is editing and ensure it is not the user-self
-          if (res.isEditing === true && this.cursors[i].id !== storage.getUserInfo().userID) {
+          if (
+            res.isEditing === true &&
+            contentWidget.uid === this.editingUser &&
+            contentWidget.uid !== storage.getUserInfo().userID
+          ) {
             this.editor.addContentWidget(contentWidget);
           }
         });
@@ -426,13 +430,14 @@ export default {
       this.cursors.forEach((cursor) => {
         const line = cursor.cursor.lineNumber;
         const col = cursor.cursor.column;
-        const { id } = cursor.id;
+        const uid = cursor.id;
         const username = cursor.name;
         const color = getAvatarColor(cursor.avatar);
         this.contentWidgets.push({
+          uid,
           domNode: null,
           getId() {
-            return `${id}`;
+            return `${uid}`;
           },
           getDomNode() {
             if (!this.domNode) {
