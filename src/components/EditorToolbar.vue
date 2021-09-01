@@ -51,6 +51,28 @@
         </v-menu>
 
         <v-menu
+          left
+          offset-x
+          :close-on-content-click="false"
+          content-class="elevation-0 tool-menu"
+          z-index="1"
+          rounded="0"
+        >
+          <template v-slot:activator="{ on: menu, attrs }" class="tool-menu">
+            <v-tooltip nudge-right="10" left>
+              <template v-slot:activator="{ on: tooltip }">
+                <v-list-item v-bind="attrs" v-on="{ ...tooltip, ...menu }" @click="$emit('searchText')">
+                  <v-list-item-content>
+                    <v-icon color="greyBtn">mdi-magnify</v-icon>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              <span>{{ $t('tools.search.name') }}</span>
+            </v-tooltip>
+          </template>
+        </v-menu>
+
+        <v-menu
           v-for="tool in tools"
           :key="tool.index"
           left
@@ -77,7 +99,7 @@
 
         <v-tooltip nudge-right="10" left>
           <template v-slot:activator="{ on, tooltip }">
-            <v-list-item v-bind="tooltip" v-on="on" @click="$emit('download')">
+            <v-list-item v-bind="tooltip" v-on="on" @click="$emit('downloadCode')">
               <v-list-item-content>
                 <v-icon color="greyBtn">mdi-download</v-icon>
               </v-list-item-content>
@@ -203,14 +225,10 @@ export default {
     },
     projectName: { type: String },
     syntax: { type: String },
-    downloadCode: { type: Function },
   },
   data() {
     return {
-      tools: [
-        { icon: 'mdi-magnify', tooltip: 'tools.search.name', menu: Setting },
-        { icon: 'mdi-history', tooltip: 'tools.history.name', menu: History },
-      ],
+      tools: [{ icon: 'mdi-history', tooltip: 'tools.history.name', menu: History }],
       userName: '',
       userAvatar: '',
       profileName: '',
