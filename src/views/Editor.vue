@@ -1,6 +1,21 @@
 <template>
   <div class="fill-height row-container">
-    <div class="history-section" v-bind:style="{ width: sectionWidth + 'px' }"></div>
+    <div class="history-section" v-bind:style="{ width: sectionWidth + 'px' }">
+      <div v-for="(user, index) in editHistory" :key="index">
+        <div
+          @click="moveEditor((user.editLinesStart + user.editLinesEnd) / 2)"
+          class="highlight-bar"
+          :style="{
+            top: (user.editLinesStart - 1) * eachLineHeight - editorScroll + highlightTop + 'px',
+            height: (user.editLinesEnd - user.editLinesStart + 1) * eachLineHeight + 'px',
+            'border-right': 'solid 5px ' + user.color,
+          }"
+        >
+          <a style="color: rgb(190, 198, 201)">{{ user.editTime }}</a>
+          <a :style="{ 'margin-left': 130 + 'px', color: user.color }"> {{ user.name }} </a>
+        </div>
+      </div>
+    </div>
     <div class="resize-bar" ref="resizeBar"></div>
     <div class="editor-section" v-bind:style="{ width: 'calc(100% - ' + sectionWidth + 'px - 75px)' }">
       <div class="editor-container">
@@ -61,7 +76,36 @@ export default {
       initStatus: true,
       selectedCodeLanguage: 'javascript',
       codeLanguageList: CODE_LANGUAGE_LIST,
+      highlightTop: 51, // mannually set as 51, number should be able to change accordingly
+      editorScroll: null,
+      eachLineHeight: null,
       users: [],
+      editHistory: [
+        {
+          name: 'Aha',
+          color: 'rgb(127, 86, 105)',
+          editTime: '15:20',
+          editNumber: 10,
+          editLinesStart: 1,
+          editLinesEnd: 5,
+        },
+        {
+          name: 'Jeremy',
+          color: 'rgb(27, 186, 205)',
+          editTime: '15:20',
+          editNumber: 10,
+          editLinesStart: 10,
+          editLinesEnd: 20,
+        },
+        {
+          name: 'Allen',
+          color: 'rgb(232, 98, 34)',
+          editTime: '12:20',
+          editNumber: 25,
+          editLinesStart: 21,
+          editLinesEnd: 30,
+        },
+      ],
       sectionWidth: 300,
     };
   },
@@ -84,6 +128,10 @@ export default {
         },
         automaticLayout: true,
       });
+      // Get the line height
+      this.editor.setValue('\n');
+      this.eachLineHeight = this.editor.getTopForLineNumber(2) - this.editor.getTopForLineNumber(1);
+      // set up highlightTop
     },
     initSocketIO() {
       this.projectHash = this.$route.params.projectHash;
@@ -154,6 +202,14 @@ export default {
       });
     },
     editorEventHandler() {
+      this.editor.onDidScrollChange((e) => {
+        console.log(e);
+        console.log(this.editor.getContentHeight());
+        // console.log(this.editor.getScrollHeight());
+
+        this.editorScroll = this.editor.getScrollTop();
+      });
+
       this.editor.onDidChangeModelContent((e) => {
         this.initStatus = false;
         if (!this.codeUpdateEnable) {
@@ -163,8 +219,10 @@ export default {
 
         // Send code to server after no operation for 1 seconds
         this.debounceTimeout = setTimeout(() => {
+          console.log(this.editor.getContentHeight());
           console.log(e);
           const code = this.getCode();
+          console.log(this.editor.getModel().getLinesContent());
           this.socket.emit('clientUpdateProjectInfo', {
             code,
             projectId: this.projectId,
@@ -229,6 +287,9 @@ export default {
         };
         return false;
       };
+    },
+    moveEditor(moveLineNumber) {
+      this.editor.revealLineInCenter(moveLineNumber);
     },
   },
   created() {
@@ -298,6 +359,11 @@ export default {
     border-top: 1px solid #eee;
     background-color: #3d4b56;
     position: relative;
+    .highlight-bar {
+      padding-left: 20px;
+      position: absolute;
+      width: 100%;
+    }
   }
   .resize-bar {
     border-top: 1px solid #eee;
@@ -312,6 +378,8 @@ export default {
     border-top: 1px solid #eee;
     border-left: 1px solid #eee;
     background-color: #2c333b;
+    overflow: hidden;
+    position: relative;
   }
 
   .toolbar-section {
