@@ -58,33 +58,31 @@ body {
   color: #2c3e50;
 }
 
-.cursor-avatar1 {
-  background: #c69430;
+.cursor-avatar {
   width: 2px !important;
-}
 
-.cursor-avatar2 {
-  background: #c6c983;
-  width: 2px !important;
-}
+  &.avatar1 {
+    background: #c69430;
+  }
 
-.cursor-avatar3 {
-  background: #875d45;
-  width: 2px !important;
-}
+  &.avatar2 {
+    background: #c6c983;
+  }
 
-.cursor-avatar4 {
-  background: #475c93;
-  width: 2px !important;
-}
+  &.avatar3 {
+    background: #875d45;
+  }
 
-.cursor-avatar5 {
-  background: #7baaa4;
-  width: 2px !important;
-}
+  &.avatar4 {
+    background: #475c93;
+  }
 
-.cursor-avatar6 {
-  background: #e26d5d;
-  width: 2px !important;
+  &.avatar5 {
+    background: #7baaa4;
+  }
+
+  &.avatar6 {
+    background: #e26d5d;
+  }
 }
 </style>
