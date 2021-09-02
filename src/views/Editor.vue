@@ -524,9 +524,9 @@ export default {
         });
       });
     },
-  },
-  moveEditor(moveLineNumber) {
-    this.editor.revealLineInCenter(moveLineNumber);
+    moveEditor(moveLineNumber) {
+      this.editor.revealLineInCenter(moveLineNumber);
+    },
   },
   created() {
     this.userId = storage.getUserInfo().userID;
