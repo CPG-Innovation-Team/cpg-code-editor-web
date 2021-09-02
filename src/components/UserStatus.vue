@@ -11,7 +11,7 @@
               v-bind="attrs"
               v-on="on"
               :style="{
-                'border-color': getColor(user),
+                'border-color': getAvatarColor(user.avatar),
                 filter: user.isOnline ? 'saturate(100%)' : 'saturate(10%)',
                 opacity: user.isOnline ? 1 : 0.5,
               }"
@@ -30,36 +30,19 @@
 </template>
 
 <script>
+import { getAvatarColor } from '../util';
+
 export default {
   props: ['usersList'],
   data() {
     return {
       users: this.usersList,
+      getAvatarColor,
     };
   },
   watch: {
     usersList(newVal) {
       this.users = newVal;
-    },
-  },
-  methods: {
-    getColor(user) {
-      if (user.avatar === 'avatar1') {
-        return 'rgb(198, 148, 48)';
-      }
-      if (user.avatar === 'avatar2') {
-        return 'rgb(198, 201, 131)';
-      }
-      if (user.avatar === 'avatar3') {
-        return 'rgb(135, 93, 69)';
-      }
-      if (user.avatar === 'avatar4') {
-        return 'rgb(71, 92, 147)';
-      }
-      if (user.avatar === 'avatar5') {
-        return 'rgb(123, 170, 164)';
-      }
-      return 'rgb(226, 109, 93)';
     },
   },
 };
