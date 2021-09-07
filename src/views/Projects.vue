@@ -40,7 +40,7 @@
                     <router-link :to="item.hash" class="project-title">{{ item.projectName }}</router-link>
                   </td>
                   <td class="item-style">
-                    <v-chip :color="getColor(item.syntax)" dark>{{ item.syntax }}</v-chip>
+                    <v-chip :color="getColor(item.syntax)" dark>{{ getLangName(item.syntax) }}</v-chip>
                   </td>
                   <td class="item-style">{{ showTime(item.updateTime) }}</td>
                   <td class="item-style">{{ showTime(item.createTime) }}</td>
@@ -106,6 +106,7 @@ import IndexToolbar from '../components/IndexToolbar.vue';
 import WelcomeWindow from './WelcomeWindow.vue';
 import { storage } from '../util';
 import { REMOVE_PROJECT, UPDATE_PROJECT } from '../query';
+import CODE_LANGUAGE_LIST from '../map';
 
 export default {
   name: 'Projects',
@@ -184,15 +185,6 @@ export default {
       this.userInfo.userName = userName;
       this.userInfo.userAvatar = userAvatar;
     },
-    getColor(syntax) {
-      if (syntax === 'JS') {
-        return 'yellow';
-      }
-      if (syntax === 'SQL') {
-        return 'green';
-      }
-      return 'blue';
-    },
     showTime(date) {
       // change to moment later
       const inputDate = new Date(date);
@@ -216,6 +208,17 @@ export default {
     },
     reverse(topStatus) {
       return !topStatus;
+    },
+    getColor(syntax) {
+      const object = CODE_LANGUAGE_LIST.filter((item) => item.langValue === syntax);
+      return object[0].langColor;
+    },
+    getLangName(value) {
+      const object = CODE_LANGUAGE_LIST.filter((item) => item.langValue === value);
+      if (object.length < 1) {
+        return 'error';
+      }
+      return object[0].langName;
     },
   },
 };
