@@ -114,6 +114,10 @@ export default {
           editLinesEnd: 30,
         },
       ],
+      contentEditLines: [],
+      contentEditChar: [],
+      contentUpdate: [],
+      enterLines: [],
     };
   },
   methods: {
@@ -279,13 +283,22 @@ export default {
 
       this.editor.onDidScrollChange((e) => {
         console.log(e);
-        console.log(this.editor.getContentHeight());
-        // console.log(this.editor.getScrollHeight());
-
         this.editorScroll = this.editor.getScrollTop();
       });
 
       this.editor.onDidChangeModelContent((e) => {
+        this.contentEditChar = e.changes[0].text;
+        console.log(this.contentEditChar);
+        if (this.contentEditChar === '') {
+          this.contentUpdate.push({
+            lineNumber: e.changes[0].range.endLineNumber,
+            type: 'delete',
+            content: '',
+          });
+        } else if (!this.contentEditLines.includes(e.changes[0].range.endLineNumber)) {
+          this.contentEditLines.push(e.changes[0].range.endLineNumber);
+        }
+
         // check if the editing user is the current user-self, and save it to socket
         if (storage.getUserInfo().userID === this.editingUser) {
           this.socket.emit('clientUpdateProjectInfo', {
@@ -385,10 +398,22 @@ export default {
 
         // Send code to server after no operation for 1 seconds
         this.debounceTimeout = setTimeout(() => {
-          console.log(this.editor.getContentHeight());
           console.log(e);
+          console.log(this.contentEditLines);
+          const codeLines = this.editor.getModel().getLinesContent();
+          for (let i = 0; i < this.contentEditLines.length; i += 1) {
+            this.contentUpdate.push({
+              lineNumber: this.contentEditLines[i],
+              type: 'update',
+              content: codeLines[this.contentEditLines[i] - 1],
+            });
+          }
+          console.log(this.contentUpdate);
+
+          this.contentEditLines = [];
+          this.contentUpdate = [];
+
           const code = this.getCode();
-          console.log(this.editor.getModel().getLinesContent());
           this.socket.emit('clientUpdateProjectInfo', {
             code,
             projectId: this.projectId,
