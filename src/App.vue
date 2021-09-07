@@ -68,4 +68,32 @@ body {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
+
+.cursor-avatar {
+  width: 2px !important;
+
+  &.avatar1 {
+    background: #c69430;
+  }
+
+  &.avatar2 {
+    background: #c6c983;
+  }
+
+  &.avatar3 {
+    background: #875d45;
+  }
+
+  &.avatar4 {
+    background: #475c93;
+  }
+
+  &.avatar5 {
+    background: #7baaa4;
+  }
+
+  &.avatar6 {
+    background: #e26d5d;
+  }
+}
 </style>
