@@ -19,18 +19,7 @@
     <div class="resize-bar" ref="resizeBar"></div>
     <div class="editor-section" v-bind:style="{ width: 'calc(100% - ' + sectionWidth + 'px - 75px)' }">
       <div class="editor-container">
-        <div class="title-block">
-          <div class="title-text">Editor</div>
-          <div class="button-block">
-            <select v-model="selectedCodeLanguage" @change="onCodeLanguageChange" test="codeLanguageSelector">
-              <option v-for="option in codeLanguageList" :key="option.langValue" v-bind:value="option.langValue">
-                {{ option.langName }}
-              </option>
-            </select>
-            <button class="title-button" @click="downloadCode">Download</button>
-            <a ref="downloadElement" v-show="false" target="_blank" />
-          </div>
-        </div>
+        <a ref="downloadElement" v-show="false" target="_blank" />
         <div ref="editor" class="editor"></div>
       </div>
     </div>
@@ -41,8 +30,10 @@
         v-on="$listeners"
         :projectName="projectName"
         :syntax="syntax"
-        @download="downloadCode"
+        @downloadCode="downloadCode"
         @changeLanguage="onCodeLanguageChange"
+        @changeName="onProjectNameChange"
+        @searchText="searchText"
       />
     </div>
   </div>
@@ -70,7 +61,7 @@ export default {
       debounceTimeout: null,
       projectId: null,
       projectName: '',
-      projectHash: '',
+      projectHash: this.$route.params.projectHash,
       syntax: '',
       userId: '',
       initStatus: true,
@@ -116,8 +107,13 @@ export default {
       ],
     };
   },
+  props: { projects: Array },
   methods: {
+    searchText() {
+      this.editor.getAction('actions.find').run('');
+    },
     initEditor() {
+      console.log(this.syntax);
       const theme = {
         base: 'vs-dark',
         inherit: true,
@@ -142,8 +138,6 @@ export default {
       // set up highlightTop
     },
     initSocketIO() {
-      this.projectHash = this.$route.params.projectHash;
-
       const socketUrl = process.env.NODE_ENV === 'test' ? '' : 'ws://localhost:3000';
       this.socket = io(socketUrl, { transports: ['websocket'] });
       this.socket.on('connect', async () => {
@@ -235,7 +229,9 @@ export default {
             .query({
               query: GET_USER_LIST,
               fetchPolicy: 'no-cache',
-              variables: { _id: this.projectId },
+              variables: {
+                _id: this.projectId,
+              },
             })
             .then((response) => {
               this.users = response.data.project[0].editInfo;
@@ -252,6 +248,7 @@ export default {
             })
             .then((response) => {
               this.projectName = response.data.project[0].projectName;
+              this.$emit('changeProjectName', this.projectName);
               this.syntax = response.data.project[0].syntax;
             });
         }
@@ -376,7 +373,9 @@ export default {
 
         // create user cursor corresponding to their cursor location
         this.addCursorDecorations();
+      });
 
+      this.editor.onDidChangeModelContent(() => {
         this.initStatus = false;
         if (!this.codeUpdateEnable) {
           clearTimeout(this.debounceTimeout);
@@ -385,8 +384,6 @@ export default {
 
         // Send code to server after no operation for 1 seconds
         this.debounceTimeout = setTimeout(() => {
-          console.log(this.editor.getContentHeight());
-          console.log(e);
           const code = this.getCode();
           console.log(this.editor.getModel().getLinesContent());
           this.socket.emit('clientUpdateProjectInfo', {
@@ -428,12 +425,34 @@ export default {
     },
     onCodeLanguageChange(value) {
       this.syntax = value;
-      this.selectedCodeLanguage = value;
       this.$nextTick(() => {
         const code = this.getCode();
         this.editor.dispose();
         this.initEditor();
         this.setCode(code);
+      });
+      const code = this.getCode();
+      this.socket.emit('clientUpdateProjectInfo', {
+        code,
+        projectId: this.projectId,
+        projectName: this.projectName,
+        syntax: this.syntax,
+        userId: this.userId,
+      });
+    },
+    onProjectNameChange(value) {
+      const oldProjectName = this.projectName;
+      const index = this.projects.findIndex((project) => project.projectName === oldProjectName);
+      this.projects[index].projectName = value;
+      this.projectName = value;
+      this.$emit('changeProjectName', this.projectName);
+      const code = this.getCode();
+      this.socket.emit('clientUpdateProjectInfo', {
+        code,
+        projectId: this.projectId,
+        projectName: this.projectName,
+        syntax: this.syntax,
+        userId: this.userId,
       });
     },
     resizeBarController() {
@@ -552,37 +571,10 @@ export default {
   width: 100%;
 }
 
-.title-block {
-  display: flex;
-  justify-content: space-between;
-  height: 30px;
-  line-height: 30px;
-  background-color: #ddd;
-
-  .title-text {
-    margin-left: 8px;
-  }
-
-  .button-block {
-    text-align: right;
-    margin-right: 8px;
-
-    .title-button {
-      margin-left: 8px;
-    }
-  }
-}
-
 .editor {
   flex: 2;
   padding-top: 20px;
   height: 100%;
-}
-
-.console {
-  flex: 1;
-  width: 100%;
-  overflow-y: auto;
 }
 
 .row-container {

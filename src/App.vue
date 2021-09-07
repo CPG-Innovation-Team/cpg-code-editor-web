@@ -1,7 +1,13 @@
 <template>
   <v-app>
     <IndexHeader v-if="this.$route.path === '/'" :projects="project" />
-    <EditorHeader v-else :users="users" :changedUserInfo="changedUserInfo" :projects="project" />
+    <EditorHeader
+      v-else
+      :users="users"
+      :changedUserInfo="changedUserInfo"
+      :projects="project"
+      :projectName="projectName"
+    />
     <v-main>
       <!-- force refresh the page when at the same route -->
       <router-view
@@ -9,6 +15,7 @@
         :projects="project"
         @passUserList="getUserList"
         @passChangedUserInfo="getChangedUserInfo"
+        @changeProjectName="changeProjectName"
       ></router-view>
     </v-main>
   </v-app>
@@ -31,6 +38,7 @@ export default {
   data() {
     return {
       project: [],
+      projectName: '',
       users: [],
       changedUserInfo: '',
     };
@@ -41,6 +49,9 @@ export default {
     },
     getUserList(users) {
       this.users = users;
+    },
+    changeProjectName(value) {
+      this.projectName = value;
     },
   },
 };

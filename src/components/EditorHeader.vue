@@ -1,7 +1,7 @@
 <template>
   <v-app-bar app color="primary">
     <v-toolbar-title class="mr-5">
-      <router-link to="/" class="white--text" style="text-decoration: none">正大集团</router-link>
+      <a href="/" class="white--text" style="text-decoration: none">正大集团</a>
     </v-toolbar-title>
     <v-menu
       offset-y
@@ -13,22 +13,76 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <h4 class="white--text" v-bind="attrs" v-on="on">
-          {{ project.projectName }} <v-icon v-if="projectMenu" color="white" class="mb-1">mdi-chevron-up</v-icon>
+          {{ projectName }} <v-icon v-if="projectMenu" color="white" class="mb-1">mdi-chevron-up</v-icon>
           <v-icon v-else color="white" class="mb-1">mdi-chevron-down</v-icon>
         </h4>
       </template>
       <div class="projects-container">
         <v-row>
-          <v-col cols="3" v-for="(item, index) in projects" :key="index">
-            <a :href="$sanitize(item.hash)"><div class="project"></div></a>
+          <v-col cols="6" lg="2" md="3" sm="4" xs="6" v-for="(item, index) in projects" :key="index">
+            <a :href="$sanitize(item.hash)">
+              <div class="project">
+                <div class="code">
+                  {{ item.code }}
+                </div>
+              </div>
+            </a>
             <p>{{ item.projectName }}</p>
           </v-col>
 
-          <v-col cols="3">
-            <div class="new-project">
-              <v-icon class="plus-icon" color="greyBtn">mdi-plus-box</v-icon>
-            </div>
-          </v-col>
+          <v-dialog v-model="dialog" width="500">
+            <template v-slot:activator="{ on, attrs }">
+              <v-col cols="6" lg="2" md="3" sm="4" xs="6">
+                <div class="new-project" v-bind="attrs" v-on="on">
+                  <v-icon class="plus-icon" color="greyBtn">mdi-plus-box</v-icon>
+                </div>
+              </v-col>
+            </template>
+
+            <v-card @keyup.enter="validate()">
+              <v-card-title class="headline grey lighten-2">Create Project</v-card-title>
+
+              <v-form v-model="formValid" ref="form">
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" md="4">
+                      <v-text-field
+                        v-model="newProjectName"
+                        label="Project name"
+                        :rules="nameRules"
+                        required
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" md="4">
+                      <v-select
+                        v-model="projectSyntax"
+                        :items="codeLanguageList"
+                        label="Project syntax"
+                        item-text="langName"
+                        item-value="langValue"
+                        :rules="syntaxRules"
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-form>
+              <v-divider></v-divider>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  text
+                  @click="
+                    dialog = false;
+                    resetForm();
+                  "
+                  >Cancel</v-btn
+                >
+                <v-btn text @click="validate()"> Create </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-row>
       </div>
     </v-menu>
@@ -147,7 +201,9 @@
 
 <script>
 import UserStatus from './UserStatus.vue';
-import { GET_PROJECT, GET_USER_LIST } from '../query';
+import { GET_USER_LIST, CREATE_PROJECT } from '../query';
+import CODE_LANGUAGE_LIST from '../map';
+import { storage } from '../util';
 
 export default {
   components: {
@@ -160,16 +216,23 @@ export default {
     },
     users: Array,
     projects: Array,
+    projectName: String,
   },
   data() {
     return {
-      project: [],
       projectMenu: false,
       index: document.body.clientWidth / 320,
       clientWidth: document.body.clientWidth,
       url: 'https://cgp.url',
       copied: false,
       usersList: [],
+      formValid: false,
+      newProjectName: '',
+      nameRules: [(v) => !!v || 'Name is required'],
+      syntaxRules: [(v) => !!v || 'Syntax is required'],
+      projectSyntax: '',
+      dialog: false,
+      codeLanguageList: CODE_LANGUAGE_LIST,
     };
   },
   methods: {
@@ -183,20 +246,35 @@ export default {
       navigator.clipboard.writeText(this.url);
       this.copied = true;
     },
+    validate() {
+      this.$refs.form.validate();
+      if (!!this.newProjectName && !!this.projectSyntax) {
+        this.createProject();
+        this.dialog = false;
+        this.resetForm();
+      }
+    },
+    resetForm() {
+      this.newProjectName = '';
+      this.projectSyntax = '';
+      this.$refs.form.reset();
+    },
+    createProject() {
+      this.$apollo
+        .mutate({
+          mutation: CREATE_PROJECT,
+          variables: {
+            projectName: this.newProjectName,
+            syntax: this.projectSyntax,
+            userId: storage.getUserInfo().userID,
+          },
+        })
+        .then((res) => {
+          this.projects.push(res.data.createProject.data[0]);
+        });
+    },
   },
   mounted() {
-    // fetch current project info using _id from url
-    this.$apollo
-      .query({
-        query: GET_PROJECT,
-        variables: {
-          hash: this.$route.fullPath.replace('/', ''),
-        },
-      })
-      .then((res) => {
-        [this.project] = res.data.project;
-      });
-
     this.url += this.$route.fullPath;
     // watch the width of the window
     const that = this;
@@ -240,7 +318,6 @@ export default {
   color: white;
   border-top: 1px solid white;
   overflow: hidden;
-
   .project {
     height: 150px;
     width: 200px;
@@ -248,7 +325,13 @@ export default {
     margin-bottom: 10px;
     border: 1px solid white;
     cursor: pointer;
-
+    text-overflow: ellipsis;
+    overflow: hidden;
+    .code {
+      color: white;
+      font-size: 0.3rem;
+      white-space: pre-wrap;
+    }
     &:hover {
       border: 1px solid #537cd6;
     }
