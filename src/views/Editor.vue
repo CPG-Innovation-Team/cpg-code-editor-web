@@ -106,7 +106,6 @@ export default {
         },
       ],
       contentEditLines: [],
-      contentEditChar: [],
       contentUpdate: [],
       enterLines: [],
     };
@@ -284,18 +283,26 @@ export default {
       });
 
       this.editor.onDidChangeModelContent((e) => {
-        this.contentEditChar = e.changes[0].text;
-        console.log(this.contentEditChar);
-        if (this.contentEditChar === '') {
-          this.contentUpdate.push({
-            lineNumber: e.changes[0].range.endLineNumber,
-            type: 'delete',
-            content: '',
-          });
-        } else if (!this.contentEditLines.includes(e.changes[0].range.endLineNumber)) {
+        console.log('The value of e');
+        console.log(e);
+        const contentEdit = e.changes[0].text;
+        console.log('the content length');
+        console.log(contentEdit.length);
+        // when the input is done by typing(one by one)
+        if (contentEdit.length === 1) {
+          if (contentEdit.slice(0, 1) === '\n') {
+            this.addContentListValue(e.changes[0].range.endLineNumber);
+            // update this, add next
+          }
           this.contentEditLines.push(e.changes[0].range.endLineNumber);
+        } else if (contentEdit.length === 0) {
+          // when the input is deleting lines
+          console.log('deleting lines');
+        } else if (contentEdit.length > 1) {
+          // when the input is done by pasting(multiple characters)
+          // special case: select and delete
+          console.log('multiple input');
         }
-
         // check if the editing user is the current user-self, and save it to socket
         if (storage.getUserInfo().userID === this.editingUser) {
           this.socket.emit('clientUpdateProjectInfo', {
@@ -572,6 +579,13 @@ export default {
     },
     moveEditor(moveLineNumber) {
       this.editor.revealLineInCenter(moveLineNumber);
+    },
+    addContentListValue(addLineNumber) {
+      for (let i = 0; i < this.contentEditLines.length; i += 1) {
+        if (this.contentEditLines[i] > addLineNumber) {
+          this.contentEditLines[i] += 1;
+        }
+      }
     },
   },
   created() {
