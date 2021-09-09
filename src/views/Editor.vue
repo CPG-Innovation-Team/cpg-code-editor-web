@@ -144,6 +144,22 @@ export default {
       const socketUrl = process.env.NODE_ENV === 'test' ? '' : 'ws://localhost:3000';
       this.socket = io(socketUrl, { transports: ['websocket'] });
       this.socket.on('connect', async () => {
+        this.socket.on('userDisconnected', async () => {
+          if (this.$apollo) {
+            // retrive user list from server
+            await this.$apollo
+              .query({
+                query: GET_USER_LIST,
+                fetchPolicy: 'no-cache',
+                variables: { _id: this.projectId },
+              })
+              .then((response) => {
+                this.users = response.data.project[0].editInfo;
+                this.$emit('passUserList', this.users);
+              });
+          }
+        });
+
         if (this.$apollo) {
           await this.$apollo
             .query({
@@ -182,6 +198,34 @@ export default {
             this.setCode(res.code);
           }
         }
+
+        if (this.$apollo) {
+          // retrive user list from server
+          await this.$apollo
+            .query({
+              query: GET_USER_LIST,
+              fetchPolicy: 'no-cache',
+              variables: { _id: this.projectId },
+            })
+            .then((response) => {
+              this.users = response.data.project[0].editInfo;
+              this.$emit('passUserList', this.users);
+            });
+          // retrive project info from server
+          await this.$apollo
+            .query({
+              query: GET_PROJECT,
+              fetchPolicy: 'no-cache',
+              variables: {
+                _id: this.projectId,
+              },
+            })
+            .then((response) => {
+              this.projectName = response.data.project[0].projectName;
+              this.syntax = response.data.project[0].syntax;
+            });
+        }
+
         // save user cursors in local
         if (res.currentCursor) {
           let isUserExisted = false;
@@ -225,36 +269,6 @@ export default {
             this.editor.addContentWidget(contentWidget);
           }
         });
-
-        if (this.$apollo) {
-          // retrive user list from server
-          await this.$apollo
-            .query({
-              query: GET_USER_LIST,
-              fetchPolicy: 'no-cache',
-              variables: {
-                _id: this.projectId,
-              },
-            })
-            .then((response) => {
-              this.users = response.data.project[0].editInfo;
-              this.$emit('passUserList', this.users);
-            });
-          // retrive project info from server
-          await this.$apollo
-            .query({
-              query: GET_PROJECT,
-              fetchPolicy: 'no-cache',
-              variables: {
-                _id: this.projectId,
-              },
-            })
-            .then((response) => {
-              this.projectName = response.data.project[0].projectName;
-              this.$emit('changeProjectName', this.projectName);
-              this.syntax = response.data.project[0].syntax;
-            });
-        }
       });
     },
     editorEventHandler() {
@@ -306,8 +320,8 @@ export default {
         // check if the editing user is the current user-self, and save it to socket
         if (storage.getUserInfo().userID === this.editingUser) {
           this.socket.emit('clientUpdateProjectInfo', {
-            projectId: that.projectId,
-            userId: that.userId,
+            projectId: this.projectId,
+            userId: this.userId,
             isOnline: true,
             isEditing: true,
           });
