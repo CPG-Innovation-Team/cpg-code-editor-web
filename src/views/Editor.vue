@@ -387,9 +387,7 @@ export default {
 
         // create user cursor corresponding to their cursor location
         this.addCursorDecorations();
-      });
 
-      this.editor.onDidChangeModelContent(() => {
         this.initStatus = false;
         if (!this.codeUpdateEnable) {
           clearTimeout(this.debounceTimeout);
