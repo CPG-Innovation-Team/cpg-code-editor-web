@@ -67,7 +67,7 @@ export default {
       initStatus: true,
       selectedCodeLanguage: 'javascript',
       codeLanguageList: CODE_LANGUAGE_LIST,
-      highlightTop: 51, // mannually set as 51, number should be able to change accordingly
+      highlightTop: 21, // mannually set as 51, number should be able to change accordingly
       editorScroll: null,
       eachLineHeight: null,
       users: [],
@@ -297,21 +297,24 @@ export default {
       });
 
       this.editor.onDidChangeModelContent((e) => {
-        console.log('The value of e');
-        console.log(e);
         const contentEdit = e.changes[0].text;
         console.log('the content length');
         console.log(contentEdit.length);
         // when the input is done by typing(one by one)
-        if (contentEdit.length === 1) {
-          if (contentEdit.slice(0, 1) === '\n') {
-            this.addContentListValue(e.changes[0].range.endLineNumber);
-            // update this, add next
-          }
+
+        if (contentEdit.slice(0, 1) === '\r') {
+          this.addContentListValue(e.changes[0].range.endLineNumber);
+          this.contentEditLines.push(e.changes[0].range.endLineNumber + 1);
+          this.resizeLeftBarAdd(e.changes[0].range.endLineNumber);
+        } else if (contentEdit.length === 1) {
           this.contentEditLines.push(e.changes[0].range.endLineNumber);
-        } else if (contentEdit.length === 0) {
+        }
+        if (contentEdit.length === 0) {
           // when the input is deleting lines
-          console.log('deleting lines');
+          console.log('deleting');
+          if (e.changes[0].rangeLength === 2) {
+            this.resizeLeftBarDelete(e.changes[0].range.endLineNumber);
+          }
         } else if (contentEdit.length > 1) {
           // when the input is done by pasting(multiple characters)
           // special case: select and delete
@@ -418,8 +421,9 @@ export default {
 
         // Send code to server after no operation for 1 seconds
         this.debounceTimeout = setTimeout(() => {
+          console.log('the value of e');
           console.log(e);
-          console.log(this.contentEditLines);
+          //  console.log(this.contentEditLines);
           const codeLines = this.editor.getModel().getLinesContent();
           for (let i = 0; i < this.contentEditLines.length; i += 1) {
             this.contentUpdate.push({
@@ -598,6 +602,33 @@ export default {
       for (let i = 0; i < this.contentEditLines.length; i += 1) {
         if (this.contentEditLines[i] > addLineNumber) {
           this.contentEditLines[i] += 1;
+        }
+      }
+    },
+    resizeLeftBarAdd(moveLineNumber) {
+      for (let i = 0; i < this.editHistory.length; i += 1) {
+        if (this.editHistory[i].editLinesStart > moveLineNumber) {
+          console.log('inside loop');
+          this.editHistory[i].editLinesStart += 1;
+          this.editHistory[i].editLinesEnd += 1;
+        }
+        if (this.editHistory[i].editLinesStart <= moveLineNumber) {
+          if (this.editHistory[i].editLinesEnd >= moveLineNumber) {
+            this.editHistory[i].editLinesEnd += 1;
+          }
+        }
+      }
+    },
+    resizeLeftBarDelete(moveLineNumber) {
+      for (let i = 0; i < this.editHistory.length; i += 1) {
+        if (this.editHistory[i].editLinesStart > moveLineNumber) {
+          this.editHistory[i].editLinesStart -= 1;
+          this.editHistory[i].editLinesEnd -= 1;
+        }
+        if (this.editHistory[i].editLinesStart <= moveLineNumber) {
+          if (this.editHistory[i].editLinesEnd >= moveLineNumber) {
+            this.editHistory[i].editLinesEnd -= 1;
+          }
         }
       }
     },
