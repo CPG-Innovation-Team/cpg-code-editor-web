@@ -93,6 +93,11 @@ export default {
     },
     changeLang(locale) {
       this.$i18n.locale = locale;
+      if (locale === 'zh-CN') {
+        document.title = '正大代码编辑器';
+      } else if (locale === 'en-US') {
+        document.title = 'CP Group Code Editor';
+      }
     },
   },
   created() {
