@@ -12,7 +12,7 @@ Vue.config.productionTip = false;
 
 const apolloProvider = new VueApollo({
   defaultClient: new ApolloClient({
-    uri: 'http://localhost:3000/api',
+    uri: process.env.VUE_APP_API_URL,
   }),
 });
 
