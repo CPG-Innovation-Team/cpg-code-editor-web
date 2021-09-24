@@ -25,7 +25,7 @@ jobs:
       - node/install-packages
       - run:
           name: build
-          command: npm run build
+          command: npm run build-staging
       - aws-s3/sync:
           arguments: |
             --acl public-read \
