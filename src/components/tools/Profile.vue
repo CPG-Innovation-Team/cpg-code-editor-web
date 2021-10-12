@@ -93,6 +93,7 @@ export default {
     },
     changeLang(locale) {
       this.$i18n.locale = locale;
+      document.title = this.$t('title');
     },
   },
   created() {
