@@ -2,6 +2,7 @@ import Vue from 'vue';
 import ApolloClient from 'apollo-boost';
 import VueApollo from 'vue-apollo';
 import VueSanitize from 'vue-sanitize';
+import Rollbar from 'rollbar';
 import App from './App.vue';
 import './registerServiceWorker';
 import router from './router';
@@ -15,6 +16,17 @@ const apolloProvider = new VueApollo({
     uri: process.env.VUE_APP_API_URL,
   }),
 });
+
+Vue.prototype.$rollbar = new Rollbar({
+  accessToken: process.env.VUE_APP_ROLLBAR_ACCESS_TOKEN,
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+});
+
+Vue.config.errorHandler = (err, vm) => {
+  vm.$rollbar.error(err);
+  throw err;
+};
 
 Vue.use(VueApollo);
 Vue.use(VueSanitize);
