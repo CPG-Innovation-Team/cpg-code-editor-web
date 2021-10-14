@@ -141,7 +141,7 @@ export default {
       // set up highlightTop
     },
     initSocketIO() {
-      const socketUrl = process.env.NODE_ENV === 'test' ? '' : 'ws://localhost:3000';
+      const socketUrl = process.env.VUE_APP_SOCKET_URL;
       this.socket = io(socketUrl, { transports: ['websocket'] });
       this.socket.on('connect', async () => {
         this.socket.on('userDisconnected', async () => {
