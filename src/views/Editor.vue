@@ -186,6 +186,9 @@ export default {
 
       // Receive code from server
       this.socket.on('serverProjectInfoSync', async (res) => {
+        console.log('respond below');
+        console.log(res.editHistory);
+
         if (this.projectId !== res.projectId) {
           this.$router.push(`/${res.projectId}`);
           this.projectId = res.projectId;
@@ -196,6 +199,9 @@ export default {
             // remove widget after the user has finished typing
             this.contentWidgets.forEach((contentWidget) => this.editor.removeContentWidget(contentWidget));
             this.setCode(res.code);
+          }
+          if (res.editHistory) {
+            this.editHistory = res.editHistory;
           }
         }
 
@@ -298,8 +304,8 @@ export default {
 
       this.editor.onDidChangeModelContent((e) => {
         const contentEdit = e.changes[0].text;
-        console.log('the content length');
-        console.log(contentEdit.length);
+        // console.log('the content length');
+        // console.log(contentEdit.length);
         // when the input is done by typing(one by one)
 
         if (contentEdit.slice(0, 1) === '\r') {
@@ -421,7 +427,7 @@ export default {
 
         // Send code to server after no operation for 1 seconds
         this.debounceTimeout = setTimeout(() => {
-          console.log('the value of e');
+          // console.log('the value of e');
           console.log(e);
           //  console.log(this.contentEditLines);
           const codeLines = this.editor.getModel().getLinesContent();
@@ -438,14 +444,18 @@ export default {
           this.contentUpdate = [];
 
           const code = this.getCode();
+          console.log('!!!');
+          console.log(this.editHistory);
           this.socket.emit('clientUpdateProjectInfo', {
             code,
             projectId: this.projectId,
             projectName: this.projectName,
             syntax: this.syntax,
             userId: this.userId,
+            editHistory: this.editHistory,
           });
           updateCodeInLocalDb(code, this.projectId || 'localDefault');
+          // updateBarInLocalDb(this.editHistory, this.projectId || 'localDefault');
           this.codeUpdateEnable = true;
         }, 1000);
       });
