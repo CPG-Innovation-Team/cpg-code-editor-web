@@ -79,6 +79,7 @@ export default {
       editingUser: '',
       contentWidgets: [],
       decorations: [],
+      project_code: [],
       editHistory: [
         {
           name: 'Aha',
@@ -197,6 +198,12 @@ export default {
             this.contentWidgets.forEach((contentWidget) => this.editor.removeContentWidget(contentWidget));
             this.setCode(res.code);
           }
+          if (res.project_code) {
+            // recieve project_code from server as enterred
+            this.project_code = res.project_code;
+            console.log('project_code recieved from server');
+            console.log(this.project_code);
+          }
         }
 
         if (this.$apollo) {
@@ -291,9 +298,9 @@ export default {
         }
       });
 
-      this.editor.onDidScrollChange((e) => {
-        console.log(e);
-        console.log(this.editor.getContentHeight());
+      this.editor.onDidScrollChange(() => {
+        // console.log(e);
+        // console.log(this.editor.getContentHeight());
         // console.log(this.editor.getScrollHeight());
 
         this.editorScroll = this.editor.getScrollTop();
