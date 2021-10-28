@@ -180,7 +180,10 @@ export default {
           this.initStatus = false;
         }
       });
-
+      this.socket.on('serverProjectCodeSync', async (res) => {
+        console.log('code recieved is:');
+        console.log(res);
+      });
       // Receive code from server
       this.socket.on('serverProjectInfoSync', async (res) => {
         if (this.projectId !== res.projectId) {
@@ -398,6 +401,11 @@ export default {
 
         // Send code to server after no operation for 1 seconds
         this.debounceTimeout = setTimeout(() => {
+          this.socket.emit('clientUpdateProjectCode', {
+            projectId: this.projectId,
+            codeUpdate: 'codeUpdate working',
+          });
+
           const code = this.getCode();
           console.log(this.editor.getModel().getLinesContent());
           this.socket.emit('clientUpdateProjectInfo', {
