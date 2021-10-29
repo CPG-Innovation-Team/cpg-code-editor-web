@@ -67,7 +67,7 @@ export default {
       initStatus: true,
       selectedCodeLanguage: 'javascript',
       codeLanguageList: CODE_LANGUAGE_LIST,
-      highlightTop: 51, // mannually set as 51, number should be able to change accordingly
+      highlightTop: 21, // mannually set as 51, number should be able to change accordingly
       editorScroll: null,
       eachLineHeight: null,
       users: [],
@@ -136,6 +136,7 @@ export default {
       // Get the line height
       this.editor.setValue('\n');
       this.eachLineHeight = this.editor.getTopForLineNumber(2) - this.editor.getTopForLineNumber(1);
+      this.editor.setValue('');
       // set up highlightTop
     },
     initSocketIO() {
