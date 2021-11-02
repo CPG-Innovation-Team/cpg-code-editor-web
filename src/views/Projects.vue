@@ -159,15 +159,13 @@ export default {
         });
     },
     removeProject(item) {
-      this.$apollo
-        .mutate({
-          mutation: REMOVE_PROJECT,
-          variables: {
-            /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }] */
-            id: item._id,
-          },
-        })
-        .then(() => {});
+      this.$apollo.mutate({
+        mutation: REMOVE_PROJECT,
+        variables: {
+          /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }] */
+          id: item._id,
+        },
+      });
       const index = this.projects.indexOf(item);
       this.projects.splice(index, 1);
     },

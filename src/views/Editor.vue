@@ -438,10 +438,10 @@ export default {
     onCodeLanguageChange(value) {
       this.syntax = value;
       this.$nextTick(() => {
-        const code = this.getCode();
+        const codeForNextTick = this.getCode();
         this.editor.dispose();
         this.initEditor();
-        this.setCode(code);
+        this.setCode(codeForNextTick);
       });
       const code = this.getCode();
       this.socket.emit('clientUpdateProjectInfo', {
