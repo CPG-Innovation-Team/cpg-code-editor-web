@@ -267,24 +267,16 @@ td {
   border: solid 0px #000;
   border-style: none solid solid none;
   padding: 5px;
-}
-td:first-child {
-  border-top-left-radius: 7px;
-}
-td:last-child {
-  border-top-right-radius: 7px;
-}
-td:first-child {
-  border-bottom-left-radius: 7px;
-}
-td:last-child {
-  border-bottom-right-radius: 7px;
-}
-td {
   border-top-style: solid;
 }
 td:first-child {
+  border-top-left-radius: 7px;
+  border-bottom-left-radius: 7px;
   border-left-style: solid;
+}
+td:last-child {
+  border-top-right-radius: 7px;
+  border-bottom-right-radius: 7px;
 }
 .project-title {
   color: rgb(83, 124, 213);
