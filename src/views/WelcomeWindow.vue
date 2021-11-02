@@ -34,7 +34,7 @@
             ></v-text-field>
             <div class="avatar-container">
               <div v-for="(avatar, index) in avatars" :key="index">
-                <img class="avatar" :src="avatar" @click="selectAvatar(index)" />
+                <img class="avatar" :src="avatar" @click="selectAvatar(index)" alt="avatar" />
               </div>
             </div>
           </v-card-text>

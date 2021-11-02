@@ -10,7 +10,13 @@
     />
     <div class="user-avatar-header">
       <v-avatar>
-        <img v-if="userAvatar" class="user-avatar" outlined :src="require('../../assets/img-' + userAvatar + '.png')" />
+        <img
+          v-if="userAvatar"
+          class="user-avatar"
+          outlined
+          :src="require('../../assets/img-' + userAvatar + '.png')"
+          alt="user avatar"
+        />
         <v-icon v-else>mdi-account-circle</v-icon>
       </v-avatar>
       <v-btn class="white--text" color="rgb(33, 48, 61)" small @click="changeIsClicked = true">

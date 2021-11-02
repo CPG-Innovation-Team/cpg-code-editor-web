@@ -8,6 +8,7 @@
               class="user-avatar"
               outlined
               :src="require(`../assets/img-${user.avatar}.png`)"
+              alt="user avatar"
               v-bind="attrs"
               v-on="on"
               :style="{
