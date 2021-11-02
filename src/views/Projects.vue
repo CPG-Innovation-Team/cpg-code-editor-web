@@ -44,7 +44,7 @@
                   </td>
                   <td class="item-style">{{ showTime(item.updateTime) }}</td>
                   <td class="item-style">{{ showTime(item.createTime) }}</td>
-                  <td class="item-style">http://cpg.url/{{ item.hash }}</td>
+                  <td class="item-style">{{ `${window.location.href}${item.hash}` }}</td>
                   <td class="item-style">
                     <v-icon
                       class="actions-icon"
@@ -173,8 +173,7 @@ export default {
     },
     copyURL(listItemID) {
       const input = document.createElement('input');
-      input.value = 'https://cpg.url/';
-      input.value += this.projects[listItemID].hash;
+      input.value = `${window.location.href}${this.projects[listItemID].hash}`;
       document.body.appendChild(input);
       input.select();
       document.execCommand('copy');
