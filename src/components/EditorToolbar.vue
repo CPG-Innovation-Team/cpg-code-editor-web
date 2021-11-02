@@ -191,6 +191,7 @@
                   <img
                     class="user-avatar"
                     :src="require('../assets/img-' + (profileAvatar || getUserAvatar || userAvatar) + '.png')"
+                    alt="user avatar"
                     v-bind="attrs"
                     v-on="on"
                   />

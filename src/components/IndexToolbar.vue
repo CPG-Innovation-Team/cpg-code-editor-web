@@ -59,6 +59,7 @@
                     class="user-avatar ml-1 mr-1"
                     outlined
                     :src="require('../assets/img-' + (profileAvatar || getUserAvatar || userAvatar) + '.png')"
+                    alt="user avatar"
                     v-bind="attrs"
                     v-on="on"
                   />
