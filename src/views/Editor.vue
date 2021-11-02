@@ -291,8 +291,6 @@ export default {
       this.editor.onDidScrollChange((e) => {
         console.log(e);
         console.log(this.editor.getContentHeight());
-        // console.log(this.editor.getScrollHeight());
-
         this.editorScroll = this.editor.getScrollTop();
       });
 

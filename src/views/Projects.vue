@@ -188,7 +188,6 @@ export default {
     showTime(date) {
       // change to moment later
       const inputDate = new Date(date);
-      // const currentTime = new Date();
 
       return inputDate.toLocaleString('en-US', {
         year: 'numeric',
