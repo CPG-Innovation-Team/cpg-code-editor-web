@@ -17,16 +17,18 @@ const apolloProvider = new VueApollo({
   }),
 });
 
-Vue.prototype.$rollbar = new Rollbar({
-  accessToken: process.env.VUE_APP_ROLLBAR_ACCESS_TOKEN,
-  captureUncaught: true,
-  captureUnhandledRejections: true,
-});
+if (process.env.VUE_APP_ROLLBAR_ACCESS_TOKEN) {
+  Vue.prototype.$rollbar = new Rollbar({
+    accessToken: process.env.VUE_APP_ROLLBAR_ACCESS_TOKEN,
+    captureUncaught: true,
+    captureUnhandledRejections: true,
+  });
 
-Vue.config.errorHandler = (err, vm) => {
-  vm.$rollbar.error(err);
-  throw err;
-};
+  Vue.config.errorHandler = (err, vm) => {
+    vm.$rollbar.error(err);
+    throw err;
+  };
+}
 
 Vue.use(VueApollo);
 Vue.use(VueSanitize);
