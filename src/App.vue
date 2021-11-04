@@ -54,9 +54,6 @@ export default {
       this.projectName = value;
     },
   },
-  mounted() {
-    console.log('PROCESS ENV----->', process.env);
-  },
 };
 </script>
 
