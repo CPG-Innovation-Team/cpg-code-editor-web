@@ -206,6 +206,9 @@ export default {
       return !topStatus;
     },
     getColor(syntax) {
+      if (!syntax) {
+        return null;
+      }
       const object = CODE_LANGUAGE_LIST.filter((item) => item.langValue === syntax);
       return object[0].langColor;
     },
