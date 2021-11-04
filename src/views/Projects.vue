@@ -44,7 +44,7 @@
                   </td>
                   <td class="item-style">{{ showTime(item.updateTime) }}</td>
                   <td class="item-style">{{ showTime(item.createTime) }}</td>
-                  <td class="item-style">{{ `${window.location.href}${item.hash}` }}</td>
+                  <td class="item-style">{{ `${domain}${item.hash}` }}</td>
                   <td class="item-style">
                     <v-icon
                       class="actions-icon"
@@ -135,6 +135,7 @@ export default {
       storage,
       selectedItem: '',
       userID: '',
+      domain: window.location.href,
     };
   },
   created() {
@@ -171,7 +172,7 @@ export default {
     },
     copyURL(listItemID) {
       const input = document.createElement('input');
-      input.value = `${window.location.href}${this.projects[listItemID].hash}`;
+      input.value = `${this.domain}${this.projects[listItemID].hash}`;
       document.body.appendChild(input);
       input.select();
       document.execCommand('copy');
