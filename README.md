@@ -1,6 +1,7 @@
 # 在线代码编辑器前端项目
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=CPG-Innovation-Team_cpg-code-editor-web&metric=alert_status)](https://sonarcloud.io/dashboard?id=CPG-Innovation-Team_cpg-code-editor-web)
 [![Build Status](https://www.travis-ci.com/CPG-Innovation-Team/cpg-code-editor-web.svg?branch=master)](https://www.travis-ci.com/CPG-Innovation-Team/cpg-code-editor-web)
+[![codecov](https://codecov.io/gh/CPG-Innovation-Team/cpg-code-editor-web/branch/master/graph/badge.svg?token=CA7DJRBY7X)](https://codecov.io/gh/CPG-Innovation-Team/cpg-code-editor-web)
 
 ## 系统依赖
 ### 需要安装 [Node.js](https://nodejs.org)
@@ -63,3 +64,8 @@
 - [Monaco Editor](https://microsoft.github.io/monaco-editor/)
 - [Socket.IO](https://socket.io/)
 - [IndxedDB](https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API)
+
+## 集成工具
+- 自动化构建部署 [CircleCI](https://app.circleci.com/pipelines/github/CPG-Innovation-Team/cpg-code-editor-web)
+- 代码质量静态扫描 [SonarCloud](https://sonarcloud.io/project/overview?id=CPG-Innovation-Team_cpg-code-editor-web)
+- 单元测试覆盖率报告 [Codecov](https://app.codecov.io/gh/CPG-Innovation-Team/cpg-code-editor-web)
