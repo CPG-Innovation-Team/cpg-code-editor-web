@@ -1,6 +1,6 @@
 # 在线代码编辑器前端项目
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=CPG-Innovation-Team_cpg-code-editor-web&metric=alert_status)](https://sonarcloud.io/dashboard?id=CPG-Innovation-Team_cpg-code-editor-web)
-[![Build Status](https://www.travis-ci.com/CPG-Innovation-Team/cpg-code-editor-web.svg?branch=master)](https://www.travis-ci.com/CPG-Innovation-Team/cpg-code-editor-web)
+[![CircleCI](https://circleci.com/gh/CPG-Innovation-Team/cpg-code-editor-web/tree/master.svg?style=svg)](https://circleci.com/gh/CPG-Innovation-Team/cpg-code-editor-web/tree/master)
 [![codecov](https://codecov.io/gh/CPG-Innovation-Team/cpg-code-editor-web/branch/master/graph/badge.svg?token=CA7DJRBY7X)](https://codecov.io/gh/CPG-Innovation-Team/cpg-code-editor-web)
 
 ## 系统依赖
