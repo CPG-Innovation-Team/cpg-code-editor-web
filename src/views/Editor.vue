@@ -80,6 +80,7 @@ export default {
       contentWidgets: [],
       decorations: [],
       projectCode: [],
+      contentEditLines: [],
       editHistory: [
         {
           name: 'Aha',
@@ -316,6 +317,18 @@ export default {
             isOnline: true,
             isEditing: true,
           });
+        }
+        const contentEdit = e.changes[0].text;
+        // add copy and paste feautre later
+        // when the change is typing input
+        if (contentEdit.length === 1){
+          this.contentEditLines.push(e.changes[0].range.endLineNumber);
+        }else if (contentEdit.slice(0,1) === '\r'){
+
+        }
+        // when the change is deleting
+        if (contentEdit.length === 0){
+
         }
 
         // branches to analyze the user editing event and calculate corresponding cursor position for all users
