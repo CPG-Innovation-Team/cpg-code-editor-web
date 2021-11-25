@@ -79,7 +79,7 @@ export default {
       editingUser: '',
       contentWidgets: [],
       decorations: [],
-      project_code: [],
+      projectCode: [],
       editHistory: [
         {
           name: 'Aha',
@@ -199,11 +199,11 @@ export default {
             this.contentWidgets.forEach((contentWidget) => this.editor.removeContentWidget(contentWidget));
             this.setCode(res.code);
           }
-          if (res.project_code) {
-            // recieve project_code from server as enterred
-            this.project_code = res.project_code;
-            console.log('project_code recieved from server');
-            console.log(this.project_code);
+          if (res.projectCode) {
+            // recieve projectCode from server as enterred
+            this.projectCode = res.projectCode;
+            console.log('projectCode recieved from server');
+            console.log(this.projectCode);
           }
         }
 
@@ -411,7 +411,71 @@ export default {
         this.debounceTimeout = setTimeout(() => {
           this.socket.emit('clientUpdateProjectCode', {
             projectId: this.projectId,
-            codeUpdate: 'codeUpdate working',
+            projectCode: [
+              {
+                lineNumber: 1,
+                editType: 'add',
+                content: 'testing',
+                userId: this.userID,
+                updateTime: 1635401514384,
+              },
+              {
+                lineNumber: 2,
+                editType: 'add',
+                content: 'testing',
+                userId: this.userID,
+                updateTime: 1635401514384,
+              },
+              {
+                lineNumber: 3,
+                editType: 'update',
+                content: 'testing',
+                userId: this.userID,
+                updateTime: 1635401514384,
+              },
+              {
+                lineNumber: 4,
+                editType: 'add',
+                content: 'testing',
+                userId: this.userID,
+                updateTime: 1635401514384,
+              },
+              {
+                lineNumber: 5,
+                editType: 'add',
+                content: 'testing',
+                userId: this.userID,
+                updateTime: 1635401514384,
+              },
+              {
+                lineNumber: 6,
+                editType: 'add',
+                content: 'testing',
+                userId: this.userID,
+                updateTime: 1635401514384,
+              },
+              {
+                lineNumber: 7,
+                editType: 'add',
+                content: 'testing',
+                userId: this.userID,
+                updateTime: 1635401514384,
+              },
+              {
+                lineNumber: 8,
+                editType: 'add',
+                content: 'testing',
+                userId: this.userID,
+                updateTime: 1635401514384,
+              },
+              {
+                lineNumber: 9,
+                editType: 'add',
+                content: 'testing',
+                userId: this.userID,
+                updateTime: 1635401514384,
+              },
+            ],
           });
 
           const code = this.getCode();
@@ -441,6 +505,20 @@ export default {
     },
     setCode(code) {
       this.editor.setValue(code);
+    },
+    passCode(code){
+      this.socket.emit('clientUpdateProjectCode', {
+            projectId: this.projectId,
+            projectCode: code,
+      });
+      this.editor.setValue(code);
+    },
+    compareCode(){
+      const editorCode = this.editor.getValue();
+      if (editorCode === this.projectCode){
+        return "SAME CODE";
+      }
+      return "DIFFERENT CODE";
     },
     getCode() {
       return this.editor.getValue();
