@@ -321,14 +321,19 @@ export default {
         const contentEdit = e.changes[0].text;
         // add copy and paste feautre later
         // when the change is typing input
-        if (contentEdit.length === 1){
+        if (contentEdit.length === 1) {
           this.contentEditLines.push(e.changes[0].range.endLineNumber);
-        }else if (contentEdit.slice(0,1) === '\r'){
-
+        } else if (contentEdit.slice(0, 1) === '\r') {
+          this.addContentListValue(e.changes[0].range.endLineNumber);
+          this.contentEditLines.push(e.changes[0].range.endLineNumber + 1);
+          this.resizeLeftBarAdd(e.changes[0].range.endLineNumber);
         }
         // when the change is deleting
-        if (contentEdit.length === 0){
-
+        if (contentEdit.length === 0) {
+          console.log('deleting');
+          if (e.changes[0].rangeLength === 2){ // update later
+            this.resizeLeftBarDelete(e.changes[0].range.endLineNumber);
+          }
         }
 
         // branches to analyze the user editing event and calculate corresponding cursor position for all users
@@ -422,6 +427,10 @@ export default {
 
         // Send code to server after no operation for 1 seconds
         this.debounceTimeout = setTimeout(() => {
+
+
+
+          console.log(this.contentEditLines);
           this.socket.emit('clientUpdateProjectCode', {
             projectId: this.projectId,
             projectCode: [
@@ -519,19 +528,19 @@ export default {
     setCode(code) {
       this.editor.setValue(code);
     },
-    passCode(code){
+    passCode(code) {
       this.socket.emit('clientUpdateProjectCode', {
-            projectId: this.projectId,
-            projectCode: code,
+        projectId: this.projectId,
+        projectCode: code,
       });
       this.editor.setValue(code);
     },
-    compareCode(){
+    compareCode() {
       const editorCode = this.editor.getValue();
-      if (editorCode === this.projectCode){
-        return "SAME CODE";
+      if (editorCode === this.projectCode) {
+        return 'SAME CODE';
       }
-      return "DIFFERENT CODE";
+      return 'DIFFERENT CODE';
     },
     getCode() {
       return this.editor.getValue();
@@ -575,6 +584,42 @@ export default {
         syntax: this.syntax,
         userId: this.userId,
       });
+    },
+    addContentListValue(addLineNumber) {
+      for (let i = 0; i < this.contentEditLines.length; i += 1) {
+        if (this.contentEditLines[i] > addLineNumber) {
+          this.contentEditLines[i] += 1;
+        }
+      }
+    },
+
+    resizeLeftBarAdd(moveLineNumber) {
+      for (let i = 0; i < this.editHistory.length; i += 1) {
+        if (this.editHistory[i].editLinesStart > moveLineNumber) {
+          console.log('inside loop');
+          this.editHistory[i].editLinesStart += 1;
+          this.editHistory[i].editLinesEnd += 1;
+        }
+        if (this.editHistory[i].editLinesStart <= moveLineNumber) {
+          if (this.editHistory[i].editLinesEnd >= moveLineNumber) {
+            this.editHistory[i].editLinesEnd += 1;
+          }
+        }
+      }
+    },
+
+    resizeLeftBarDelete(moveLineNumber) {
+      for (let i = 0; i < this.editHistory.length; i += 1) {
+        if (this.editHistory[i].editLinesStart > moveLineNumber) {
+          this.editHistory[i].editLinesStart -= 1;
+          this.editHistory[i].editLinesEnd -= 1;
+        }
+        if (this.editHistory[i].editLinesStart <= moveLineNumber) {
+          if (this.editHistory[i].editLinesEnd >= moveLineNumber) {
+            this.editHistory[i].editLinesEnd -= 1;
+          }
+        }
+      }
     },
     resizeBarController() {
       const resize = this.$refs.resizeBar;
