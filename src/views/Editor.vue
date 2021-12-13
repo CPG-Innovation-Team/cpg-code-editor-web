@@ -82,9 +82,9 @@ export default {
       projectCode: [],
       contentEditLines: [],
       contentLines: [],
-      editHistory: [
-      ],
+      editHistory: [],
       projectCodeObject: {},
+      colorList: {},
     };
   },
   props: { projects: Array },
@@ -162,7 +162,7 @@ export default {
         }
       });
       this.socket.on('serverProjectCodeSync', async (res) => {
-        this.editHistory=[];
+        this.editHistory = [];
         console.log('serverProjectCodeSync content:');
         console.log(res);
         if (!(res.codeUpdate.length === 0)) {
@@ -190,7 +190,11 @@ export default {
         for (let i = 0; i < this.projectCode.length; i += 1) {
           if (this.projectCode[i].editType === 'update' || this.projectCode[i].editType === 'add') {
             const lineKey = this.projectCode[i].lineNumber.toString();
-            const lineObject = { content: this.projectCode[i].content, editUser: this.projectCode[i].editUser };
+            const lineObject = {
+              content: this.projectCode[i].content,
+              editUser: this.projectCode[i].editUser,
+              updateTime: this.projectCode[i].updateTime,
+            };
             this.projectCodeObject[lineKey] = lineObject;
           }
         }
@@ -204,23 +208,27 @@ export default {
         let tempLineEnd = 1;
 
         for (let i = 1; i < codeEntries.length; i += 1) {
-          if(i === codeEntries.length-1){
+          if (i === codeEntries.length - 1) {
+            if (this.editHistory.length === 0) {
+              tempLineEnd += 1;
+            }
+            console.log('last');
             this.editHistory.push({
-              name: 'userId',
-              color: this.randomColor(),
-              editTime: 'time',
+              name: codeEntries[i][1].editUser.substr(0,5),
+              color: this.generateColor(codeEntries[i-1][1].editUser),
+              editTime: this.showTime(codeEntries[i-1][1].updateTime),
               editLinesStart: tempLineStart,
               editLinesEnd: tempLineEnd,
             });
-          }else if ((codeEntries[i][1].editUser === tempUser)) {
+          } else if (codeEntries[i][1].editUser === tempUser) {
             tempLineEnd += 1;
             tempUser = codeEntries[i][1].editUser;
           } else {
             // random color for now
             this.editHistory.push({
-              name: 'userId',
-              color: this.randomColor(),
-              editTime: 'time',
+              name: codeEntries[i-1][1].editUser.substr(0,5),
+              color: this.generateColor(codeEntries[i-1][1].editUser),
+              editTime: this.showTime(codeEntries[i-1][1].updateTime),
               editLinesStart: tempLineStart,
               editLinesEnd: tempLineEnd,
             });
@@ -551,6 +559,13 @@ export default {
       const rgb = `rgb(${r},${g},${b})`;
       return rgb;
     },
+    generateColor(editUser) {
+      if (this.colorList[editUser] === undefined) {
+        this.colorList[editUser] = this.randomColor();
+        return this.colorList[editUser];
+      }
+      return this.colorList[editUser];
+    },
     downloadCode() {
       const blob = new Blob([this.getCode()], { type: 'text' });
       const URL = window.URL || window.webkitURL;
@@ -628,7 +643,17 @@ export default {
         }
       }
     },
+    showTime(date) {
+      // change to moment later
+      const inputDate = new Date(date);
+      // const currentTime = new Date();
 
+      return inputDate.toLocaleString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: false,
+      });
+    },
     resizeLeftBarDelete(moveLineNumber) {
       for (let i = 0; i < this.editHistory.length; i += 1) {
         if (this.editHistory[i].editLinesStart > moveLineNumber) {
