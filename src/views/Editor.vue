@@ -196,7 +196,8 @@ export default {
             };
             this.projectCodeArray[this.projectCode[i].lineNumber - 1] = lineObject;
           } else if (this.projectCode[i].editType === 'delete') {
-            this.projectCodeArray.splice(this.projectCode[i].lineNumber - 1, 1);
+            this.projectCodeArray.splice(this.projectCode[i].lineNumber, 1);
+            console.log('delete executed');
           }
         }
 
@@ -230,7 +231,7 @@ export default {
                 editLinesStart: tempLineStart,
                 editLinesEnd: tempLineEnd,
               });
-            }else{
+            } else {
               this.editHistory.push({
                 name: this.projectCodeArray[i].editUser.substr(0, 5),
                 color: this.generateColor(this.projectCodeArray[i - 1].editUser),
@@ -244,7 +245,7 @@ export default {
                 editTime: this.showTime(this.projectCodeArray[i].updateTime),
                 editLinesStart: tempLineEnd,
                 editLinesEnd: tempLineEnd,
-              })
+              });
             }
           } else if (this.projectCodeArray[i].editUser === tempUser) {
             tempLineEnd += 1;
@@ -263,8 +264,6 @@ export default {
             tempLineEnd = tempLineStart + 1;
           }
         }
-        console.log('generated project code array is ');
-        console.log(this.projectCodeArray);
         console.log(this.editHistory);
         // let editTime = 0;
         // for (let i = 0; i < this.projectCode.length; i += 1){
