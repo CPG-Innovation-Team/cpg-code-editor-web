@@ -197,7 +197,6 @@ export default {
             this.projectCodeArray[this.projectCode[i].lineNumber - 1] = lineObject;
           } else if (this.projectCode[i].editType === 'delete') {
             this.projectCodeArray.splice(this.projectCode[i].lineNumber, 1);
-            console.log('delete executed');
           }
         }
 
@@ -222,7 +221,6 @@ export default {
             if (this.editHistory.length === 0) {
               tempLineEnd += 1;
             }
-            console.log('last');
             if (this.projectCodeArray[i].editUser === tempUser) {
               this.editHistory.push({
                 name: this.projectCodeArray[i].editUser.substr(0, 5),
@@ -264,6 +262,7 @@ export default {
             tempLineEnd = tempLineStart + 1;
           }
         }
+        console.log('edit history below:');
         console.log(this.editHistory);
         // let editTime = 0;
         // for (let i = 0; i < this.projectCode.length; i += 1){
@@ -645,7 +644,7 @@ export default {
         }
         this.contentEditLines.push(editObject);
       } else if (editType === 'delete') {
-        console.log('deleting');
+
         for (let i = 0; i < this.contentEditLines.length; i += 1) {
           if (this.contentEditLines[i].lineNumber >= addLineNumber) {
             this.contentEditLines[i].lineNumber -= 1;
@@ -658,7 +657,7 @@ export default {
     resizeLeftBarAdd(moveLineNumber) {
       for (let i = 0; i < this.editHistory.length; i += 1) {
         if (this.editHistory[i].editLinesStart > moveLineNumber) {
-          console.log('inside loop');
+
           this.editHistory[i].editLinesStart += 1;
           this.editHistory[i].editLinesEnd += 1;
         }
