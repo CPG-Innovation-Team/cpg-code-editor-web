@@ -83,7 +83,7 @@ export default {
       contentEditLines: [],
       contentLines: [],
       editHistory: [],
-      projectCodeObject: {},
+      projectCodeArray: [], // the index is 1 less than the actual lineNumber
       colorList: {},
     };
   },
@@ -189,67 +189,82 @@ export default {
         }
         for (let i = 0; i < this.projectCode.length; i += 1) {
           if (this.projectCode[i].editType === 'update' || this.projectCode[i].editType === 'add') {
-            const lineKey = this.projectCode[i].lineNumber.toString();
             const lineObject = {
               content: this.projectCode[i].content,
               editUser: this.projectCode[i].editUser,
               updateTime: this.projectCode[i].updateTime,
             };
-            this.projectCodeObject[lineKey] = lineObject;
-          }else if (this.projectCode[i].editType === 'delete'){
-             delete this.projectCodeObject[this.projectCode[i].lineNumber.toString()];
+            this.projectCodeArray[this.projectCode[i].lineNumber - 1] = lineObject;
+          } else if (this.projectCode[i].editType === 'delete') {
+            this.projectCodeArray.splice(this.projectCode[i].lineNumber - 1, 1);
           }
         }
-        const codeEntries = Object.entries(this.projectCodeObject);
-        console.log('e');
-        console.log(codeEntries);
-        let tempUser = this.projectCodeObject['1'].editUser;
-        console.log('user');
-        console.log(tempUser);
+
+        console.log('code Array');
+        console.log(this.projectCodeArray);
+        let tempUser = this.projectCodeArray[0].editUser;
         let tempLineStart = 1;
         let tempLineEnd = 1;
 
-        if (codeEntries.length === 1) {
+        if (this.projectCodeArray.length === 1) {
+          // when there is only one line
           this.editHistory.push({
-            name: codeEntries[0][1].editUser.substr(0, 5),
-            color: this.generateColor(codeEntries[0][1].editUser),
-            editTime: this.showTime(codeEntries[0][1].updateTime),
+            name: this.projectCodeArray[0].editUser.substr(0, 5),
+            color: this.generateColor(this.projectCodeArray[0].editUser),
+            editTime: this.showTime(this.projectCodeArray[0].updateTime),
             editLinesStart: 1,
             editLinesEnd: 1,
           });
         }
-        for (let i = 1; i < codeEntries.length; i += 1) {
-          if (i === codeEntries.length - 1) {
+        for (let i = 1; i < this.projectCodeArray.length; i += 1) {
+          if (i === this.projectCodeArray.length - 1) {
             if (this.editHistory.length === 0) {
               tempLineEnd += 1;
             }
             console.log('last');
-            this.editHistory.push({
-              name: codeEntries[i][1].editUser.substr(0, 5),
-              color: this.generateColor(codeEntries[i - 1][1].editUser),
-              editTime: this.showTime(codeEntries[i - 1][1].updateTime),
-              editLinesStart: tempLineStart,
-              editLinesEnd: tempLineEnd,
-            });
-          } else if (codeEntries[i][1].editUser === tempUser) {
+            if (this.projectCodeArray[i].editUser === tempUser) {
+              this.editHistory.push({
+                name: this.projectCodeArray[i].editUser.substr(0, 5),
+                color: this.generateColor(this.projectCodeArray[i - 1].editUser),
+                editTime: this.showTime(this.projectCodeArray[i - 1].updateTime),
+                editLinesStart: tempLineStart,
+                editLinesEnd: tempLineEnd,
+              });
+            }else{
+              this.editHistory.push({
+                name: this.projectCodeArray[i].editUser.substr(0, 5),
+                color: this.generateColor(this.projectCodeArray[i - 1].editUser),
+                editTime: this.showTime(this.projectCodeArray[i - 1].updateTime),
+                editLinesStart: tempLineStart,
+                editLinesEnd: tempLineEnd - 1,
+              });
+              this.editHistory.push({
+                name: this.projectCodeArray[i].editUser.substr(0, 5),
+                color: this.generateColor(this.projectCodeArray[i].editUser),
+                editTime: this.showTime(this.projectCodeArray[i].updateTime),
+                editLinesStart: tempLineEnd,
+                editLinesEnd: tempLineEnd,
+              })
+            }
+          } else if (this.projectCodeArray[i].editUser === tempUser) {
             tempLineEnd += 1;
-            tempUser = codeEntries[i][1].editUser;
+            tempUser = this.projectCodeArray[i].editUser;
           } else {
             // random color for now
             this.editHistory.push({
-              name: codeEntries[i - 1][1].editUser.substr(0, 5),
-              color: this.generateColor(codeEntries[i - 1][1].editUser),
-              editTime: this.showTime(codeEntries[i - 1][1].updateTime),
+              name: this.projectCodeArray[i - 1].editUser.substr(0, 5),
+              color: this.generateColor(this.projectCodeArray[i - 1].editUser),
+              editTime: this.showTime(this.projectCodeArray[i - 1].updateTime),
               editLinesStart: tempLineStart,
               editLinesEnd: tempLineEnd,
             });
-            tempUser = codeEntries[i][1].editUser;
+            tempUser = this.projectCodeArray[i].editUser;
             tempLineStart = i + 1;
             tempLineEnd = tempLineStart + 1;
           }
         }
-        console.log('generated project code object is ');
-        console.log(this.projectCodeObject);
+        console.log('generated project code array is ');
+        console.log(this.projectCodeArray);
         console.log(this.editHistory);
         // let editTime = 0;
         // for (let i = 0; i < this.projectCode.length; i += 1){
