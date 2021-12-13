@@ -81,32 +81,10 @@ export default {
       decorations: [],
       projectCode: [],
       contentEditLines: [],
+      contentLines: [],
       editHistory: [
-        {
-          name: 'Aha',
-          color: 'rgb(127, 86, 105)',
-          editTime: '15:20',
-          editNumber: 10,
-          editLinesStart: 1,
-          editLinesEnd: 5,
-        },
-        {
-          name: 'Jeremy',
-          color: 'rgb(27, 186, 205)',
-          editTime: '15:20',
-          editNumber: 10,
-          editLinesStart: 10,
-          editLinesEnd: 20,
-        },
-        {
-          name: 'Allen',
-          color: 'rgb(232, 98, 34)',
-          editTime: '12:20',
-          editNumber: 25,
-          editLinesStart: 21,
-          editLinesEnd: 30,
-        },
       ],
+      projectCodeObject: {},
     };
   },
   props: { projects: Array },
@@ -184,8 +162,82 @@ export default {
         }
       });
       this.socket.on('serverProjectCodeSync', async (res) => {
-        console.log('code recieved is:');
+        this.editHistory=[];
+        console.log('serverProjectCodeSync content:');
         console.log(res);
+        if (!(res.codeUpdate.length === 0)) {
+          const codeUpdateRecieved = res.codeUpdate;
+          for (let i = 0; i < codeUpdateRecieved.length; i += 1) {
+            if (codeUpdateRecieved[i].editType === 'add') {
+              for (let j = 0; j < this.projectCode.length; j += 1) {
+                if (this.projectCode[j].lineNumber >= codeUpdateRecieved[i].lineNumber) {
+                  this.projectCode[j].lineNumber += 1;
+                }
+              }
+            } else if (codeUpdateRecieved[i].editType === 'delete') {
+              for (let j = 0; j < this.projectCode.length; j += 1) {
+                if (this.projectCode[j].lineNumber >= this.codeUpdate[j].lineNumber) {
+                  this.projectCode[j].lineNumber -= 1;
+                }
+              }
+            }
+            const editObject = codeUpdateRecieved[i];
+            this.projectCode.push(editObject);
+          }
+          console.log('local projectCode updated');
+          console.log(this.projectCode);
+        }
+        for (let i = 0; i < this.projectCode.length; i += 1) {
+          if (this.projectCode[i].editType === 'update' || this.projectCode[i].editType === 'add') {
+            const lineKey = this.projectCode[i].lineNumber.toString();
+            const lineObject = { content: this.projectCode[i].content, editUser: this.projectCode[i].editUser };
+            this.projectCodeObject[lineKey] = lineObject;
+          }
+        }
+        const codeEntries = Object.entries(this.projectCodeObject);
+        console.log('e');
+        console.log(codeEntries);
+        let tempUser = this.projectCodeObject['1'].editUser;
+        console.log('user');
+        console.log(tempUser);
+        let tempLineStart = 1;
+        let tempLineEnd = 1;
+
+        for (let i = 1; i < codeEntries.length; i += 1) {
+          if(i === codeEntries.length-1){
+            this.editHistory.push({
+              name: 'userId',
+              color: this.randomColor(),
+              editTime: 'time',
+              editLinesStart: tempLineStart,
+              editLinesEnd: tempLineEnd,
+            });
+          }else if ((codeEntries[i][1].editUser === tempUser)) {
+            tempLineEnd += 1;
+            tempUser = codeEntries[i][1].editUser;
+          } else {
+            // random color for now
+            this.editHistory.push({
+              name: 'userId',
+              color: this.randomColor(),
+              editTime: 'time',
+              editLinesStart: tempLineStart,
+              editLinesEnd: tempLineEnd,
+            });
+            tempUser = codeEntries[i][1].editUser;
+            tempLineStart = i + 1;
+            tempLineEnd = tempLineStart + 1;
+          }
+        }
+        console.log('generated project code object is ');
+        console.log(this.projectCodeObject);
+        console.log(this.editHistory);
+        // let editTime = 0;
+        // for (let i = 0; i < this.projectCode.length; i += 1){
+        //   if (this.preojctCode.length[i].editType === 'update'){
+        //     projectCodeObject[i.toString()] = projectCode.length[i].content;
+        //   }
+        // }
       });
       // Receive code from server
       this.socket.on('serverProjectInfoSync', async (res) => {
@@ -200,12 +252,12 @@ export default {
             this.contentWidgets.forEach((contentWidget) => this.editor.removeContentWidget(contentWidget));
             this.setCode(res.code);
           }
-          if (res.projectCode) {
-            // recieve projectCode from server as enterred
-            this.projectCode = res.projectCode;
-            console.log('projectCode recieved from server');
-            console.log(this.projectCode);
-          }
+        }
+        if (res.projectCode) {
+          // recieve projectCode from server as enterred
+          this.projectCode = res.projectCode;
+          console.log('enter and recieve projectCode');
+          console.log(this.projectCode);
         }
 
         if (this.$apollo) {
@@ -321,19 +373,28 @@ export default {
         const contentEdit = e.changes[0].text;
         // add copy and paste feautre later
         // when the change is typing input
-        if (contentEdit.length === 1) {
-          this.contentEditLines.push(e.changes[0].range.endLineNumber);
-        } else if (contentEdit.slice(0, 1) === '\r') {
-          this.addContentListValue(e.changes[0].range.endLineNumber);
-          this.contentEditLines.push(e.changes[0].range.endLineNumber + 1);
-          this.resizeLeftBarAdd(e.changes[0].range.endLineNumber);
+        const contentEditLine = e.changes[0].range.endLineNumber;
+        if (contentEdit.slice(0, 1) === '\r') {
+          this.addContentListValue(contentEditLine, 'update');
+          this.addContentListValue(contentEditLine + 1, 'add');
+          this.resizeLeftBarAdd(contentEditLine);
+        } else if (contentEdit.length === 1) {
+          this.addContentListValue(contentEditLine, 'update');
         }
-        // when the change is deleting
         if (contentEdit.length === 0) {
-          console.log('deleting');
-          if (e.changes[0].rangeLength === 2){ // update later
+          // deleting
+          if (e.changes[0].rangeLength === 2) {
+            // when the input is deleting lines
+            this.addContentListValue(contentEditLine, 'delete');
+            this.addContentListValue(contentEditLine - 1, 'update');
             this.resizeLeftBarDelete(e.changes[0].range.endLineNumber);
+          } else {
+            this.addContentListValue(contentEditLine, 'update');
           }
+        } else if (contentEdit.length > 1) {
+          // when the input is done by pasting(multiple characters)
+          // special case: select and delete
+          console.log('multiple input');
         }
 
         // branches to analyze the user editing event and calculate corresponding cursor position for all users
@@ -427,81 +488,17 @@ export default {
 
         // Send code to server after no operation for 1 seconds
         this.debounceTimeout = setTimeout(() => {
-
-
-
-          console.log(this.contentEditLines);
+          this.contentLines = this.editor.getModel().getLinesContent();
+          for (let i = 0; i < this.contentEditLines.length; i += 1) {
+            this.contentEditLines[i].content = this.contentLines[this.contentEditLines[i].lineNumber - 1];
+          }
           this.socket.emit('clientUpdateProjectCode', {
             projectId: this.projectId,
-            projectCode: [
-              {
-                lineNumber: 1,
-                editType: 'add',
-                content: 'testing',
-                userId: this.userID,
-                updateTime: 1635401514384,
-              },
-              {
-                lineNumber: 2,
-                editType: 'add',
-                content: 'testing',
-                userId: this.userID,
-                updateTime: 1635401514384,
-              },
-              {
-                lineNumber: 3,
-                editType: 'update',
-                content: 'testing',
-                userId: this.userID,
-                updateTime: 1635401514384,
-              },
-              {
-                lineNumber: 4,
-                editType: 'add',
-                content: 'testing',
-                userId: this.userID,
-                updateTime: 1635401514384,
-              },
-              {
-                lineNumber: 5,
-                editType: 'add',
-                content: 'testing',
-                userId: this.userID,
-                updateTime: 1635401514384,
-              },
-              {
-                lineNumber: 6,
-                editType: 'add',
-                content: 'testing',
-                userId: this.userID,
-                updateTime: 1635401514384,
-              },
-              {
-                lineNumber: 7,
-                editType: 'add',
-                content: 'testing',
-                userId: this.userID,
-                updateTime: 1635401514384,
-              },
-              {
-                lineNumber: 8,
-                editType: 'add',
-                content: 'testing',
-                userId: this.userID,
-                updateTime: 1635401514384,
-              },
-              {
-                lineNumber: 9,
-                editType: 'add',
-                content: 'testing',
-                userId: this.userID,
-                updateTime: 1635401514384,
-              },
-            ],
+            codeUpdate: this.contentEditLines,
+            userId: this.userId,
           });
 
           const code = this.getCode();
-          console.log(this.editor.getModel().getLinesContent());
           this.socket.emit('clientUpdateProjectInfo', {
             code,
             projectId: this.projectId,
@@ -509,6 +506,7 @@ export default {
             syntax: this.syntax,
             userId: this.userId,
           });
+          this.contentEditLines = [];
           updateCodeInLocalDb(code, this.projectId || 'localDefault');
           this.codeUpdateEnable = true;
         }, 1000);
@@ -544,6 +542,14 @@ export default {
     },
     getCode() {
       return this.editor.getValue();
+    },
+    randomColor() {
+      const randomBetween = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
+      const r = randomBetween(0, 255);
+      const g = randomBetween(0, 255);
+      const b = randomBetween(0, 255);
+      const rgb = `rgb(${r},${g},${b})`;
+      return rgb;
     },
     downloadCode() {
       const blob = new Blob([this.getCode()], { type: 'text' });
@@ -585,11 +591,26 @@ export default {
         userId: this.userId,
       });
     },
-    addContentListValue(addLineNumber) {
-      for (let i = 0; i < this.contentEditLines.length; i += 1) {
-        if (this.contentEditLines[i] > addLineNumber) {
-          this.contentEditLines[i] += 1;
+    addContentListValue(addLineNumber, editType) {
+      const editObject = { lineNumber: addLineNumber, editType };
+      if (editType === 'update') {
+        if (this.contentEditLines.findIndex((x) => x.lineNumber === addLineNumber) === -1) {
+          this.contentEditLines.push(editObject);
         }
+      } else if (editType === 'add') {
+        for (let i = 0; i < this.contentEditLines.length; i += 1) {
+          if (this.contentEditLines[i].lineNumber >= addLineNumber) {
+            this.contentEditLines[i].lineNumber += 1;
+          }
+        }
+        this.contentEditLines.push(editObject);
+      } else if (editType === 'delete') {
+        for (let i = 0; i < this.contentEditLines.length; i += 1) {
+          if (this.contentEditLines[i].lineNumber >= addLineNumber) {
+            this.contentEditLines[i].lineNumber -= 1;
+          }
+        }
+        this.contentEditLines.push(editObject);
       }
     },
 
@@ -709,10 +730,11 @@ export default {
         });
       });
     },
+    moveEditor(moveLineNumber) {
+      this.editor.revealLineInCenter(moveLineNumber);
+    },
   },
-  moveEditor(moveLineNumber) {
-    this.editor.revealLineInCenter(moveLineNumber);
-  },
+
   created() {
     this.userId = storage.getUserInfo().userID;
     this.color = getAvatarColor(storage.getUserInfo().userAvatar);
