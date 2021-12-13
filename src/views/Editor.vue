@@ -176,7 +176,7 @@ export default {
               }
             } else if (codeUpdateRecieved[i].editType === 'delete') {
               for (let j = 0; j < this.projectCode.length; j += 1) {
-                if (this.projectCode[j].lineNumber >= this.codeUpdate[j].lineNumber) {
+                if (this.projectCode[j].lineNumber >= codeUpdateRecieved[i].lineNumber) {
                   this.projectCode[j].lineNumber -= 1;
                 }
               }
@@ -196,6 +196,8 @@ export default {
               updateTime: this.projectCode[i].updateTime,
             };
             this.projectCodeObject[lineKey] = lineObject;
+          }else if (this.projectCode[i].editType === 'delete'){
+             delete this.projectCodeObject[this.projectCode[i].lineNumber.toString()];
           }
         }
         const codeEntries = Object.entries(this.projectCodeObject);
@@ -207,6 +209,15 @@ export default {
         let tempLineStart = 1;
         let tempLineEnd = 1;
 
+        if (codeEntries.length === 1) {
+          this.editHistory.push({
+            name: codeEntries[0][1].editUser.substr(0, 5),
+            color: this.generateColor(codeEntries[0][1].editUser),
+            editTime: this.showTime(codeEntries[0][1].updateTime),
+            editLinesStart: 1,
+            editLinesEnd: 1,
+          });
+        }
         for (let i = 1; i < codeEntries.length; i += 1) {
           if (i === codeEntries.length - 1) {
             if (this.editHistory.length === 0) {
@@ -214,9 +225,9 @@ export default {
             }
             console.log('last');
             this.editHistory.push({
-              name: codeEntries[i][1].editUser.substr(0,5),
-              color: this.generateColor(codeEntries[i-1][1].editUser),
-              editTime: this.showTime(codeEntries[i-1][1].updateTime),
+              name: codeEntries[i][1].editUser.substr(0, 5),
+              color: this.generateColor(codeEntries[i - 1][1].editUser),
+              editTime: this.showTime(codeEntries[i - 1][1].updateTime),
               editLinesStart: tempLineStart,
               editLinesEnd: tempLineEnd,
             });
@@ -226,9 +237,9 @@ export default {
           } else {
             // random color for now
             this.editHistory.push({
-              name: codeEntries[i-1][1].editUser.substr(0,5),
-              color: this.generateColor(codeEntries[i-1][1].editUser),
-              editTime: this.showTime(codeEntries[i-1][1].updateTime),
+              name: codeEntries[i - 1][1].editUser.substr(0, 5),
+              color: this.generateColor(codeEntries[i - 1][1].editUser),
+              editTime: this.showTime(codeEntries[i - 1][1].updateTime),
               editLinesStart: tempLineStart,
               editLinesEnd: tempLineEnd,
             });
@@ -620,6 +631,7 @@ export default {
         }
         this.contentEditLines.push(editObject);
       } else if (editType === 'delete') {
+        console.log('deleting');
         for (let i = 0; i < this.contentEditLines.length; i += 1) {
           if (this.contentEditLines[i].lineNumber >= addLineNumber) {
             this.contentEditLines[i].lineNumber -= 1;
