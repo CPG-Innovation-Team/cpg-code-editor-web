@@ -85,7 +85,7 @@
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip nudge-right="10" left>
               <template v-slot:activator="{ on: tooltip }">
-                <v-list-item v-bind="attrs" v-on="{ ...tooltip, ...menu }">
+                <v-list-item v-bind="attrs" v-on="{ ...tooltip, ...menu }" @click="$emit('generateHistory')">
                   <v-list-item-content>
                     <v-icon color="greyBtn">{{ tool.icon }}</v-icon>
                   </v-list-item-content>
@@ -94,7 +94,7 @@
               <span>{{ $t(tool.tooltip) }}</span>
             </v-tooltip>
           </template>
-          <div :is="tool.menu" />
+          <History v-bind="$attrs" v-on="$listeners" :editHistory="editHistory" :rightUserInfo="rightUserInfo" />
         </v-menu>
 
         <v-tooltip nudge-right="10" left>
@@ -225,6 +225,8 @@ export default {
     },
     projectName: { type: String },
     syntax: { type: String },
+    editHistory: { type: Array },
+    rightUserInfo: { type: Array },
   },
   data() {
     return {

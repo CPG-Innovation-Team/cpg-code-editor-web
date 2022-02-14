@@ -12,7 +12,7 @@
           }"
         >
           <a style="color: rgb(190, 198, 201)">{{ user.editTime }}</a>
-          <a :style="{ 'margin-left': 130 + 'px', color: user.color }"> {{ user.name }} </a>
+          <a :style="{ 'margin-left': 130 + 'px', color: user.color }"> {{ getUserName(user.name) }} </a>
         </div>
       </div>
     </div>
@@ -30,10 +30,13 @@
         v-on="$listeners"
         :projectName="projectName"
         :syntax="syntax"
+        :editHistory="historyRightFixed"
+        :rightUserInfo="users"
         @downloadCode="downloadCode"
         @changeLanguage="onCodeLanguageChange"
         @changeName="onProjectNameChange"
         @searchText="searchText"
+        @generateHistory="generateHistory"
       />
     </div>
   </div>
@@ -85,10 +88,53 @@ export default {
       editHistory: [],
       projectCodeArray: [], // the index is 1 less than the actual lineNumber
       colorList: {},
+      historyRightFixed: [],
     };
   },
   props: { projects: Array },
   methods: {
+    generateHistory() {
+      this.historyRightFixed = [];
+      // use this.projectCode to generate right side history
+      const historyRight = {};
+      for (let i = 0; i < this.projectCode.length; i += 1) {
+       // let formattedUpdateTime = this.getYearMonthDay(this.projectCode[i].updateTime);
+        const formattedTime = formattedDateTime(new Date(this.projectCode[i].updateTime));
+        const splitTime = formattedTime.split("-");
+        const timeDay = splitTime[0];
+        // const timeNumber = splitTime[1];
+        if (timeDay in historyRight){
+          historyRight[timeDay].push(this.projectCode[i]);
+        }else{
+          const editList = [];
+          editList.push(this.projectCode[i]);
+          historyRight[timeDay] = editList;
+        }
+      }
+      console.log(historyRight);
+      for (const prop in historyRight) {
+        console.log(prop);
+        console.log(historyRight[prop]);
+        let editorList = {};
+        for (let i =0 ; i < historyRight[prop].length; i +=1){
+          const editor = historyRight[prop][i].editUser;
+          const editNumber = historyRight[prop][i].content.length;
+          const editTime = historyRight[prop][i].updateTime;
+          const editLine = historyRight[prop][i].lineNumber;
+          if (editor in editorList){
+            editorList[editor][0] = editTime;
+            editorList[editor][1] += editNumber;
+            editorList[editor][2] = editLine;
+          }else{
+            editorList[editor] = [editTime,editNumber]; // first as editTime and second as editNumber
+          }
+        }
+        console.log(editorList);
+        this.historyRightFixed.push(editorList);
+      }
+      console.log(this.historyRightFixed);
+
+    },
     searchText() {
       this.editor.getAction('actions.find').run('');
     },
@@ -209,7 +255,7 @@ export default {
         if (this.projectCodeArray.length === 1) {
           // when there is only one line
           this.editHistory.push({
-            name: this.projectCodeArray[0].editUser.substr(0, 5),
+            name: this.projectCodeArray[0].editUser,
             color: this.generateColor(this.projectCodeArray[0].editUser),
             editTime: this.showTime(this.projectCodeArray[0].updateTime),
             editLinesStart: 1,
@@ -223,7 +269,7 @@ export default {
             }
             if (this.projectCodeArray[i].editUser === tempUser) {
               this.editHistory.push({
-                name: this.projectCodeArray[i].editUser.substr(0, 5),
+                name: this.projectCodeArray[i].editUser,
                 color: this.generateColor(this.projectCodeArray[i - 1].editUser),
                 editTime: this.showTime(this.projectCodeArray[i - 1].updateTime),
                 editLinesStart: tempLineStart,
@@ -231,14 +277,14 @@ export default {
               });
             } else {
               this.editHistory.push({
-                name: this.projectCodeArray[i].editUser.substr(0, 5),
+                name: this.projectCodeArray[i].editUser,
                 color: this.generateColor(this.projectCodeArray[i - 1].editUser),
                 editTime: this.showTime(this.projectCodeArray[i - 1].updateTime),
                 editLinesStart: tempLineStart,
                 editLinesEnd: tempLineEnd - 1,
               });
               this.editHistory.push({
-                name: this.projectCodeArray[i].editUser.substr(0, 5),
+                name: this.projectCodeArray[i].editUser,
                 color: this.generateColor(this.projectCodeArray[i].editUser),
                 editTime: this.showTime(this.projectCodeArray[i].updateTime),
                 editLinesStart: tempLineEnd,
@@ -251,7 +297,7 @@ export default {
           } else {
             // random color for now
             this.editHistory.push({
-              name: this.projectCodeArray[i - 1].editUser.substr(0, 5),
+              name: this.projectCodeArray[i - 1].editUser,
               color: this.generateColor(this.projectCodeArray[i - 1].editUser),
               editTime: this.showTime(this.projectCodeArray[i - 1].updateTime),
               editLinesStart: tempLineStart,
@@ -290,6 +336,10 @@ export default {
           this.projectCode = res.projectCode;
           console.log('enter and recieve projectCode');
           console.log(this.projectCode);
+        }
+        if (res.editInfo) {
+          console.log('user info');
+          console.log(res.editInfo);
         }
 
         if (this.$apollo) {
@@ -644,7 +694,6 @@ export default {
         }
         this.contentEditLines.push(editObject);
       } else if (editType === 'delete') {
-
         for (let i = 0; i < this.contentEditLines.length; i += 1) {
           if (this.contentEditLines[i].lineNumber >= addLineNumber) {
             this.contentEditLines[i].lineNumber -= 1;
@@ -657,7 +706,6 @@ export default {
     resizeLeftBarAdd(moveLineNumber) {
       for (let i = 0; i < this.editHistory.length; i += 1) {
         if (this.editHistory[i].editLinesStart > moveLineNumber) {
-
           this.editHistory[i].editLinesStart += 1;
           this.editHistory[i].editLinesEnd += 1;
         }
@@ -667,6 +715,14 @@ export default {
           }
         }
       }
+    },
+    getUserName(name){
+      for (let i = 0; i < this.users.length; i += 1) {
+        if (name === this.users[i].userId) {
+          return this.users[i].userName;
+        }
+      }
+      return 'name not found';
     },
     showTime(date) {
       // change to moment later
